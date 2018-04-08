@@ -1,18 +1,9 @@
+import React from 'react'
 import {
   confirmDeleteMesh,
   cancelDeleteMesh
 } from '../actions'
 import { connect } from 'react-redux'
-
-export const ConfirmContainer = connect(
-  state => ({
-    mesh: state.dialogs.delete.mesh
-  }),
-  dispatch => ({
-    onConfirm: addr => dispatch(confirmDeleteMesh(addr)),
-    onExit: () => dispatch(cancelDeleteMesh())
-  })
-)(Confirm)
 
 const Confirm = ({ addr, onConfirm, onExit }) => (
   <div
@@ -44,3 +35,13 @@ const Confirm = ({ addr, onConfirm, onExit }) => (
   </div>
 
 )
+
+export const ConfirmContainer = connect(
+  state => ({
+    mesh: state.dialogs.delete.mesh
+  }),
+  dispatch => ({
+    onConfirm: addr => dispatch(confirmDeleteMesh(addr)),
+    onExit: () => dispatch(cancelDeleteMesh())
+  })
+)(Confirm)

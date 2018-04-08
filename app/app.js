@@ -8,10 +8,10 @@ import * as Dialog from './containers/dialog'
 
 const App = () => (
   <Fragment>
-  <Dialog.ConfirmContainer />
-  <AddMeshContainer />
-  <MessagesContainer />
-  <WriteContainer />
+    <Dialog.ConfirmContainer />
+    <AddMeshContainer />
+    <MessagesContainer />
+    <WriteContainer />
   </Fragment>
 )
 

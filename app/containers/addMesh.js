@@ -7,7 +7,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  addMesh: (link, username) => addMesh(link, username),
+  add: (input, username) => dispatch(addMesh({input, username})),
   hide: () => dispatch(hideAddMesh())
 })
 
@@ -18,29 +18,16 @@ class addMeshScreen extends Component {
   }
 
   onkeydown (ev) {
-    if (ev.code !== 'Escape') return
-    window.removeEventListener('keydown', this.onkeydown)
+    const value = ev.target.value
+    if (ev.key !== 'Enter' || !value) return
+    ev.target.value = ''
+    console.log('adding mesh', value)
+    this.props.add(value)
     this.props.hide()
   }
 
-  componentWillMount () {
-    window.addEventListener('keydown', this.onkeydown)
-  }
-
-  componentWillUnmount () {
-    window.removeEventListener('keydown', this.onkeydown)
-  }
-
   render () {
-    const { show, addMesh } = this.props
-
-    const onKeyDown = e => {
-      const value = e.target.value
-      if (e.key !== 'Enter' || !value) return
-      e.target.value = ''
-      addMesh(value)
-    }
-
+    const { show } = this.props
     if (!show) {
       return (
         <Fragment>
@@ -53,10 +40,10 @@ class addMeshScreen extends Component {
       <div>
         <h1>Join a Chat Mesh</h1>
         <input type='text'
-        name='add-mesh'
-        className='input-reset f7 f6-l'
-        onKeyDown={onKeyDown}
-        placeholder='Put Address Here' />
+          name='add-mesh'
+          className='input-reset f7 f6-l'
+          onKeyDown={this.onkeydown}
+          placeholder='Put Address Here' />
       </div>
     )
   }

@@ -1,5 +1,5 @@
 import { homedir } from 'os'
-import { encode } from 'dat-encoding'
+import { decode, encode } from 'dat-encoding'
 import Swarm from 'chatmesh/swarm'
 import Mesh from 'chatmesh/mesh'
 import catnames from 'cat-names'
@@ -14,42 +14,48 @@ const mkdir = promisify(fs.mkdir)
 var meshes = {}
 var currentMesh
 
-var dir = path.join(__dirname, 'chatmesh-data')
-
 export const viewMesh = ({addr}) => dispatch => {
-  var obj = meshes[addr]
-  if (obj) {
-    currentMesh = obj
-    dispatch({type: 'VIEW_MESH', mesh: obj.mesh})
-    storeOnDisk()
+  var mesh = meshes[addr]
+  if (mesh) {
+    currentMesh = mesh
+    dispatch({type: 'VIEW_MESH', addr})
+    //storeOnDisk()
   }
 }
 
 export const cancelDeleteMesh = () => ({ type: 'DIALOGS_DELETE_CLOSE' })
 export const deleteMesh = addr => ({ type: 'DIALOGS_DELETE_OPEN', addr })
 export const confirmDeleteMesh = addr => dispatch => {
-  const { obj } = meshes[addr]
+  const { mesh } = meshes[addr]
 
-  if (obj.swarm) {
-    for (const con of obj.swarm.connections) {
+  if (mesh.swarm) {
+    for (const con of mesh.swarm.connections) {
       con.removeAllListeners()
     }
   }
   // obj.mesh.db.close()
   delete meshes[addr]
-  storeOnDisk()
+  //storeOnDisk()
   dispatch({ type: 'DELETE_MESH', addr })
   dispatch({ type: 'DIALOGS_DELETE_CLOSE' })
 }
 
 export const showAddMesh = () => ({ type: 'SHOW_ADD_MESH' })
 export const hideAddMesh = () => ({ type: 'HIDE_ADD_MESH' })
-export const addMesh = ({link, username}) => dispatch => {
-  var addr = encode(link)
-  var mesh = Mesh(path.join(dir, addr), addr, {username: username || catnames.random(), sparse: true})
-  meshes[addr] = { mesh, swarm: Swarm(mesh) }
-  storeOnDisk()
-  dispatch({type: 'ADD_MESH', addr, mesh})
+export const addMesh = ({input, username}) => dispatch => {
+  var key = decode(input)
+  var addr = encode(key)
+  if (meshes[addr]) return console.error('Mesh already exists')
+  var mesh = Mesh(path.join(__dirname, addr), 'dat://' + addr, {username: username || catnames.random(), sparse: true})
+  meshes[addr] = mesh
+  mesh.db.ready(function (err) {
+    if (err) return console.error(err)
+    var swarm = Swarm(mesh)
+    meshes[addr].swarm = swarm
+    //storeOnDisk()
+    dispatch({type: 'ADD_MESH', addr, username: mesh.username})
+    dispatch({type: 'VIEW_MESH', addr})
+  })
 }
 
 export const addMessage = ({ message }) => dispatch => {

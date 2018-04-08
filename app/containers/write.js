@@ -17,6 +17,13 @@ class writeScreen extends Component {
     this.onkeydown = this.onkeydown.bind(this)
   }
 
+  onkeydown (e) {
+    const value = e.target.value
+    if (e.key !== 'Enter' || !value) return
+    e.target.value = ''
+    this.props.addMessage(value)
+  }
+
   componentWillMount () {
     window.addEventListener('keydown', this.onkeydown)
   }
@@ -26,14 +33,8 @@ class writeScreen extends Component {
   }
 
   render () {
-    const { show, mesh, addMessage } = this.props
-
-    const onKeyDown = e => {
-      const value = e.target.value
-      if (e.key !== 'Enter' || !value) return
-      e.target.value = ''
-      addMessage(value)
-    }
+    const { show, mesh } = this.props
+    console.log(mesh)
 
     if (!show) {
       return (
@@ -44,11 +45,10 @@ class writeScreen extends Component {
     }
     return (
       <div>
-        {mesh.username}
         <input type='text'
           name='add-message'
           className='input-reset f7 f6-l'
-          onKeyDown={onKeyDown}
+          onKeyDown={this.onkeydown}
           placeholder='Say something..' />
       </div>
     )

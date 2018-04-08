@@ -24,14 +24,18 @@ const reducer = (state = defaultState, action) => {
     case 'VIEW_MESH':
       return {
         ...state,
-        currentMesh: action.mesh
+        currentMesh: action.addr
       }
     case 'ADD_MESH':
+      console.log('adding', action)
       return {
         ...state,
         meshes: {
           ...state.meshes,
-          [action.addr]: action.mesh
+          [action.addr]: {
+            addr: action.addr,
+            username: action.username
+          }
         }
       }
     case 'DELETE_MESH':
@@ -65,6 +69,8 @@ const reducer = (state = defaultState, action) => {
           [action.key]: action.value
         }
       }
+    default:
+      return defaultState
   }
 }
 

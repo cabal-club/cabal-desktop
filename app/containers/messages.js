@@ -3,8 +3,7 @@ import { connect } from 'react-redux'
 import { addMessage } from '../actions'
 
 const mapStateToProps = state => ({
-  show: state.screen === 'main',
-  messages: ['this', 'is', 'a', 'test']
+  show: state.screen === 'main'
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -14,19 +13,10 @@ const mapDispatchToProps = dispatch => ({
 class messagesScreen extends Component {
   constructor (props) {
     super(props)
-    this.onkeydown = this.onkeydown.bind(this)
-  }
-
-  componentWillMount () {
-    window.addEventListener('keydown', this.onkeydown)
-  }
-
-  componentWillUnmount () {
-    window.removeEventListener('keydown', this.onkeydown)
   }
 
   render () {
-    const { show, messages } = this.props
+    const { show } = this.props
 
     if (!show) {
       return (
@@ -36,13 +26,9 @@ class messagesScreen extends Component {
       )
     }
 
-    if (!messages || !messages.length) return <div />
-
     return (
       <div>
-        {messages.map(line => (
-          <div>{line}</div>
-        ))}
+      my messages
       </div>
     )
   }
