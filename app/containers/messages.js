@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { addMessage } from '../actions'
 
 const mapStateToProps = state => ({
-  show: state.screen === 'main'
+  show: state.screen === 'main',
+  mesh: state.currentMesh
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -16,7 +17,7 @@ class messagesScreen extends Component {
   }
 
   render () {
-    const { show } = this.props
+    const { show, mesh } = this.props
 
     if (!show) {
       return (
@@ -28,7 +29,8 @@ class messagesScreen extends Component {
 
     return (
       <div>
-      my messages
+        <div>{mesh}</div>
+        <div>my messages</div>
       </div>
     )
   }

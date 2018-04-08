@@ -43,16 +43,28 @@ export const confirmDeleteMesh = addr => dispatch => {
 export const showAddMesh = () => ({ type: 'SHOW_ADD_MESH' })
 export const hideAddMesh = () => ({ type: 'HIDE_ADD_MESH' })
 export const addMesh = ({input, username}) => dispatch => {
-  var key = decode(input)
-  var addr = encode(key)
+  try {
+    var key = decode(input)
+    var addr = encode(key)
+  } catch (err) {
+  }
+  username = username || catnames.random()
+
   if (meshes[addr]) return console.error('Mesh already exists')
-  var mesh = Mesh(path.join(__dirname, addr), 'dat://' + addr, {username: username || catnames.random(), sparse: true})
-  meshes[addr] = mesh
+  var mesh = Mesh(path.join(homedir(), '.chatmesh-desktop', username), addr ? 'dat://' + addr : null, {username, sparse: true})
   mesh.db.ready(function (err) {
     if (err) return console.error(err)
+    if (!addr) addr = mesh.db.key.toString('hex')
     var swarm = Swarm(mesh)
-    meshes[addr].swarm = swarm
+    mesh.swarm = swarm
+    meshes[addr] = mesh
     //storeOnDisk()
+    mesh.on('join', function (username) {
+      dispatch({type: 'JOIN_USER', addr, username: username})
+    })
+    mesh.on('leave', function (username) {
+      dispatch({type: 'LEAVE_USER', addr, username})
+    })
     dispatch({type: 'ADD_MESH', addr, username: mesh.username})
     dispatch({type: 'VIEW_MESH', addr})
   })

@@ -11,6 +11,14 @@ const defaultState = {
 
 const reducer = (state = defaultState, action) => {
   switch (action.type) {
+    case 'JOIN_USER':
+      var mesh = state.meshes[action.addr]
+      mesh.users.push(action.username)
+      return state
+    case 'LEAVE_USER':
+      var mesh = state.meshes[action.addr]
+      delete mesh.users[action.username]
+      return state
     case 'SHOW_ADD_MESH':
       return {
         ...state,

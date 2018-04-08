@@ -1,9 +1,4 @@
 'use strict'
-var homedir = require('os').homedir
-var fs = require('fs')
-var promisify = require('util-promisify')
-const writeFile = promisify(fs.writeFile)
-
 const { app, BrowserWindow, shell, Menu } = require('electron')
 const defaultMenu = require('electron-default-menu')
 
