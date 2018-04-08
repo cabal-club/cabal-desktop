@@ -1,0 +1,70 @@
+{
+  "name": "chatmesh-desktop",
+  "version": "1.0.0",
+  "description": "ChatMesh p2p offline-first desktop application",
+  "scripts": {
+    "start": "electron .",
+    "watch": "webpack --watch"
+  },
+  "repository": "karissa/chatmesh-desktop",
+  "author": "Karissa McKelvey",
+  "license": "GPLv3",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "prettier-standard": "^8.0.0",
+    "standard": "^10.0.3",
+    "webpack": "^3.10.0",
+    "webpack-node-externals": "^1.6.0"
+  },
+  "dependencies": {
+    "cat-names": "^1.0.2",
+    "discovery-swarm": "^5.1.1",
+    "electron-default-menu": "^1.0.1",
+    "mirror-folder": "^2.1.1",
+    "ms": "^2.1.1",
+    "prettier-bytes": "^1.0.4",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-file-drop": "^0.1.9",
+    "react-redux": "^5.0.6",
+    "react-swap": "^2.0.2",
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.2.0",
+    "styled-components": "^2.4.0",
+    "tachyons": "^4.9.1",
+    "util-promisify": "^2.1.0"
+  },
+  "build": {
+    "appId": "com.datproject.chatmesh",
+    "mac": {
+      "category": "public.app-category.utilities"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 220,
+          "y": 200
+        },
+        {
+          "x": 448,
+          "y": 200,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "protocols": [
+      {
+        "name": "Dat Link",
+        "schemes": [
+          "dat"
+        ]
+      }
+    ]
+  }
+}
