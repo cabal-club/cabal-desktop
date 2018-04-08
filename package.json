@@ -38,6 +38,7 @@
     "redux-thunk": "^2.2.0",
     "styled-components": "^2.4.0",
     "tachyons": "^4.9.1",
+    "to2": "^1.0.0",
     "util-promisify": "^2.1.0"
   },
   "build": {

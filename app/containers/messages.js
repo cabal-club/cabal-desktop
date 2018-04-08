@@ -4,7 +4,7 @@ import { addMessage } from '../actions'
 
 const mapStateToProps = state => ({
   show: state.screen === 'main',
-  mesh: state.currentMesh
+  mesh: state.meshes[state.currentMesh]
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -19,18 +19,22 @@ class messagesScreen extends Component {
   render () {
     const { show, mesh } = this.props
 
-    if (!show) {
+    if (!show || !mesh) {
       return (
         <Fragment>
           <div />
         </Fragment>
       )
     }
+    console.log(mesh.messages)
 
     return (
       <div>
-        <div>{mesh}</div>
-        <div>my messages</div>
+        <div>{mesh.addr}</div>
+        {mesh.messages.map((key) => {
+          console.log(key)
+
+        })}
       </div>
     )
   }

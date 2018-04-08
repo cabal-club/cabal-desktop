@@ -11,14 +11,10 @@ const defaultState = {
 
 const reducer = (state = defaultState, action) => {
   switch (action.type) {
-    case 'JOIN_USER':
+    case 'MESH_USERS':
       var mesh = state.meshes[action.addr]
-      mesh.users.push(action.username)
-      return state
-    case 'LEAVE_USER':
-      var mesh = state.meshes[action.addr]
-      delete mesh.users[action.username]
-      return state
+      mesh.users = action.users
+      return Object.assign(state, {})
     case 'SHOW_ADD_MESH':
       return {
         ...state,
@@ -35,17 +31,29 @@ const reducer = (state = defaultState, action) => {
         currentMesh: action.addr
       }
     case 'ADD_MESH':
-      console.log('adding', action)
       return {
         ...state,
         meshes: {
           ...state.meshes,
           [action.addr]: {
             addr: action.addr,
-            username: action.username
+            username: action.username,
+            messages: {},
+            users: {}
           }
         }
       }
+    case 'ADD_LINE':
+      var mesh = state.meshes[action.addr]
+      if (!mesh.messages) mesh.messages = {}
+      if (!mesh.messages[action.row.key]) {
+        mesh.messages[action.row.key] = {
+          utcDate: action.utcDate,
+          username: action.row.value.username,
+          message: action.row.value.message
+        }
+      }
+      return Object.assign(state, {})
     case 'DELETE_MESH':
       const { [action.addr]: del, ...meshes } = state.meshes
       return {...state, meshes}

@@ -1,5 +1,7 @@
 import { homedir } from 'os'
 import { decode, encode } from 'dat-encoding'
+import to from 'to2'
+import pump from 'pump'
 import Swarm from 'chatmesh/swarm'
 import Mesh from 'chatmesh/mesh'
 import catnames from 'cat-names'
@@ -51,7 +53,8 @@ export const addMesh = ({input, username}) => dispatch => {
   username = username || catnames.random()
 
   if (meshes[addr]) return console.error('Mesh already exists')
-  var mesh = Mesh(path.join(homedir(), '.chatmesh-desktop', username), addr ? 'dat://' + addr : null, {username, sparse: true})
+  var dir = path.join(homedir(), '.chatmesh-desktop', addr || username)
+  var mesh = Mesh(dir, addr ? 'dat://' + addr : null, {username})
   mesh.db.ready(function (err) {
     if (err) return console.error(err)
     if (!addr) addr = mesh.db.key.toString('hex')
@@ -60,21 +63,50 @@ export const addMesh = ({input, username}) => dispatch => {
     meshes[addr] = mesh
     //storeOnDisk()
     mesh.on('join', function (username) {
-      dispatch({type: 'JOIN_USER', addr, username: username})
+      dispatch({type: 'MESH_USERS', addr, users: mesh.users})
     })
     mesh.on('leave', function (username) {
-      dispatch({type: 'LEAVE_USER', addr, username})
+      dispatch({type: 'MESH_USERS', addr, users: mesh.users})
     })
     dispatch({type: 'ADD_MESH', addr, username: mesh.username})
     dispatch({type: 'VIEW_MESH', addr})
+
+    pump(mesh.db.createHistoryStream(), to.obj(
+      function (row, enc, next) {
+        writeMsg(row)
+        next()
+      },
+      function (next) {
+        mesh.db.on('remote-update', onappend)
+        mesh.db.on('append', onappend)
+        function onappend (feed) {
+          var h = mesh.db.createHistoryStream({ reverse: true })
+          pump(h, to.obj(function (row, enc, next) {
+            writeMsg(row)
+            h.destroy()
+          }))
+        }
+        next()
+      }
+    ), function (err) {
+      if (err) console.error(err)
+    })
+
+    function writeMsg (row) {
+      var m
+      if (row.value) console.log('got', row)
+      if (row.value && (m=/^chat\/([^\/]+)@/.exec(row.key))) {
+        var utcDate = new Date(m[1])
+        dispatch({type: 'ADD_LINE', addr, utcDate, row})
+      }
+      next()
+    }
   })
 }
 
 export const addMessage = ({ message }) => dispatch => {
-  dispatch({type: 'ADD_MESSAGE', message})
   currentMesh.mesh.message(message, function (err) {
     if (err) console.log(err)
-    dispatch({type: 'ADD_MESSAGE_SUCCESS', message})
   })
 }
 
