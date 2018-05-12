@@ -52,7 +52,6 @@ class addMeshScreen extends Component {
         <input type='text'
           id='add-mesh'
           className='input-reset f7 f6-l'
-          value='dat://54d229c68da519d14cc561a0346298954b0ab3d5a0b8e55c14c113fc7a82b3f0'
           onKeyDown={this.joinMesh.bind(this)}
           placeholder='Put Address Here' />
         <button onClick={this.joinClick.bind(this)}>Join Mesh</button>
