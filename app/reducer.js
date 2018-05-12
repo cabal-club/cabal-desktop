@@ -13,8 +13,16 @@ const reducer = (state = defaultState, action) => {
   switch (action.type) {
     case 'MESH_USERS':
       var mesh = state.meshes[action.addr]
-      mesh.users = action.users
-      return Object.assign(state, {})
+      return {
+        ...state,
+        meshes: {
+          ...state.meshes,
+          [action.addr]: {
+            ...mesh,
+            users: action.users
+          }
+        }
+      }
     case 'SHOW_ADD_MESH':
       return {
         ...state,
@@ -46,14 +54,23 @@ const reducer = (state = defaultState, action) => {
     case 'ADD_LINE':
       var mesh = state.meshes[action.addr]
       if (!mesh.messages) mesh.messages = {}
-      if (!mesh.messages[action.row.key]) {
-        mesh.messages[action.row.key] = {
-          utcDate: action.utcDate,
-          username: action.row.value.username,
-          message: action.row.value.message
+      return {
+        ...state,
+        meshes: {
+          ...state.meshes,
+          [action.addr]: {
+            ...mesh,
+            messages: {
+              ...mesh.messages,
+              [action.row.key]: {
+                utcDate: action.utcDate,
+                username: action.row.value.username,
+                message: action.row.value.message
+              }
+            }
+          }
         }
       }
-      return Object.assign(state, {})
     case 'DELETE_MESH':
       const { [action.addr]: del, ...meshes } = state.meshes
       return {...state, meshes}
@@ -75,14 +92,6 @@ const reducer = (state = defaultState, action) => {
           delete: {
             mesh: action.addr
           }
-        }
-      }
-    case 'ADD_MESSAGE':
-      return {
-        ...state,
-        messages: {
-          ...state.messages,
-          [action.key]: action.value
         }
       }
     default:

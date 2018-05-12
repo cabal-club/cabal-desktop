@@ -4,11 +4,11 @@ import { addMessage } from '../actions'
 
 const mapStateToProps = state => ({
   show: state.screen === 'main',
-  mesh: state.currentMesh
+  addr: state.currentMesh
 })
 
 const mapDispatchToProps = dispatch => ({
-  addMessage: (message) => addMessage(message)
+  addMessage: ({addr, message}) => dispatch(addMessage({addr, message}))
 })
 
 class writeScreen extends Component {
@@ -18,10 +18,11 @@ class writeScreen extends Component {
   }
 
   onkeydown (e) {
-    const value = e.target.value
-    if (e.key !== 'Enter' || !value) return
+    const message = e.target.value
+    if (e.key !== 'Enter' || !message) return
     e.target.value = ''
-    this.props.addMessage(value)
+    const {addr, addMessage} = this.props
+    addMessage({message, addr})
   }
 
   componentWillMount () {
@@ -33,8 +34,7 @@ class writeScreen extends Component {
   }
 
   render () {
-    const { show, mesh } = this.props
-    console.log(mesh)
+    const { show, addr } = this.props
 
     if (!show) {
       return (

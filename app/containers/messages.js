@@ -1,22 +1,17 @@
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
-import { addMessage } from '../actions'
 
 const mapStateToProps = state => ({
   show: state.screen === 'main',
+  meshes: state.meshes,
   mesh: state.meshes[state.currentMesh]
 })
 
-const mapDispatchToProps = dispatch => ({
-  addMessage: (message) => addMessage(message)
-})
+const mapDispatchToProps = dispatch => ({})
 
 class messagesScreen extends Component {
-  constructor (props) {
-    super(props)
-  }
-
   render () {
+    console.log(this.state)
     const { show, mesh } = this.props
 
     if (!show || !mesh) {
@@ -26,14 +21,16 @@ class messagesScreen extends Component {
         </Fragment>
       )
     }
-    console.log(mesh.messages)
+    var messageKeys = Object.keys(mesh.messages)
 
     return (
       <div>
         <div>{mesh.addr}</div>
-        {mesh.messages.map((key) => {
-          console.log(key)
-
+        {messageKeys.map((key) => {
+          var message = mesh.messages[key]
+          return (<div>
+            [{message.utcDate.toString()}] {message.username}: {message.message}
+          </div>)
         })}
       </div>
     )

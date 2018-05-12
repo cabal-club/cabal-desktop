@@ -14,12 +14,10 @@ const writeFile = promisify(fs.writeFile)
 const mkdir = promisify(fs.mkdir)
 
 var meshes = {}
-var currentMesh
 
 export const viewMesh = ({addr}) => dispatch => {
   var mesh = meshes[addr]
   if (mesh) {
-    currentMesh = mesh
     dispatch({type: 'VIEW_MESH', addr})
     //storeOnDisk()
   }
@@ -99,13 +97,14 @@ export const addMesh = ({input, username}) => dispatch => {
         var utcDate = new Date(m[1])
         dispatch({type: 'ADD_LINE', addr, utcDate, row})
       }
-      next()
     }
   })
 }
 
-export const addMessage = ({ message }) => dispatch => {
-  currentMesh.mesh.message(message, function (err) {
+export const addMessage = ({ message, addr }) => dispatch => {
+  var currentMesh = meshes[addr]
+  console.log(meshes)
+  currentMesh.message(message, function (err) {
     if (err) console.log(err)
   })
 }
@@ -136,8 +135,8 @@ const storeOnDisk = async () => {
     (acc, key) => ({
       ...acc,
       [key]: JSON.stringify({
-        username: meshes[key].mesh.username,
-        addr: meshes[key].mesh.addr
+        username: meshes[key].username,
+        addr: meshes[key].addr
       })
     }),
     {}
