@@ -1,3 +1,4 @@
+import styled from 'styled-components'
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import { hideAddMesh, addMesh } from '../actions'
@@ -13,12 +14,31 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class addMeshScreen extends Component {
-  constructor (props) {
-    super(props)
+  joinMesh (ev) {
+    const value = ev.target.value
+    if (ev.key !== 'Enter' || !value) return
+    ev.target.value = ''
+    this.props.add(value)
+    this.props.hide()
+  }
+
+  newMeshPress (ev) {
+    this.props.newMesh()
+    this.props.hide()
+  }
+
+  joinClick (ev) {
+    var el = document.getElementById('add-mesh')
+    if (el.value) {
+      this.props.add(el.value)
+      this.props.hide()
+    }
+    ev.preventDefault()
+    ev.stopPropagation()
   }
 
   render () {
-    const { hide, show, add, newMesh } = this.props
+    const { show } = this.props
     if (!show) {
       return (
         <Fragment>
@@ -27,29 +47,16 @@ class addMeshScreen extends Component {
       )
     }
 
-    function joinMesh (ev) {
-      const value = ev.target.value
-      if (ev.key !== 'Enter' || !value) return
-      ev.target.value = ''
-      add(value)
-      hide()
-    }
-
-    function newMeshPress (ev) {
-      newMesh()
-      hide()
-    }
-
     return (
       <div>
-        <h1>Join Existing Mesh</h1>
         <input type='text'
-          name='add-mesh'
+          id='add-mesh'
           className='input-reset f7 f6-l'
-          onKeyDown={joinMesh}
+          value='dat://54d229c68da519d14cc561a0346298954b0ab3d5a0b8e55c14c113fc7a82b3f0'
+          onKeyDown={this.joinMesh.bind(this)}
           placeholder='Put Address Here' />
-        <h2>Create New Mesh</h2>
-        <button onClick={newMeshPress}>Create a New Mesh</button>
+        <button onClick={this.joinClick.bind(this)}>Join Mesh</button>
+        <button onClick={this.newMeshPress.bind(this)}>Create a New Mesh</button>
       </div>
     )
   }

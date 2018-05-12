@@ -62,11 +62,13 @@ export const addMesh = ({input, username}) => dispatch => {
     //storeOnDisk()
     mesh.on('join', function (username) {
       dispatch({type: 'MESH_USERS', addr, users: mesh.users})
+      console.log('got user', username)
     })
     mesh.on('leave', function (username) {
       dispatch({type: 'MESH_USERS', addr, users: mesh.users})
+      console.log('left user', username)
     })
-    dispatch({type: 'ADD_MESH', addr, username: mesh.username})
+    dispatch({type: 'ADD_MESH', addr, username: mesh.username, users: mesh.users})
     dispatch({type: 'VIEW_MESH', addr})
 
     pump(mesh.db.createHistoryStream(), to.obj(
@@ -92,7 +94,6 @@ export const addMesh = ({input, username}) => dispatch => {
 
     function writeMsg (row) {
       var m
-      if (row.value) console.log('got', row)
       if (row.value && (m=/^chat\/([^\/]+)@/.exec(row.key))) {
         var utcDate = new Date(m[1])
         dispatch({type: 'ADD_LINE', addr, utcDate, row})

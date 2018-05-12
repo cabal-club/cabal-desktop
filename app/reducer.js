@@ -47,7 +47,7 @@ const reducer = (state = defaultState, action) => {
             addr: action.addr,
             username: action.username,
             messages: {},
-            users: {}
+            users: action.users,
           }
         }
       }

@@ -36,6 +36,7 @@
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.2.0",
+    "strftime": "^0.10.0",
     "styled-components": "^2.4.0",
     "tachyons": "^4.9.1",
     "to2": "^1.0.0",

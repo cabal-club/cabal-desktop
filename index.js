@@ -10,7 +10,6 @@ app.on('ready', () => {
   win = new BrowserWindow({
     width: 800,
     height: 600,
-    titleBarStyle: 'hidden-inset',
     minWidth: 640,
     minHeight: 395
   })
