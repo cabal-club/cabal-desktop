@@ -26,9 +26,6 @@ class addMeshScreen extends Component {
     this.props.newMesh()
     this.props.hide()
   }
-  componentDidMount () {
-    this.joinClick()
-  }
 
   joinClick (ev) {
     var el = document.getElementById('add-mesh')
@@ -56,7 +53,6 @@ class addMeshScreen extends Component {
       <div>
         <input type='text'
           id='add-mesh'
-          value='dat://bee88a9cfae876fb67432d7b68005bb809899dcc12a7102f9553edd6b19fb6fc'
           className='input-reset f7 f6-l'
           onKeyDown={this.joinMesh.bind(this)}
           placeholder='Put Address Here' />
