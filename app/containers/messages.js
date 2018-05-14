@@ -3,8 +3,7 @@ import React, { Fragment, Component } from 'react'
 import strftime from 'strftime'
 import { connect } from 'react-redux'
 
-import { viewChannel, joinChannel } from '../actions'
-import InputPrompt from './InputPrompt'
+import Sidebar from './Sidebar'
 import WriteContainer from './write'
 
 const mapStateToProps = state => ({
@@ -13,10 +12,7 @@ const mapStateToProps = state => ({
   mesh: state.meshes[state.currentMesh]
 })
 
-const mapDispatchToProps = dispatch => ({
-  joinChannel: ({addr, channel}) => dispatch(joinChannel({addr, channel})),
-  viewChannel: ({addr, channel}) => dispatch(viewChannel({addr, channel}))
-})
+const mapDispatchToProps = dispatch => ({})
 
 class messagesScreen extends Component {
   constructor (props) {
@@ -26,11 +22,6 @@ class messagesScreen extends Component {
     this.composerHeight = 48
   }
 
-  selectChannel (channel) {
-    var addr = this.props.addr
-    this.props.viewChannel({addr, channel})
-  }
-
   componentDidMount () {
     var messagesDiv = document.querySelector('.messages')
     if (messagesDiv) messagesDiv.scrollTop = this.scrollTop
@@ -38,11 +29,6 @@ class messagesScreen extends Component {
 
   componentDidUpdate() {
     this.scrollToBottom()
-  }
-
-  joinChannel (channel) {
-    var addr = this.props.addr
-    this.props.joinChannel({addr, channel})
   }
 
   scrollToBottom (force) {
@@ -63,8 +49,6 @@ class messagesScreen extends Component {
       )
     }
     var messageKeys = Object.keys(mesh.messages)
-    var userKeys = Object.keys(mesh.users)
-    var channelKeys = Object.keys(mesh.channels)
     var lastAuthor = null
 
     function onscroll (event) {
@@ -75,42 +59,7 @@ class messagesScreen extends Component {
 
     return (
       <div className='layout'>
-        <div className='sidebar'>
-          <div className='add-channel'>
-            <InputPrompt
-              placeholder='Channel name'
-              prompt='+ Join Channel'
-              onSubmit={self.joinChannel.bind(self)} />
-          </div>
-          <div className='sidebar-scroll'>
-            <div className='channels'>
-              <div className='heading'>Channels</div>
-              <ul>
-                {
-                  channelKeys.map((channel) =>
-                    <li className={mesh.channel === channel ? 'active' : ''}>
-                      <button onClick={this.selectChannel.bind(this, channel)}>
-                        {channel}
-                      </button>
-                    </li>
-                  )
-                }
-              </ul>
-            </div>
-            <div className='users-container'>
-              <div className='heading'>Users</div>
-              <ul className='users'>
-                {
-                  userKeys.map((username) =>
-                    <li className=''>
-                      {username}
-                    </li>
-                  )
-                }
-              </ul>
-            </div>
-          </div>
-        </div>
+        <Sidebar />
         <div className='content'>
           <div className='messages-container'>
             <div className='top-bar'>

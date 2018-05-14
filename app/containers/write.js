@@ -36,7 +36,8 @@ class writeScreen extends Component {
 
   onsubmit (e) {
     const data = form(e.target)
-    e.target.value = ''
+    var el = document.querySelector('#message-bar')
+    el.value = ''
     const {addr, addMessage} = this.props
     addMessage({message: data.message, addr})
     e.preventDefault()
@@ -64,6 +65,7 @@ class writeScreen extends Component {
     return (
       <form onSubmit={this.onsubmit.bind(this)}>
         <input type='text'
+          id='message-bar'
           name='message'
           className='composer'
           aria-label="Enter a message and press enter"
