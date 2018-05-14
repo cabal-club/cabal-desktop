@@ -1,4 +1,5 @@
 import React from 'react'
+import { clipboard } from 'electron'
 import { connect } from 'react-redux'
 
 import { viewChannel, joinChannel } from '../actions'
@@ -21,6 +22,11 @@ class SidebarScreen extends React.Component {
     this.props.joinChannel({addr, channel})
   }
 
+  copyClick () {
+    clipboard.writeText('dat://' + this.props.addr)
+    alert('Copied to clipboard!')
+  }
+
   selectChannel (channel) {
     var addr = this.props.addr
     this.props.viewChannel({addr, channel})
@@ -34,6 +40,9 @@ class SidebarScreen extends React.Component {
     var channelKeys = Object.keys(mesh.channels)
 
     return (<div className='sidebar'>
+      <div className='copy-link'>
+        <button onClick={self.copyClick.bind(self)}>Copy Dat Link</button>
+      </div>
       <div className='add-channel'>
         <InputPrompt
           placeholder='Channel name'
