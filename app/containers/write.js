@@ -1,10 +1,26 @@
+import styled from 'styled-components'
+import form from 'get-form-data'
+import ReactDOM from 'react-dom'
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import { addMessage } from '../actions'
 
+var WriteDiv = styled.div`
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: wheat;
+  input {
+    padding: 5px;
+    width: 90%;
+    margin: 5px;
+  }
+`
+
 const mapStateToProps = state => ({
   show: state.screen === 'main',
-  addr: state.currentMesh
+  addr: state.currentMesh,
+  mesh: state.meshes[state.currentMesh]
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -14,15 +30,18 @@ const mapDispatchToProps = dispatch => ({
 class writeScreen extends Component {
   constructor (props) {
     super(props)
-    this.onkeydown = this.onkeydown.bind(this)
+    this.minimumHeight = 48
+    this.defaultHeight = 17 + this.minimumHeight
   }
 
-  onkeydown (e) {
-    const message = e.target.value
-    if (e.key !== 'Enter' || !message) return
-    e.target.value = ''
+  onsubmit (e) {
+    const data = form(e.target)
+    var el = document.querySelector('#message-bar')
+    el.value = ''
     const {addr, addMessage} = this.props
-    addMessage({message, addr})
+    addMessage({message: data.message, addr})
+    e.preventDefault()
+    e.stopPropagation()
   }
 
   componentWillMount () {
@@ -34,9 +53,9 @@ class writeScreen extends Component {
   }
 
   render () {
-    const { show, addr } = this.props
+    const { mesh, show, addr } = this.props
 
-    if (!show) {
+    if (!show || !mesh) {
       return (
         <Fragment>
           <div />
@@ -44,13 +63,14 @@ class writeScreen extends Component {
       )
     }
     return (
-      <div>
+      <form onSubmit={this.onsubmit.bind(this)}>
         <input type='text'
-          name='add-message'
-          className='input-reset f7 f6-l'
-          onKeyDown={this.onkeydown}
-          placeholder='Say something..' />
-      </div>
+          id='message-bar'
+          name='message'
+          className='fun composer'
+          aria-label="Enter a message and press enter"
+          placeholder='' />
+      </form>
     )
   }
 }

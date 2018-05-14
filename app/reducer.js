@@ -1,6 +1,7 @@
 const defaultState = {
   screen: 'addMesh',
   currentMesh: null,
+  currentChannel: '#general',
   dialogs: {
     delete: {
       mesh: null
@@ -11,18 +12,6 @@ const defaultState = {
 
 const reducer = (state = defaultState, action) => {
   switch (action.type) {
-    case 'MESH_USERS':
-      var mesh = state.meshes[action.addr]
-      return {
-        ...state,
-        meshes: {
-          ...state.meshes,
-          [action.addr]: {
-            ...mesh,
-            users: action.users
-          }
-        }
-      }
     case 'SHOW_ADD_MESH':
       return {
         ...state,
@@ -44,10 +33,20 @@ const reducer = (state = defaultState, action) => {
         meshes: {
           ...state.meshes,
           [action.addr]: {
-            addr: action.addr,
-            username: action.username,
-            messages: {},
-            users: action.users,
+            ...action,
+            messages: {}
+          }
+        }
+      }
+    case 'UPDATE_MESH':
+      var mesh = state.meshes[action.addr]
+      return {
+        ...state,
+        meshes: {
+          ...state.meshes,
+          [action.addr]: {
+            ...mesh,
+            ...action
           }
         }
       }

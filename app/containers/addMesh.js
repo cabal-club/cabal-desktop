@@ -33,8 +33,10 @@ class addMeshScreen extends Component {
       this.props.add(el.value)
       this.props.hide()
     }
-    ev.preventDefault()
-    ev.stopPropagation()
+    if (ev) {
+      ev.preventDefault()
+      ev.stopPropagation()
+    }
   }
 
   render () {
@@ -48,14 +50,17 @@ class addMeshScreen extends Component {
     }
 
     return (
-      <div>
+      <div className='heading add-mesh'>
+        <h1>chatMESH</h1>
+        <p className='starterMessage'>
+          open-source decentralized private chat
+        </p>
         <input type='text'
+          className='fun'
           id='add-mesh'
-          className='input-reset f7 f6-l'
           onKeyDown={this.joinMesh.bind(this)}
-          placeholder='Put Address Here' />
-        <button onClick={this.joinClick.bind(this)}>Join Mesh</button>
-        <button onClick={this.newMeshPress.bind(this)}>Create a New Mesh</button>
+          placeholder='Paste dat:// Link and hit Enter' />
+          <h2>Don't have a swarm to join yet? <a href="#" onClick={this.newMeshPress.bind(this)}>Create a New One</a></h2>
       </div>
     )
   }
