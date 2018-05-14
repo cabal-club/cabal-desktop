@@ -23,6 +23,7 @@
   "dependencies": {
     "cat-names": "^1.0.2",
     "chatmesh-db": "^2.0.0",
+    "dat-encoding": "^5.0.1",
     "discovery-swarm": "^5.1.1",
     "electron": "^1.7.10",
     "electron-default-menu": "^1.0.1",

@@ -3,7 +3,7 @@ import React, { Fragment, Component } from 'react'
 import strftime from 'strftime'
 import { connect } from 'react-redux'
 
-import Sidebar from './Sidebar'
+import Sidebar from './sidebar'
 import WriteContainer from './write'
 
 const mapStateToProps = state => ({
