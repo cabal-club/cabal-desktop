@@ -27,10 +27,6 @@ class SidebarScreen extends React.Component {
     alert('Copied dat:// link to clipboard! Now you can give it to people you want to join your MESH. Only people with the link can join.')
   }
 
-  componentDidMount () {
-    this.copyClick()
-  }
-
   selectChannel (channel) {
     var addr = this.props.addr
     this.props.viewChannel({addr, channel})
