@@ -67,7 +67,7 @@ class writeScreen extends Component {
         <input type='text'
           id='message-bar'
           name='message'
-          className='composer'
+          className='fun composer'
           aria-label="Enter a message and press enter"
           placeholder='' />
       </form>

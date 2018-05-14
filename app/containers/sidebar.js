@@ -24,7 +24,11 @@ class SidebarScreen extends React.Component {
 
   copyClick () {
     clipboard.writeText('dat://' + this.props.addr)
-    alert('Copied to clipboard!')
+    alert('Copied dat:// link to clipboard! Now you can give it to people you want to join your MESH. Only people with the link can join.')
+  }
+
+  componentDidMount () {
+    this.copyClick()
   }
 
   selectChannel (channel) {
@@ -64,16 +68,17 @@ class SidebarScreen extends React.Component {
             }
           </ul>
         </div>
-        <div className='users-container'>
+        <div className='channels'>
           <div className='heading'>Users</div>
-          <ul className='users'>
-            {
-              userKeys.map((username) =>
-                <li className=''>
-                  {username}
-                </li>
-              )
-            }
+          <ul>
+            {userKeys.map((username) =>
+              (username !== mesh.username) && <li> {username}</li>
+            )}
+          </ul>
+          <ul className='status'>
+            <li className='username'>
+              {mesh.username}
+            </li>
           </ul>
         </div>
       </div>
