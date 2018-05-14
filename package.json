@@ -26,6 +26,7 @@
     "discovery-swarm": "^5.1.1",
     "electron": "^1.7.10",
     "electron-default-menu": "^1.0.1",
+    "get-form-data": "^2.0.0",
     "mirror-folder": "^2.1.1",
     "ms": "^2.1.1",
     "prettier-bytes": "^1.0.4",

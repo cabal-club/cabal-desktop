@@ -46,13 +46,13 @@ export const joinChannel = ({addr, channel}) => dispatch => {
   if (channel.length > 0) {
     var currentMesh = meshes[addr]
     currentMesh.joinChannel(channel)
-    dispatch({type: 'UPDATE_CHANNELS', addr, channels: currentMesh.channels})
+    dispatch({type: 'UPDATE_MESH', addr, channels: currentMesh.channels})
   }
 }
 export const leaveChannel = ({addr, channel}) => dispatch => {
   if (channel.length > 0) {
     currentMesh.leaveChannel(channel)
-    dispatch({type: 'UPDATE_CHANNELS', addr, channels: currentMesh.channels})
+    dispatch({type: 'UPDATE_MESH', addr, channels: currentMesh.channels})
   }
 }
 
@@ -60,21 +60,23 @@ export const viewChannel = ({addr, channel}) => dispatch => {
   if (channel.length === 0) return
   var mesh = meshes[addr]
   mesh.channel = channel
+  mesh.joinChannel(channel)
   if (stream) stream.destroy()
   //storeOnDisk()
   mesh.on('join', function (username) {
-    dispatch({type: 'MESH_USERS', addr, users: mesh.users})
+    dispatch({type: 'UPDATE_MESH', addr, users: mesh.users})
     console.log('got user', username)
   })
   mesh.on('leave', function (username) {
-    dispatch({type: 'MESH_USERS', addr, users: mesh.users})
+    dispatch({type: 'UPDATE_MESH', addr, users: mesh.users})
     console.log('left user', username)
   })
   dispatch({type: 'ADD_MESH',
     addr,
     username: mesh.username,
     users: mesh.users,
-    channel: mesh.channel
+    channel: mesh.channel,
+    channels: mesh.channels
   })
   dispatch({type: 'VIEW_MESH', addr})
 

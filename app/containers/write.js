@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import form from 'get-form-data'
 import ReactDOM from 'react-dom'
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
@@ -29,17 +30,17 @@ const mapDispatchToProps = dispatch => ({
 class writeScreen extends Component {
   constructor (props) {
     super(props)
-    this.onkeydown = this.onkeydown.bind(this)
     this.minimumHeight = 48
     this.defaultHeight = 17 + this.minimumHeight
   }
 
-  onkeydown (e) {
-    const message = e.target.value
-    if (e.key !== 'Enter' || !message) return
+  onsubmit (e) {
+    const data = form(e.target)
     e.target.value = ''
     const {addr, addMessage} = this.props
-    addMessage({message, addr})
+    addMessage({message: data.message, addr})
+    e.preventDefault()
+    e.stopPropagation()
   }
 
   componentWillMount () {
@@ -61,13 +62,13 @@ class writeScreen extends Component {
       )
     }
     return (
-      <input type='text'
-        name='add-message'
-        className='composer'
-        aria-label="Enter a message and press enter"
-        autoFocus
-        onKeyDown={this.onkeydown}
-        placeholder='' />
+      <form onSubmit={this.onsubmit.bind(this)}>
+        <input type='text'
+          name='message'
+          className='composer'
+          aria-label="Enter a message and press enter"
+          placeholder='' />
+      </form>
     )
   }
 }

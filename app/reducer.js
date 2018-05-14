@@ -12,40 +12,6 @@ const defaultState = {
 
 const reducer = (state = defaultState, action) => {
   switch (action.type) {
-    case 'UPDATE_CHANNELS':
-      return {
-        ...state,
-        meshes: {
-          ...state.meshes,
-          [action.addr]: {
-            ...mesh,
-            channels: action.channels
-          }
-        }
-      }
-    case 'VIEW_CHANNEL':
-      return {
-        ...state,
-        meshes: {
-          ...state.meshes,
-          [action.addr]: {
-            ...mesh,
-            channel: action.channel
-          }
-        }
-      }
-    case 'MESH_USERS':
-      var mesh = state.meshes[action.addr]
-      return {
-        ...state,
-        meshes: {
-          ...state.meshes,
-          [action.addr]: {
-            ...mesh,
-            users: action.users
-          }
-        }
-      }
     case 'SHOW_ADD_MESH':
       return {
         ...state,
@@ -67,10 +33,20 @@ const reducer = (state = defaultState, action) => {
         meshes: {
           ...state.meshes,
           [action.addr]: {
-            addr: action.addr,
-            username: action.username,
-            messages: {},
-            users: action.users,
+            ...action,
+            messages: {}
+          }
+        }
+      }
+    case 'UPDATE_MESH':
+      var mesh = state.meshes[action.addr]
+      return {
+        ...state,
+        meshes: {
+          ...state.meshes,
+          [action.addr]: {
+            ...mesh,
+            ...action
           }
         }
       }
