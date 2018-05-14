@@ -1,11 +1,11 @@
 import React, { Fragment } from 'react'
 import AddMeshContainer from './containers/addMesh'
-import MessagesContainer from './containers/messages'
+import Layout from './containers/layout'
 
 const App = () => (
   <Fragment>
     <AddMeshContainer />
-    <MessagesContainer />
+    <Layout />
   </Fragment>
 )
 

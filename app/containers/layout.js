@@ -14,7 +14,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({})
 
-class messagesScreen extends Component {
+class LayoutScreen extends Component {
   constructor (props) {
     super(props)
     this.shouldAutoScroll = true
@@ -100,6 +100,6 @@ class messagesScreen extends Component {
   }
 }
 
-const MessagesContainer = connect(mapStateToProps, mapDispatchToProps)(messagesScreen)
+const Layout = connect(mapStateToProps, mapDispatchToProps)(LayoutScreen)
 
-export default MessagesContainer
+export default Layout
