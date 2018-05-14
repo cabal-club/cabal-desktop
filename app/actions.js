@@ -13,7 +13,9 @@ const readFile = promisify(fs.readFile)
 const writeFile = promisify(fs.writeFile)
 const mkdir = promisify(fs.mkdir)
 
+var _tzoffset = new Date().getTimezoneOffset()*60*1000
 var meshes = {}
+var stream = null
 
 export const viewMesh = ({addr}) => dispatch => {
   var mesh = meshes[addr]
@@ -40,6 +42,72 @@ export const confirmDeleteMesh = addr => dispatch => {
   dispatch({ type: 'DIALOGS_DELETE_CLOSE' })
 }
 
+export const joinChannel = ({addr, channel}) => dispatch => {
+  if (channel.length > 0) {
+    var currentMesh = meshes[addr]
+    currentMesh.joinChannel(channel)
+    dispatch({type: 'UPDATE_CHANNELS', addr, channels: currentMesh.channels})
+  }
+}
+export const leaveChannel = ({addr, channel}) => dispatch => {
+  if (channel.length > 0) {
+    currentMesh.leaveChannel(channel)
+    dispatch({type: 'UPDATE_CHANNELS', addr, channels: currentMesh.channels})
+  }
+}
+
+export const viewChannel = ({addr, channel}) => dispatch => {
+  if (channel.length === 0) return
+  var mesh = meshes[addr]
+  mesh.channel = channel
+  if (stream) stream.destroy()
+  //storeOnDisk()
+  mesh.on('join', function (username) {
+    dispatch({type: 'MESH_USERS', addr, users: mesh.users})
+    console.log('got user', username)
+  })
+  mesh.on('leave', function (username) {
+    dispatch({type: 'MESH_USERS', addr, users: mesh.users})
+    console.log('left user', username)
+  })
+  dispatch({type: 'ADD_MESH',
+    addr,
+    username: mesh.username,
+    users: mesh.users,
+    channel: mesh.channel
+  })
+  dispatch({type: 'VIEW_MESH', addr})
+
+  stream = pump(mesh.db.createHistoryStream(), to.obj(
+    function (row, enc, next) {
+      writeMsg(row)
+      next()
+    },
+    function (next) {
+      mesh.db.on('remote-update', onappend)
+      mesh.db.on('append', onappend)
+      function onappend (feed) {
+        var h = mesh.db.createHistoryStream({ reverse: true })
+        pump(h, to.obj(function (row, enc, next) {
+          writeMsg(row)
+          h.destroy()
+        }))
+      }
+      next()
+    }
+  ), function (err) {
+    if (err) console.error(err)
+  })
+
+  function writeMsg (row) {
+    var m = new RegExp(`${mesh.channel}/messages/.`).exec(row.key)
+    if (row.value && m) {
+      var utcDate = new Date(new Date(row.value.date) - _tzoffset)
+      dispatch({type: 'ADD_LINE', addr, utcDate, row})
+    }
+  }
+}
+
 export const showAddMesh = () => ({ type: 'SHOW_ADD_MESH' })
 export const hideAddMesh = () => ({ type: 'HIDE_ADD_MESH' })
 export const addMesh = ({input, username}) => dispatch => {
@@ -59,53 +127,13 @@ export const addMesh = ({input, username}) => dispatch => {
     var swarm = Swarm(mesh)
     mesh.swarm = swarm
     meshes[addr] = mesh
-    //storeOnDisk()
-    mesh.on('join', function (username) {
-      dispatch({type: 'MESH_USERS', addr, users: mesh.users})
-      console.log('got user', username)
-    })
-    mesh.on('leave', function (username) {
-      dispatch({type: 'MESH_USERS', addr, users: mesh.users})
-      console.log('left user', username)
-    })
-    dispatch({type: 'ADD_MESH', addr, username: mesh.username, users: mesh.users})
-    dispatch({type: 'VIEW_MESH', addr})
-
-    pump(mesh.db.createHistoryStream(), to.obj(
-      function (row, enc, next) {
-        writeMsg(row)
-        next()
-      },
-      function (next) {
-        mesh.db.on('remote-update', onappend)
-        mesh.db.on('append', onappend)
-        function onappend (feed) {
-          var h = mesh.db.createHistoryStream({ reverse: true })
-          pump(h, to.obj(function (row, enc, next) {
-            writeMsg(row)
-            h.destroy()
-          }))
-        }
-        next()
-      }
-    ), function (err) {
-      if (err) console.error(err)
-    })
-
-    function writeMsg (row) {
-      var m
-      if (row.value && (m=/^chat\/([^\/]+)@/.exec(row.key))) {
-        var utcDate = new Date(m[1])
-        dispatch({type: 'ADD_LINE', addr, utcDate, row})
-      }
-    }
+    dispatch(viewChannel({addr, channel: '#general'}))
   })
 }
 
 export const addMessage = ({ message, addr }) => dispatch => {
-  var currentMesh = meshes[addr]
-  console.log(meshes)
-  currentMesh.message(message, function (err) {
+  var mesh = meshes[addr]
+  mesh.message(mesh.channel, message, function (err) {
     if (err) console.log(err)
   })
 }

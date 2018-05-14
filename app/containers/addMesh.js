@@ -33,8 +33,10 @@ class addMeshScreen extends Component {
       this.props.add(el.value)
       this.props.hide()
     }
-    ev.preventDefault()
-    ev.stopPropagation()
+    if (ev) {
+      ev.preventDefault()
+      ev.stopPropagation()
+    }
   }
 
   render () {
