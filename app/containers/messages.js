@@ -24,14 +24,16 @@ class messagesScreen extends Component {
     console.log('hehehe wowww scorrree')
   }
 
-  componentDidUpdate() {
+  componentDidMount () {
     var messagesDiv = document.querySelector('.messages')
     if (messagesDiv) messagesDiv.scrollTop = this.scrollTop
+  }
+  
+  componentDidUpdate() {
     this.scrollToBottom()
   }
 
   scrollToBottom (force) {
-    console.log('scroll to bottom')
     if (!force && !this.shouldAutoScroll) return
     var messagesDiv = document.querySelector('.messages')
     if (messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight
