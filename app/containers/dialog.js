@@ -1,7 +1,7 @@
 import React from 'react'
 import {
-  confirmDeleteMesh,
-  cancelDeleteMesh
+  confirmDeleteCabal,
+  cancelDeleteCabal
 } from '../actions'
 import { connect } from 'react-redux'
 
@@ -10,9 +10,9 @@ const Confirm = ({ addr, onConfirm, onExit }) => (
     className='modal fixed items-center justify-center top-0 left-0 h-100 w-100 z-9999'
     style={{ display: addr ? 'flex' : 'none' }}>
     <div className='relative flex flex-column justify-center'>
-      <h3 className='f4'>Leave Mesh </h3>
+      <h3 className='f4'>Leave Cabal </h3>
       <p className='mt3 mb4 f7 color-neutral-70'>
-        Are you sure you want to leave this mesh?
+        Are you sure you want to leave this cabal?
         <br />
         This can’t be undone.
       </p>
@@ -21,7 +21,7 @@ const Confirm = ({ addr, onConfirm, onExit }) => (
           className='fr ml3 confirm-button'
           onClick={() => onConfirm(addr)}
         >
-          Yes, Leave Mesh
+          Yes, Leave Cabal
         </button>
         <button className='fr cancel-button' onClick={onExit} autoFocus>
           No, Cancel
@@ -38,10 +38,10 @@ const Confirm = ({ addr, onConfirm, onExit }) => (
 
 export const ConfirmContainer = connect(
   state => ({
-    mesh: state.dialogs.delete.mesh
+    cabal: state.dialogs.delete.cabal
   }),
   dispatch => ({
-    onConfirm: addr => dispatch(confirmDeleteMesh(addr)),
-    onExit: () => dispatch(cancelDeleteMesh())
+    onConfirm: addr => dispatch(confirmDeleteCabal(addr)),
+    onExit: () => dispatch(cancelDeleteCabal())
   })
 )(Confirm)

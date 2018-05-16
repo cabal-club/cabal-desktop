@@ -1,4 +1,4 @@
-# Chatmesh Desktop
+# Cabal Desktop
 
 Decentralized private chat.
 

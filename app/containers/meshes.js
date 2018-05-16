@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 
-const Meshes = ({ meshes, show }) => {
+const Cabales = ({ cabales, show }) => {
   if (!show) {
     return (
       <Fragment>
@@ -9,14 +9,14 @@ const Meshes = ({ meshes, show }) => {
     )
   }
 
-  if (!meshes || !meshes.length) return <div></div>
+  if (!cabales || !cabales.length) return <div></div>
 
   return (
     <div>
-      {Object.keys(meshes).map(addr => {
-        // var obj = meshes[addr]
+      {Object.keys(cabales).map(addr => {
+        // var obj = cabales[addr]
         // var swarm = obj.swarm
-        // var mesh = obj.mesh
+        // var cabal = obj.cabal
         // TODO: stats?
         return (
           <div>{addr}</div>
@@ -26,4 +26,4 @@ const Meshes = ({ meshes, show }) => {
   )
 }
 
-export default Meshes
+export default Cabales

@@ -1,12 +1,12 @@
 {
-  "name": "chatmesh-desktop",
+  "name": "cabal-desktop",
   "version": "1.0.0",
-  "description": "ChatMesh p2p offline-first desktop application",
+  "description": "Cabal p2p offline-first desktop application",
   "scripts": {
     "start": "electron .",
     "watch": "webpack --watch"
   },
-  "repository": "karissa/chatmesh-desktop",
+  "repository": "cabal-club/cabal-desktop",
   "author": "Karissa McKelvey",
   "license": "GPLv3",
   "devDependencies": {
@@ -46,7 +46,7 @@
     "util-promisify": "^2.1.0"
   },
   "build": {
-    "appId": "com.datproject.chatmesh",
+    "appId": "com.datproject.cabal",
     "mac": {
       "category": "public.app-category.utilities"
     },

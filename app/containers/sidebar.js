@@ -6,8 +6,8 @@ import { viewChannel, joinChannel } from '../actions'
 import InputPrompt from './InputPrompt'
 
 const mapStateToProps = state => ({
-  addr: state.currentMesh,
-  mesh: state.meshes[state.currentMesh]
+  addr: state.currentCabal,
+  cabal: state.cabales[state.currentCabal]
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -24,7 +24,7 @@ class SidebarScreen extends React.Component {
 
   copyClick () {
     clipboard.writeText('dat://' + this.props.addr)
-    alert('Copied dat:// link to clipboard! Now you can give it to people you want to join your MESH. Only people with the link can join.')
+    alert('Copied dat:// link to clipboard! Now you can give it to people you want to join your CABAL. Only people with the link can join.')
   }
 
   selectChannel (channel) {
@@ -34,10 +34,10 @@ class SidebarScreen extends React.Component {
 
   render () {
     var self = this
-    const { mesh } = this.props
+    const { cabal } = this.props
 
-    var userKeys = Object.keys(mesh.users)
-    var channelKeys = Object.keys(mesh.channels)
+    var userKeys = Object.keys(cabal.users)
+    var channelKeys = Object.keys(cabal.channels)
 
     return (<div className='sidebar'>
       <div className='copy-link'>
@@ -55,7 +55,7 @@ class SidebarScreen extends React.Component {
           <ul>
             {
               channelKeys.map((channel) =>
-                <li className={mesh.channel === channel ? 'active' : ''}>
+                <li className={cabal.channel === channel ? 'active' : ''}>
                   <button onClick={this.selectChannel.bind(this, channel)}>
                     {channel}
                   </button>
@@ -68,12 +68,12 @@ class SidebarScreen extends React.Component {
           <div className='heading'>Users</div>
           <ul>
             {userKeys.map((username) =>
-              (username !== mesh.username) && <li> {username}</li>
+              (username !== cabal.username) && <li> {username}</li>
             )}
           </ul>
           <ul className='status'>
             <li className='username'>
-              {mesh.username}
+              {cabal.username}
             </li>
           </ul>
         </div>

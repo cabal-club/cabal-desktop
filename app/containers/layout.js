@@ -8,9 +8,11 @@ import WriteContainer from './write'
 
 const mapStateToProps = state => ({
   show: state.screen === 'main',
-  addr: state.currentMesh,
-  mesh: state.meshes[state.currentMesh]
+  addr: state.currentCabal,
+  cabal: state.cabales[state.currentCabal]
 })
+
+var _tzoffset = new Date().getTimezoneOffset()*60*1000
 
 const mapDispatchToProps = dispatch => ({})
 
@@ -38,17 +40,17 @@ class LayoutScreen extends Component {
   }
 
   render () {
-    const { show, mesh } = this.props
+    const { show, cabal } = this.props
     var self = this
 
-    if (!show || !mesh) {
+    if (!show || !cabal) {
       return (
         <Fragment>
           <div />
         </Fragment>
       )
     }
-    var messageKeys = Object.keys(mesh.messages)
+    var messageKeys = Object.keys(cabal.messages)
     var lastAuthor = null
 
     function onscroll (event) {
@@ -63,7 +65,7 @@ class LayoutScreen extends Component {
         <div className='content'>
           <div className='messages-container'>
             <div className='top-bar'>
-              <div className='channel-name'>{mesh.channel}</div>
+              <div className='channel-name'>{cabal.channel}</div>
             </div>
             {messageKeys.length === 0 &&
               <div className='messages starterMessage'>
@@ -76,10 +78,10 @@ class LayoutScreen extends Component {
                 style={{paddingBottom: self.composerHeight}}>
                 {messageKeys.map((key) => {
 
-                  var message = mesh.messages[key]
-                  var date = strftime('%H:%M', message.utcDate)
+                  var message = cabal.messages[key]
+                  var date = strftime('%H:%M', new Date(message.utcDate + _tzoffset))
                   var repeatedAuthor = message.username === lastAuthor
-                  var me = message.username === mesh.username
+                  var me = message.username === cabal.username
                   lastAuthor = message.username
 
                   return (<li className={(me ? 'me' : '') + ' message clearfix'}>

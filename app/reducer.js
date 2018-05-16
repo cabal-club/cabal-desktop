@@ -1,66 +1,66 @@
 const defaultState = {
-  screen: 'addMesh',
-  currentMesh: null,
+  screen: 'addCabal',
+  currentcabal: null,
   currentChannel: '#general',
   dialogs: {
     delete: {
-      mesh: null
+      cabal: null
     }
   },
-  meshes: {}
+  cabales: {}
 }
 
 const reducer = (state = defaultState, action) => {
   switch (action.type) {
-    case 'SHOW_ADD_MESH':
+    case 'SHOW_ADD_CABAL':
       return {
         ...state,
-        screen: 'addMesh'
+        screen: 'addcabal'
       }
-    case 'HIDE_ADD_MESH':
+    case 'HIDE_ADD_CABAL':
       return {
         ...state,
         screen: 'main'
       }
-    case 'VIEW_MESH':
+    case 'VIEW_CABAL':
       return {
         ...state,
-        currentMesh: action.addr
+        currentcabal: action.addr
       }
-    case 'ADD_MESH':
+    case 'ADD_CABAL':
       return {
         ...state,
-        meshes: {
-          ...state.meshes,
+        cabales: {
+          ...state.cabales,
           [action.addr]: {
             ...action,
             messages: {}
           }
         }
       }
-    case 'UPDATE_MESH':
-      var mesh = state.meshes[action.addr]
+    case 'UPDATE_CABAL':
+      var cabal = state.cabales[action.addr]
       return {
         ...state,
-        meshes: {
-          ...state.meshes,
+        cabales: {
+          ...state.cabales,
           [action.addr]: {
-            ...mesh,
+            ...cabal,
             ...action
           }
         }
       }
     case 'ADD_LINE':
-      var mesh = state.meshes[action.addr]
-      if (!mesh.messages) mesh.messages = {}
+      var cabal = state.cabales[action.addr]
+      if (!cabal.messages) cabal.messages = {}
       return {
         ...state,
-        meshes: {
-          ...state.meshes,
+        cabales: {
+          ...state.cabales,
           [action.addr]: {
-            ...mesh,
+            ...cabal,
             messages: {
-              ...mesh.messages,
+              ...cabal.messages,
               [action.row.key]: {
                 utcDate: action.utcDate,
                 username: action.row.value.username,
@@ -70,16 +70,16 @@ const reducer = (state = defaultState, action) => {
           }
         }
       }
-    case 'DELETE_MESH':
-      const { [action.addr]: del, ...meshes } = state.meshes
-      return {...state, meshes}
+    case 'DELETE_CABAL':
+      const { [action.addr]: del, ...cabales } = state.cabales
+      return {...state, cabales}
     case 'DIALOGS_DELETE_CLOSE':
       return {
         ...state,
         dialogs: {
           ...state.dialogs,
           delete: {
-            mesh: null
+            cabal: null
           }
         }
       }
@@ -89,7 +89,7 @@ const reducer = (state = defaultState, action) => {
         dialogs: {
           ...state.dialogs,
           delete: {
-            mesh: action.addr
+            cabal: action.addr
           }
         }
       }

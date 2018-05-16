@@ -1,20 +1,19 @@
-import styled from 'styled-components'
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
-import { hideAddMesh, addMesh } from '../actions'
+import { hideAddCabal, addCabal } from '../actions'
 
 const mapStateToProps = state => ({
-  show: state.screen === 'addMesh'
+  show: state.screen === 'addCabal'
 })
 
 const mapDispatchToProps = dispatch => ({
-  add: (input, username) => dispatch(addMesh({input, username})),
-  newMesh: (username) => dispatch(addMesh({username})),
-  hide: () => dispatch(hideAddMesh())
+  add: (input, username) => dispatch(addCabal({input, username})),
+  newCabal: (username) => dispatch(addCabal({username})),
+  hide: () => dispatch(hideAddCabal())
 })
 
-class addMeshScreen extends Component {
-  joinMesh (ev) {
+class addCabalScreen extends Component {
+  joinCabal (ev) {
     const value = ev.target.value
     if (ev.key !== 'Enter' || !value) return
     ev.target.value = ''
@@ -22,13 +21,13 @@ class addMeshScreen extends Component {
     this.props.hide()
   }
 
-  newMeshPress (ev) {
-    this.props.newMesh()
+  newCabalPress (ev) {
+    this.props.newCabal()
     this.props.hide()
   }
 
   joinClick (ev) {
-    var el = document.getElementById('add-mesh')
+    var el = document.getElementById('add-cabal')
     if (el.value) {
       this.props.add(el.value)
       this.props.hide()
@@ -50,22 +49,22 @@ class addMeshScreen extends Component {
     }
 
     return (
-      <div className='heading add-mesh'>
-        <h1>chatMESH</h1>
+      <div className='heading add-cabal'>
+        <h1>chatCABAL</h1>
         <p className='starterMessage'>
           open-source decentralized private chat
         </p>
         <input type='text'
           className='fun'
-          id='add-mesh'
-          onKeyDown={this.joinMesh.bind(this)}
+          id='add-cabal'
+          onKeyDown={this.joinCabal.bind(this)}
           placeholder='Paste dat:// Link and hit Enter' />
-          <h2>Don't have a swarm to join yet? <a href="#" onClick={this.newMeshPress.bind(this)}>Create a New One</a></h2>
+          <h2>Don't have a swarm to join yet? <a href="#" onClick={this.newCabalPress.bind(this)}>Create a New One</a></h2>
       </div>
     )
   }
 }
 
-const AddMeshContainer = connect(mapStateToProps, mapDispatchToProps)(addMeshScreen)
+const AddCabalContainer = connect(mapStateToProps, mapDispatchToProps)(addCabalScreen)
 
-export default AddMeshContainer
+export default AddCabalContainer

@@ -19,8 +19,8 @@ var WriteDiv = styled.div`
 
 const mapStateToProps = state => ({
   show: state.screen === 'main',
-  addr: state.currentMesh,
-  mesh: state.meshes[state.currentMesh]
+  addr: state.currentCabal,
+  cabal: state.cabales[state.currentCabal]
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -53,9 +53,9 @@ class writeScreen extends Component {
   }
 
   render () {
-    const { mesh, show, addr } = this.props
+    const { cabal, show, addr } = this.props
 
-    if (!show || !mesh) {
+    if (!show || !cabal) {
       return (
         <Fragment>
           <div />
