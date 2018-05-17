@@ -31,6 +31,7 @@
     "mirror-folder": "^2.1.1",
     "ms": "^2.1.1",
     "prettier-bytes": "^1.0.4",
+    "pump": "^3.0.0",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-file-drop": "^0.1.9",
