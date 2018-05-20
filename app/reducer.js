@@ -1,6 +1,6 @@
 const defaultState = {
   screen: 'addCabal',
-  currentcabal: null,
+  currentCabal: null,
   currentChannel: '#general',
   dialogs: {
     delete: {
@@ -25,7 +25,7 @@ const reducer = (state = defaultState, action) => {
     case 'VIEW_CABAL':
       return {
         ...state,
-        currentcabal: action.addr
+        currentCabal: action.addr
       }
     case 'ADD_CABAL':
       return {

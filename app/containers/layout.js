@@ -84,7 +84,7 @@ class LayoutScreen extends Component {
                   var me = message.username === cabal.username
                   lastAuthor = message.username
 
-                  return (<li className={(me ? 'me' : '') + ' message clearfix'}>
+                  return (<li className={(me ? 'me' : '') + ' message clearfix'} key={key}>
                     {!repeatedAuthor && <div className='username'>{message.username}</div>}
                     <div className='message-meta'>
                       <div className='text'>{message.message}</div>

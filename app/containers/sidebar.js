@@ -55,7 +55,7 @@ class SidebarScreen extends React.Component {
           <ul>
             {
               channelKeys.map((channel) =>
-                <li className={cabal.channel === channel ? 'active' : ''}>
+                <li className={cabal.channel === channel ? 'active' : ''} key={channel}>
                   <button onClick={this.selectChannel.bind(this, channel)}>
                     {channel}
                   </button>
