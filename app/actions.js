@@ -103,9 +103,9 @@ export const viewChannel = ({addr, channel}) => dispatch => {
   })
 
   function writeMsg (row) {
-    var m = new RegExp(`${cabal.channel}/messages/.`).exec(row.key)
+    var m = new RegExp(`messages/${cabal.channel}/[0-9]+`).exec(row.key)
     if (row.value && m) {
-      var utcDate = new Date(new Date(row.value.date) - _tzoffset)
+      var utcDate = new Date(row.value.time)
       dispatch({type: 'ADD_LINE', addr, utcDate, row})
     }
   }

@@ -63,8 +63,8 @@ const reducer = (state = defaultState, action) => {
               ...cabal.messages,
               [action.row.key]: {
                 utcDate: action.utcDate,
-                username: action.row.value.username,
-                message: action.row.value.message
+                username: action.row.value.author,
+                message: action.row.value.content
               }
             }
           }
