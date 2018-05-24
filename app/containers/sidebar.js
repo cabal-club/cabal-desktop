@@ -24,7 +24,7 @@ class SidebarScreen extends React.Component {
 
   copyClick () {
     clipboard.writeText('dat://' + this.props.addr)
-    alert('Copied dat:// link to clipboard! Now you can give it to people you want to join your CABAL. Only people with the link can join.')
+    alert('Copied dat:// link to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.')
   }
 
   selectChannel (channel) {
@@ -64,9 +64,9 @@ class SidebarScreen extends React.Component {
             }
           </ul>
         </div>
-        <div className='channels'>
+        <div className='users'>
           <div className='heading'>Users</div>
-          <ul>
+          <ul className='users-list'>
             {userKeys.map((username) =>
               (username !== cabal.username) && <li> {username}</li>
             )}

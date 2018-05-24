@@ -174,7 +174,7 @@ button {
 .sidebar .heading {
   font-size: 12px;
   margin-top: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   text-transform: uppercase;
   font-weight: bold;
   letter-spacing: 0.5px;
@@ -192,6 +192,17 @@ button {
   width: 100%;
   text-align: left;
 }
+
+.users-list {
+  padding-left: 20px !important;
+}
+
+.users-list li {
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+
 .sidebar button:hover {
   color: #f0f0f0;
 }
