@@ -21,7 +21,7 @@ class LayoutScreen extends Component {
     super(props)
     this.shouldAutoScroll = true
     this.scrollTop = 0
-    this.composerHeight = 48
+    this.composerHeight = 55
   }
 
   componentDidMount () {
