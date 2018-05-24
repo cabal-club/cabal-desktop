@@ -50,7 +50,7 @@ class addCabalScreen extends Component {
 
     return (
       <div className='heading add-cabal'>
-        <h1>chatCABAL</h1>
+        <h1>Cabal</h1>
         <p className='starterMessage'>
           open-source decentralized private chat
         </p>
@@ -58,8 +58,8 @@ class addCabalScreen extends Component {
           className='fun'
           id='add-cabal'
           onKeyDown={this.joinCabal.bind(this)}
-          placeholder='Paste dat:// Link and hit Enter' />
-          <h2>Don't have a swarm to join yet? <a href="#" onClick={this.newCabalPress.bind(this)}>Create a New One</a></h2>
+          placeholder='Paste dat:// link and hit Enter' />
+          <h2>Don't have a swarm to join yet? <a href="#" onClick={this.newCabalPress.bind(this)}>Create a Cabal</a></h2>
       </div>
     )
   }

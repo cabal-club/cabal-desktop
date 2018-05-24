@@ -14,11 +14,11 @@ const writeFile = promisify(fs.writeFile)
 const mkdir = promisify(fs.mkdir)
 
 var _tzoffset = new Date().getTimezoneOffset()*60*1000
-var cabales = {}
+var cabals = {}
 var stream = null
 
 export const viewCabal = ({addr}) => dispatch => {
-  var cabal = cabales[addr]
+  var cabal = cabals[addr]
   if (cabal) {
     dispatch({type: 'VIEW_CABAL', addr})
     //storeOnDisk()
@@ -28,7 +28,7 @@ export const viewCabal = ({addr}) => dispatch => {
 export const cancelDeleteCabal = () => ({ type: 'DIALOGS_DELETE_CLOSE' })
 export const deleteCabal = addr => ({ type: 'DIALOGS_DELETE_OPEN', addr })
 export const confirmDeleteCabal = addr => dispatch => {
-  const { cabal } = cabales[addr]
+  const { cabal } = cabals[addr]
 
   if (cabal.swarm) {
     for (const con of cabal.swarm.connections) {
@@ -36,7 +36,7 @@ export const confirmDeleteCabal = addr => dispatch => {
     }
   }
   // obj.cabal.db.close()
-  delete cabales[addr]
+  delete cabals[addr]
   //storeOnDisk()
   dispatch({ type: 'DELETE_CABAL', addr })
   dispatch({ type: 'DIALOGS_DELETE_CLOSE' })
@@ -44,14 +44,14 @@ export const confirmDeleteCabal = addr => dispatch => {
 
 export const joinChannel = ({addr, channel}) => dispatch => {
   if (channel.length > 0) {
-    var currentCabal = cabales[addr]
+    var currentCabal = cabals[addr]
     currentCabal.joinChannel(channel)
     dispatch({type: 'UPDATE_CABAL', addr, channels: currentCabal.channels})
   }
 }
 export const leaveChannel = ({addr, channel}) => dispatch => {
   if (channel.length > 0) {
-    var currentCabal = cabales[addr]
+    var currentCabal = cabals[addr]
     currentCabal.leaveChannel(channel)
     dispatch({type: 'UPDATE_CABAL', addr, channels: currentCabal.channels})
   }
@@ -59,7 +59,7 @@ export const leaveChannel = ({addr, channel}) => dispatch => {
 
 export const viewChannel = ({addr, channel}) => dispatch => {
   if (channel.length === 0) return
-  var cabal = cabales[addr]
+  var cabal = cabals[addr]
   cabal.channel = channel
   cabal.joinChannel(channel)
   if (stream) stream.destroy()
@@ -121,21 +121,21 @@ export const addCabal = ({input, username}) => dispatch => {
   }
   username = username || catnames.random()
 
-  if (cabales[addr]) return console.error('cabal already exists')
-  var dir = path.join(homedir(), '.chatcabal-desktop', addr || username)
+  if (cabals[addr]) return console.error('cabal already exists')
+  var dir = path.join(homedir(), '.cabal-desktop', addr || username)
   var cabal = Cabal(dir, addr ? 'dat://' + addr : null, {username})
   cabal.db.ready(function (err) {
     if (err) return console.error(err)
     if (!addr) addr = cabal.db.key.toString('hex')
     var swarm = Swarm(cabal)
     cabal.swarm = swarm
-    cabales[addr] = cabal
+    cabals[addr] = cabal
     dispatch(viewChannel({addr, channel: '#general'}))
   })
 }
 
 export const addMessage = ({ message, addr }) => dispatch => {
-  var cabal = cabales[addr]
+  var cabal = cabals[addr]
   cabal.message(cabal.channel, message, function (err) {
     if (err) console.log(err)
   })
@@ -144,34 +144,34 @@ export const addMessage = ({ message, addr }) => dispatch => {
 export const loadFromDisk = () => async dispatch => {
   var blob
   try {
-    await mkdir(`${homedir()}/.chatcabal-desktop`)
+    await mkdir(`${homedir()}/.cabal-desktop`)
   } catch (_) {}
 
   try {
-    blob = await readFile(`${homedir()}/.chatcabal-desktop/cabales.json`, 'utf8')
+    blob = await readFile(`${homedir()}/.cabal-desktop/cabals.json`, 'utf8')
   } catch (_) {
     return
   }
 
-  const pastcabales = JSON.parse(blob)
+  const pastcabals = JSON.parse(blob)
 
-  for (const key of Object.keys(pastcabales)) {
-    const opts = JSON.parse(pastcabales[key])
+  for (const key of Object.keys(pastcabals)) {
+    const opts = JSON.parse(pastcabals[key])
     addCabal(opts)(dispatch)
   }
 }
 
 const storeOnDisk = async () => {
-  const dir = `${homedir()}/.chatcabal-desktop`
-  const cabalesState = Object.keys(cabales).reduce(
+  const dir = `${homedir()}/.cabal-desktop`
+  const cabalsState = Object.keys(cabals).reduce(
     (acc, key) => ({
       ...acc,
       [key]: JSON.stringify({
-        username: cabales[key].username,
-        addr: cabales[key].addr
+        username: cabals[key].username,
+        addr: cabals[key].addr
       })
     }),
     {}
   )
-  await writeFile(`${dir}/cabales.json`, JSON.stringify(cabalesState))
+  await writeFile(`${dir}/cabals.json`, JSON.stringify(cabalsState))
 }
