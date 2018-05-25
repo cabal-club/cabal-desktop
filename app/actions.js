@@ -57,6 +57,16 @@ export const leaveChannel = ({addr, channel}) => dispatch => {
   }
 }
 
+export const changeUsername = ({addr, username}) => dispatch => {
+  var currentCabal = cabals[addr]
+  currentCabal.username = username;
+  dispatch({
+    type: 'UPDATE_USERNAME',
+    addr,
+    username,
+  })
+}
+
 export const viewChannel = ({addr, channel}) => dispatch => {
   if (channel.length === 0) return
   var cabal = cabals[addr]

@@ -267,6 +267,14 @@ button {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.sidebar .status .inputprompt {
+  margin: 0;
+}
+.sidebar .status input {
+  font-size: 15px;
+  padding: 3.333333333333333px 10px;
+  width: calc(100% - 20px);
+}
 .sidebar .status .peers {
   margin-top: 10px;
   font-style: italic;
