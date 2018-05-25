@@ -16,7 +16,6 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class SidebarScreen extends React.Component {
-
   joinChannel (channel) {
     var addr = this.props.addr
     this.props.joinChannel({addr, channel})
@@ -72,7 +71,7 @@ class SidebarScreen extends React.Component {
             )}
           </ul>
           <ul className='status'>
-            <li className='username'>
+            <li className='author'>
               {cabal.username}
             </li>
           </ul>

@@ -1,7 +1,6 @@
 import { homedir } from 'os'
+import strftime from 'strftime'
 import { decode, encode } from 'dat-encoding'
-import to from 'to2'
-import pump from 'pump'
 import Swarm from 'cabal-node/swarm'
 import Cabal from 'cabal-node'
 import catnames from 'cat-names'
@@ -13,7 +12,6 @@ const readFile = promisify(fs.readFile)
 const writeFile = promisify(fs.writeFile)
 const mkdir = promisify(fs.mkdir)
 
-var _tzoffset = new Date().getTimezoneOffset()*60*1000
 var cabals = {}
 var stream = null
 
@@ -57,12 +55,34 @@ export const leaveChannel = ({addr, channel}) => dispatch => {
   }
 }
 
+export const getMessages = ({addr, channel, count}) => dispatch => {
+  if (channel.length === 0) return
+  var cabal = cabals[addr]
+  cabal.getMessages(channel, count, onMessages)
+
+  function onMessages (err, rows) {
+    if (err) return console.trace(err)
+    rows.map((arr) => {
+      arr.map((row) => {
+        cabal.messages.push({
+          type: row.value.type,
+          time: strftime('%H:%M', new Date(row.value.time)),
+          author: row.value.author,
+          content: row.value.content
+        })
+      })
+    })
+    dispatch({type: 'UPDATE_MESSAGES', addr, messages: cabal.messages})
+  }
+}
+
 export const viewChannel = ({addr, channel}) => dispatch => {
   if (channel.length === 0) return
   var cabal = cabals[addr]
   cabal.channel = channel
   cabal.joinChannel(channel)
-  if (stream) stream.destroy()
+  cabal.messages = []
+  if (cabal.watcher) cabal.watcher.destroy()
   //storeOnDisk()
   cabal.on('join', function (username) {
     dispatch({type: 'UPDATE_CABAL', addr, users: cabal.users})
@@ -72,43 +92,20 @@ export const viewChannel = ({addr, channel}) => dispatch => {
     dispatch({type: 'UPDATE_CABAL', addr, users: cabal.users})
     console.log('left user', username)
   })
+  // dont pass around swarm and watcher, only the things that matter.
   dispatch({type: 'ADD_CABAL',
     addr,
+    messages: cabal.messages,
     username: cabal.username,
     users: cabal.users,
     channel: cabal.channel,
     channels: cabal.channels
   })
   dispatch({type: 'VIEW_CABAL', addr})
-
-  stream = pump(cabal.db.createHistoryStream(), to.obj(
-    function (row, enc, next) {
-      writeMsg(row)
-      next()
-    },
-    function (next) {
-      cabal.db.on('remote-update', onappend)
-      cabal.db.on('append', onappend)
-      function onappend (feed) {
-        var h = cabal.db.createHistoryStream({ reverse: true })
-        pump(h, to.obj(function (row, enc, next) {
-          writeMsg(row)
-          h.destroy()
-        }))
-      }
-      next()
-    }
-  ), function (err) {
-    if (err) console.error(err)
+  dispatch(getMessages({addr, channel, count: 25}))
+  cabal.watcher = cabal.watch(channel, () => {
+    dispatch(getMessages({addr, channel, count: 1}))
   })
-
-  function writeMsg (row) {
-    var m = new RegExp(`messages/${cabal.channel}/[0-9]+`).exec(row.key)
-    if (row.value && m) {
-      var utcDate = new Date(row.value.time)
-      dispatch({type: 'ADD_LINE', addr, utcDate, row})
-    }
-  }
 }
 
 export const showAddCabal = () => ({ type: 'SHOW_ADD_CABAL' })
@@ -130,7 +127,7 @@ export const addCabal = ({input, username}) => dispatch => {
     var swarm = Swarm(cabal)
     cabal.swarm = swarm
     cabals[addr] = cabal
-    dispatch(viewChannel({addr, channel: '#general'}))
+    dispatch(viewChannel({addr, channel: 'default'}))
   })
 }
 

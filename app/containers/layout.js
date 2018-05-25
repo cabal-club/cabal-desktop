@@ -1,8 +1,7 @@
-import ReactDOM from 'react-dom'
 import React, { Fragment, Component } from 'react'
-import strftime from 'strftime'
 import { connect } from 'react-redux'
 
+import { getMessages } from '../actions'
 import Sidebar from './sidebar'
 import WriteContainer from './write'
 
@@ -12,9 +11,9 @@ const mapStateToProps = state => ({
   cabal: state.cabales[state.currentCabal]
 })
 
-var _tzoffset = new Date().getTimezoneOffset()*60*1000
-
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({
+  getMessages: ({addr, channel, count}) => dispatch(getMessages({addr, channel, count}))
+})
 
 class LayoutScreen extends Component {
   constructor (props) {
@@ -29,7 +28,7 @@ class LayoutScreen extends Component {
     if (messagesDiv) messagesDiv.scrollTop = this.scrollTop
   }
 
-  componentDidUpdate() {
+  componentDidUpdate () {
     this.scrollToBottom()
   }
 
@@ -50,8 +49,8 @@ class LayoutScreen extends Component {
         </Fragment>
       )
     }
-    var messageKeys = Object.keys(cabal.messages)
     var lastAuthor = null
+    var messages = cabal.messages
 
     function onscroll (event) {
       var node = event.target
@@ -67,30 +66,33 @@ class LayoutScreen extends Component {
             <div className='top-bar'>
               <div className='channel-name'>{cabal.channel}</div>
             </div>
-            {messageKeys.length === 0 &&
+            {messages.length === 0 &&
               <div className='messages starterMessage'>
               'This is a new channel. Send a message to start things off!'
               </div>
             }
-            {messageKeys.length > 0 &&
+            {messages.length > 0 &&
               <div className='messages'
                 onScroll={onscroll}
                 style={{paddingBottom: self.composerHeight}}>
-                {messageKeys.map((key) => {
-
-                  var message = cabal.messages[key]
-                  var date = strftime('%H:%M', new Date(message.utcDate + _tzoffset))
-                  var repeatedAuthor = message.username === lastAuthor
-                  var me = message.username === cabal.username
-                  lastAuthor = message.username
-
-                  return (<li className={(me ? 'me' : '') + ' message clearfix'} key={key}>
-                    {!repeatedAuthor && <div className='username'>{message.username}</div>}
-                    <div className='message-meta'>
-                      <div className='text'>{message.message}</div>
-                      <span className='timestamp'>{date}</span>
-                    </div>
-                  </li>)
+                {messages.map((message) => {
+                  var repeatedAuthor = message.author === lastAuthor
+                  var me = message.author === cabal.username
+                  lastAuthor = message.author
+                  if (message.type === 'system') {
+                    return (<li className='system message clearfix'>
+                      {message.content}
+                    </li>)
+                  }
+                  if (message.type === 'chat/text') {
+                    return (<li className={(me ? 'me' : '') + ' message clearfix'}>
+                      {!repeatedAuthor && <div className='author'>{message.author}</div>}
+                      <div className='message-meta'>
+                        <div className='text'>{message.content}</div>
+                        <span className='timestamp'>{message.time}</span>
+                      </div>
+                    </li>)
+                  }
                 })}
               </div>
             }

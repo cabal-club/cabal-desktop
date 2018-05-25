@@ -260,7 +260,7 @@ button {
   left: 0;
   right: 0;
 }
-.sidebar .status .username,
+.sidebar .status .author,
 .sidebar .status .peers {
   overflow: hidden;
   -o-text-overflow: ellipsis;
@@ -330,12 +330,12 @@ button {
   height: 35px;
   cursor: pointer;
 }
-.message .username,
+.message .author,
 .message .verified,
 .message .timestamp {
   line-height: 1;
 }
-.message .username {
+.message .author {
   font-weight: bold;
   margin: 7px 0px;
   text-decoration: none;
