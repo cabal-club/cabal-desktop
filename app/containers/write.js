@@ -1,21 +1,7 @@
-import styled from 'styled-components'
 import form from 'get-form-data'
-import ReactDOM from 'react-dom'
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
-import { addMessage } from '../actions'
-
-var WriteDiv = styled.div`
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color: wheat;
-  input {
-    padding: 5px;
-    width: 90%;
-    margin: 5px;
-  }
-`
+import { addMessage, onCommand } from '../actions'
 
 const mapStateToProps = state => ({
   show: state.screen === 'main',
@@ -24,7 +10,8 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  addMessage: ({addr, message}) => dispatch(addMessage({addr, message}))
+  addMessage: ({addr, message}) => dispatch(addMessage({addr, message})),
+  onCommand: ({addr, message}) => dispatch(onCommand({addr, message}))
 })
 
 class writeScreen extends Component {
@@ -34,12 +21,17 @@ class writeScreen extends Component {
     this.defaultHeight = 17 + this.minimumHeight
   }
 
+  onCommand (message) {
+  }
+
   onsubmit (e) {
     const data = form(e.target)
     var el = document.querySelector('#message-bar')
     el.value = ''
-    const {addr, addMessage} = this.props
-    addMessage({message: data.message, addr})
+    const {addr, addMessage, onCommand} = this.props
+    var opts = {message: data.message, addr}
+    if (data.message.startsWith('/')) onCommand(opts)
+    else addMessage(opts)
     e.preventDefault()
     e.stopPropagation()
   }
@@ -53,7 +45,7 @@ class writeScreen extends Component {
   }
 
   render () {
-    const { cabal, show, addr } = this.props
+    const { cabal, show } = this.props
 
     if (!show || !cabal) {
       return (
@@ -68,8 +60,8 @@ class writeScreen extends Component {
           id='message-bar'
           name='message'
           className='fun composer'
-          aria-label="Enter a message and press enter"
-          placeholder='' />
+          aria-label='Enter a message and press enter'
+          placeholder='Enter a message and press enter' />
       </form>
     )
   }

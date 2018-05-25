@@ -79,9 +79,10 @@ class LayoutScreen extends Component {
                   var repeatedAuthor = message.author === lastAuthor
                   var me = message.author === cabal.username
                   lastAuthor = message.author
-                  if (message.type === 'system') {
+                  if (message.type === 'local/system') {
                     return (<li className='system message clearfix'>
-                      {message.content}
+                      <div className='author'>System</div>
+                      <pre>{message.content}</pre>
                     </li>)
                   }
                   if (message.type === 'chat/text') {
