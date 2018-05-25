@@ -17,7 +17,6 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class SidebarScreen extends React.Component {
-
   joinChannel (channel) {
     var addr = this.props.addr
     this.props.joinChannel({addr, channel})
