@@ -8,6 +8,8 @@ import path from 'path'
 import promisify from 'util-promisify'
 import fs from 'fs'
 
+import commander from './commander'
+
 const readFile = promisify(fs.readFile)
 const writeFile = promisify(fs.writeFile)
 const mkdir = promisify(fs.mkdir)
@@ -40,11 +42,17 @@ export const confirmDeleteCabal = addr => dispatch => {
   dispatch({ type: 'DIALOGS_DELETE_CLOSE' })
 }
 
+export const onCommand = ({addr, message}) => dispatch => {
+  var cabal = cabals[addr]
+  dispatch(commander(cabal, message))
+}
+
 export const joinChannel = ({addr, channel}) => dispatch => {
   if (channel.length > 0) {
     var currentCabal = cabals[addr]
     currentCabal.joinChannel(channel)
     dispatch({type: 'UPDATE_CABAL', addr, channels: currentCabal.channels})
+    dispatch(viewChannel({addr, channel}))
   }
 }
 export const leaveChannel = ({addr, channel}) => dispatch => {
@@ -86,11 +94,9 @@ export const viewChannel = ({addr, channel}) => dispatch => {
   //storeOnDisk()
   cabal.on('join', function (username) {
     dispatch({type: 'UPDATE_CABAL', addr, users: cabal.users})
-    console.log('got user', username)
   })
   cabal.on('leave', function (username) {
     dispatch({type: 'UPDATE_CABAL', addr, users: cabal.users})
-    console.log('left user', username)
   })
   // dont pass around swarm and watcher, only the things that matter.
   dispatch({type: 'ADD_CABAL',
@@ -126,6 +132,7 @@ export const addCabal = ({input, username}) => dispatch => {
     if (!addr) addr = cabal.db.key.toString('hex')
     var swarm = Swarm(cabal)
     cabal.swarm = swarm
+    cabal.addr = addr
     cabals[addr] = cabal
     dispatch(viewChannel({addr, channel: 'default'}))
   })

@@ -5,10 +5,14 @@ import { connect } from 'react-redux'
 import { viewChannel, joinChannel } from '../actions'
 import InputPrompt from './InputPrompt'
 
-const mapStateToProps = state => ({
-  addr: state.currentCabal,
-  cabal: state.cabales[state.currentCabal]
-})
+const mapStateToProps = state => {
+  var cabal = state.cabales[state.currentCabal]
+  return {
+    addr: state.currentCabal,
+    cabal,
+    username: cabal.username
+  }
+}
 
 const mapDispatchToProps = dispatch => ({
   joinChannel: ({addr, channel}) => dispatch(joinChannel({addr, channel})),
@@ -33,7 +37,7 @@ class SidebarScreen extends React.Component {
 
   render () {
     var self = this
-    const { cabal } = this.props
+    const { cabal, username } = this.props
 
     var userKeys = Object.keys(cabal.users)
     var channelKeys = Object.keys(cabal.channels)
@@ -66,13 +70,13 @@ class SidebarScreen extends React.Component {
         <div className='users'>
           <div className='heading'>Users</div>
           <ul className='users-list'>
-            {userKeys.map((username) =>
-              (username !== cabal.username) && <li> {username}</li>
+            {userKeys.map((_username) =>
+              (_username !== username) && <li> {_username}</li>
             )}
           </ul>
           <ul className='status'>
             <li className='author'>
-              {cabal.username}
+              {username}
             </li>
           </ul>
         </div>

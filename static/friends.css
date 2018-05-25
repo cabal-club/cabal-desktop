@@ -375,6 +375,10 @@ button {
 .message pre {
   margin: 0;
 }
+.message.system .text {
+  font-style: italic;
+  color: #444;
+}
 .starterMessage {
   color: #646464;
   font-style: italic;
