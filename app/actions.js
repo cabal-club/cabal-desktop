@@ -59,7 +59,9 @@ export const leaveChannel = ({addr, channel}) => dispatch => {
 
 export const changeUsername = ({addr, username}) => dispatch => {
   var currentCabal = cabals[addr]
-  currentCabal.username = username;
+  var existingUsername = currentCabal.username
+  currentCabal.username = username
+  delete currentCabal.users[existingUsername]
   dispatch({
     type: 'UPDATE_USERNAME',
     addr,
