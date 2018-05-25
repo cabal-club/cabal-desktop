@@ -3,11 +3,15 @@ import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import { addMessage, onCommand } from '../actions'
 
-const mapStateToProps = state => ({
-  show: state.screen === 'main',
-  addr: state.currentCabal,
-  cabal: state.cabales[state.currentCabal]
-})
+const mapStateToProps = state => {
+  var cabal = state.cabales[state.currentCabal]
+  return {
+    show: state.screen === 'main',
+    addr: state.currentCabal,
+    cabal,
+    users: cabal.users
+  }
+}
 
 const mapDispatchToProps = dispatch => ({
   addMessage: ({addr, message}) => dispatch(addMessage({addr, message})),
@@ -21,7 +25,20 @@ class writeScreen extends Component {
     this.defaultHeight = 17 + this.minimumHeight
   }
 
-  onCommand (message) {
+  onKeyDown (e) {
+    const {cabal} = this.props
+    if (e.key === 'Tab') {
+      var el = document.querySelector('#message-bar')
+      var line = el.value
+      var users = Object.keys(cabal.users).sort()
+      var pattern = (/^(\w+)$/)
+      var match = pattern.exec(line)
+
+      if (match) {
+        users = users.filter(user => user.startsWith(match[0]))
+        if (users.length > 0) el.value = users[0] + ': '
+      }
+    }
   }
 
   onsubmit (e) {
@@ -34,14 +51,6 @@ class writeScreen extends Component {
     else addMessage(opts)
     e.preventDefault()
     e.stopPropagation()
-  }
-
-  componentWillMount () {
-    window.addEventListener('keydown', this.onkeydown)
-  }
-
-  componentWillUnmount () {
-    window.removeEventListener('keydown', this.onkeydown)
   }
 
   render () {
@@ -59,6 +68,7 @@ class writeScreen extends Component {
         <input type='text'
           id='message-bar'
           name='message'
+          onKeyDown={this.onKeyDown.bind(this)}
           className='fun composer'
           aria-label='Enter a message and press enter'
           placeholder='Enter a message and press enter' />
