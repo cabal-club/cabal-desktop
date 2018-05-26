@@ -68,11 +68,7 @@ export const changeUsername = ({addr, username}) => dispatch => {
   var existingUsername = currentCabal.username
   currentCabal.username = username
   delete currentCabal.users[existingUsername]
-  dispatch({
-    type: 'UPDATE_USERNAME',
-    addr,
-    username
-  })
+  dispatch({ type: 'UPDATE_CABAL', addr, username })
 }
 
 export const getMessages = ({addr, channel, count}) => dispatch => {
