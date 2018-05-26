@@ -74,6 +74,7 @@ export const changeUsername = ({addr, username}) => dispatch => {
 export const getMessages = ({addr, channel, count}) => dispatch => {
   if (channel.length === 0) return
   var cabal = cabals[addr]
+  if (!cabal.messages) cabal.messages = []
   cabal.getMessages(channel, count, onMessages)
 
   function onMessages (err, rows) {
@@ -88,7 +89,7 @@ export const getMessages = ({addr, channel, count}) => dispatch => {
         })
       })
     })
-    dispatch({type: 'UPDATE_MESSAGES', addr, messages: cabal.messages})
+    dispatch({type: 'UPDATE_CABAL', addr, messages: cabal.messages})
   }
 }
 

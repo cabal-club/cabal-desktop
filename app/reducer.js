@@ -50,19 +50,6 @@ const reducer = (state = defaultState, action) => {
           }
         }
       }
-    case 'UPDATE_MESSAGES':
-      var cabal = state.cabales[action.addr]
-      if (!cabal.messages) cabal.messages = []
-      return {
-        ...state,
-        cabales: {
-          ...state.cabales,
-          [action.addr]: {
-            ...cabal,
-            messages: action.messages
-          }
-        }
-      }
     case 'DELETE_CABAL':
       const { [action.addr]: del, ...cabales } = state.cabales
       return {...state, cabales}
