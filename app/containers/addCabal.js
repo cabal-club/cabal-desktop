@@ -1,15 +1,13 @@
-import React, { Fragment, Component } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { hideAddCabal, addCabal } from '../actions'
+import { addCabal } from '../actions'
 
-const mapStateToProps = state => ({
-  show: state.screen === 'addCabal'
-})
+const mapStateToProps = state => state
 
 const mapDispatchToProps = dispatch => ({
   add: (input, username) => dispatch(addCabal({input, username})),
   newCabal: (username) => dispatch(addCabal({username})),
-  hide: () => dispatch(hideAddCabal())
+  hide: () => dispatch({type: 'CHANGE_SCREEN', screen: 'main'})
 })
 
 class addCabalScreen extends Component {
@@ -33,15 +31,6 @@ class addCabalScreen extends Component {
   }
 
   render () {
-    const { show } = this.props
-    if (!show) {
-      return (
-        <Fragment>
-          <div />
-        </Fragment>
-      )
-    }
-
     return (
       <div className='heading add-cabal'>
         <h1>Cabal</h1>

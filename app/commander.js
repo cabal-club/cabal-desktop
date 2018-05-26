@@ -1,4 +1,4 @@
-import { joinChannel } from './actions'
+import { joinChannel, updateCabal } from './actions'
 const PATTERN = (/^\/(\w*)\s*(.*)/)
 
 const commander = (cabal, message) => (dispatch) => {
@@ -15,14 +15,14 @@ const commander = (cabal, message) => (dispatch) => {
       var username = arg
       if (!username.length) return
       cabal.username = username
-      dispatch({type: 'UPDATE_CABAL', addr, username})
+      dispatch(updateCabal({addr, username}))
       break
     case 'channels':
       return cabal.getChannels((err, channels) => {
         if (err) console.trace(err)
         var content = `${channels.join('  \n')}\n`
         cabal.messages.push({type: 'local/system', content})
-        dispatch({type: 'UPDATE_CABAL', addr, messages: cabal.messages})
+        dispatch(updateCabal({addr, messages: cabal.messages}))
       })
     default:
       break
