@@ -1,7 +1,7 @@
 const defaultState = {
   screen: 'addCabal',
   currentCabal: null,
-  currentChannel: '#general',
+  currentChannel: 'default',
   dialogs: {
     delete: {
       cabal: null
@@ -34,7 +34,7 @@ const reducer = (state = defaultState, action) => {
           ...state.cabales,
           [action.addr]: {
             ...action,
-            messages: {}
+            messages: []
           }
         }
       }
@@ -50,35 +50,16 @@ const reducer = (state = defaultState, action) => {
           }
         }
       }
-    case 'UPDATE_USERNAME':
+    case 'UPDATE_MESSAGES':
       var cabal = state.cabales[action.addr]
-      return {
-        ...state,
-          cabales: {
-            ...state.cabales,
-            [action.addr]: {
-              ...cabal,
-              username: action.username
-            }
-          }
-      }
-    case 'ADD_LINE':
-      var cabal = state.cabales[action.addr]
-      if (!cabal.messages) cabal.messages = {}
+      if (!cabal.messages) cabal.messages = []
       return {
         ...state,
         cabales: {
           ...state.cabales,
           [action.addr]: {
             ...cabal,
-            messages: {
-              ...cabal.messages,
-              [action.row.key]: {
-                utcDate: action.utcDate,
-                username: action.row.value.author,
-                message: action.row.value.content
-              }
-            }
+            messages: action.messages
           }
         }
       }

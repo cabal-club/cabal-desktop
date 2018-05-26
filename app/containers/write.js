@@ -1,30 +1,21 @@
-import styled from 'styled-components'
 import form from 'get-form-data'
-import ReactDOM from 'react-dom'
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
-import { addMessage } from '../actions'
+import { addMessage, onCommand } from '../actions'
 
-var WriteDiv = styled.div`
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background-color: wheat;
-  input {
-    padding: 5px;
-    width: 90%;
-    margin: 5px;
+const mapStateToProps = state => {
+  var cabal = state.cabales[state.currentCabal]
+  return {
+    show: state.screen === 'main',
+    addr: state.currentCabal,
+    cabal,
+    users: cabal.users
   }
-`
-
-const mapStateToProps = state => ({
-  show: state.screen === 'main',
-  addr: state.currentCabal,
-  cabal: state.cabales[state.currentCabal]
-})
+}
 
 const mapDispatchToProps = dispatch => ({
-  addMessage: ({addr, message}) => dispatch(addMessage({addr, message}))
+  addMessage: ({addr, message}) => dispatch(addMessage({addr, message})),
+  onCommand: ({addr, message}) => dispatch(onCommand({addr, message}))
 })
 
 class writeScreen extends Component {
@@ -34,26 +25,36 @@ class writeScreen extends Component {
     this.defaultHeight = 17 + this.minimumHeight
   }
 
+  onKeyDown (e) {
+    const {cabal} = this.props
+    if (e.key === 'Tab') {
+      var el = document.querySelector('#message-bar')
+      var line = el.value
+      var users = Object.keys(cabal.users).sort()
+      var pattern = (/^(\w+)$/)
+      var match = pattern.exec(line)
+
+      if (match) {
+        users = users.filter(user => user.startsWith(match[0]))
+        if (users.length > 0) el.value = users[0] + ': '
+      }
+    }
+  }
+
   onsubmit (e) {
     const data = form(e.target)
     var el = document.querySelector('#message-bar')
     el.value = ''
-    const {addr, addMessage} = this.props
-    addMessage({message: data.message, addr})
+    const {addr, addMessage, onCommand} = this.props
+    var opts = {message: data.message, addr}
+    if (data.message.startsWith('/')) onCommand(opts)
+    else addMessage(opts)
     e.preventDefault()
     e.stopPropagation()
   }
 
-  componentWillMount () {
-    window.addEventListener('keydown', this.onkeydown)
-  }
-
-  componentWillUnmount () {
-    window.removeEventListener('keydown', this.onkeydown)
-  }
-
   render () {
-    const { cabal, show, addr } = this.props
+    const { cabal, show } = this.props
 
     if (!show || !cabal) {
       return (
@@ -67,9 +68,10 @@ class writeScreen extends Component {
         <input type='text'
           id='message-bar'
           name='message'
+          onKeyDown={this.onKeyDown.bind(this)}
           className='fun composer'
-          aria-label="Enter a message and press enter"
-          placeholder='' />
+          aria-label='Enter a message and press enter'
+          placeholder='Enter a message and press enter' />
       </form>
     )
   }
