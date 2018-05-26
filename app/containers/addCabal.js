@@ -1,15 +1,13 @@
-import React, { Fragment, Component } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { hideAddCabal, addCabal } from '../actions'
+import { addCabal } from '../actions'
 
-const mapStateToProps = state => ({
-  show: state.screen === 'addCabal'
-})
+const mapStateToProps = state => state
 
 const mapDispatchToProps = dispatch => ({
   add: (input, username) => dispatch(addCabal({input, username})),
   newCabal: (username) => dispatch(addCabal({username})),
-  hide: () => dispatch(hideAddCabal())
+  hide: () => dispatch({type: 'CHANGE_SCREEN', screen: 'main'})
 })
 
 class addCabalScreen extends Component {
@@ -33,15 +31,6 @@ class addCabalScreen extends Component {
   }
 
   render () {
-    const { show } = this.props
-    if (!show) {
-      return (
-        <Fragment>
-          <div />
-        </Fragment>
-      )
-    }
-
     return (
       <div className='heading add-cabal'>
         <h1>Cabal</h1>
@@ -51,7 +40,6 @@ class addCabalScreen extends Component {
         <input type='text'
           className='fun'
           id='add-cabal'
-          defaultValue='dat://3aa1176b5ebc981139a021dd89a632c3771b89e4796f7ca5bbdfbc8d26677e42'
           onKeyDown={this.joinClick.bind(this)}
           placeholder='Paste dat:// link and hit Enter' />
         <input type='text'

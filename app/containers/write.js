@@ -4,9 +4,8 @@ import { connect } from 'react-redux'
 import { addMessage, onCommand } from '../actions'
 
 const mapStateToProps = state => {
-  var cabal = state.cabales[state.currentCabal]
+  var cabal = state.cabals[state.currentCabal]
   return {
-    show: state.screen === 'main',
     addr: state.currentCabal,
     cabal,
     users: cabal.users
@@ -54,9 +53,9 @@ class writeScreen extends Component {
   }
 
   render () {
-    const { cabal, show } = this.props
+    const { cabal } = this.props
 
-    if (!show || !cabal) {
+    if (!cabal) {
       return (
         <Fragment>
           <div />

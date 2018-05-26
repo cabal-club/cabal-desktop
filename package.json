@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Cabal p2p offline-first desktop application",
   "scripts": {
-    "start": "electron .",
+    "start": "DEBUG=* electron .",
     "watch": "webpack --watch"
   },
   "repository": "cabal-club/cabal-desktop",

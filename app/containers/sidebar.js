@@ -2,19 +2,21 @@ import React from 'react'
 import { clipboard } from 'electron'
 import { connect } from 'react-redux'
 
-import { viewChannel, joinChannel } from '../actions'
+import { viewChannel, joinChannel, changeScreen } from '../actions'
 import InputPrompt from './InputPrompt'
 
 const mapStateToProps = state => {
-  var cabal = state.cabales[state.currentCabal]
+  var cabal = state.cabals[state.currentCabal]
   return {
     addr: state.currentCabal,
+    cabals: state.cabals,
     cabal,
     username: cabal.username
   }
 }
 
 const mapDispatchToProps = dispatch => ({
+  changeScreen: ({screen}) => dispatch(changeScreen({screen})),
   joinChannel: ({addr, channel}) => dispatch(joinChannel({addr, channel})),
   viewChannel: ({addr, channel}) => dispatch(viewChannel({addr, channel}))
 })
@@ -30,6 +32,10 @@ class SidebarScreen extends React.Component {
     alert('Copied dat:// link to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.')
   }
 
+  selectCabal (addr) {
+
+  }
+
   selectChannel (channel) {
     var addr = this.props.addr
     this.props.viewChannel({addr, channel})
@@ -37,12 +43,31 @@ class SidebarScreen extends React.Component {
 
   render () {
     var self = this
-    const { cabal, username } = this.props
+    const { addCabal, cabals, cabal, username } = this.props
 
     var userKeys = Object.keys(cabal.users)
     var channelKeys = Object.keys(cabal.channels)
+    var cabalKeys = Object.keys(cabals)
 
     return (<div className='sidebar'>
+      <div className=''>
+        <div className=''>
+        <div className='add-channel'>
+          <button onClick={addCabal}> Add Cabal</button>
+        </div>
+          <div className='heading'>Cabals</div>
+          {cabalKeys.map(function (addr) {
+            var cabal = cabals[addr]
+            return (
+              <li className={addr === cabal.addr ? 'active': '' } key={addr}>
+                <button onClick={self.selectCabal.bind(self, addr)}>
+                  {cabal.addr}
+                </button>
+              </li>
+            )
+          })}
+        </div>
+      </div>
       <div className='copy-link'>
         <button onClick={self.copyClick.bind(self)}>Copy Dat Link</button>
       </div>

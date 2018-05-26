@@ -1,5 +1,5 @@
 const defaultState = {
-  screen: 'addCabal',
+  screen: 'main',
   currentCabal: null,
   currentChannel: 'default',
   dialogs: {
@@ -7,20 +7,15 @@ const defaultState = {
       cabal: null
     }
   },
-  cabales: {}
+  cabals: {}
 }
 
 const reducer = (state = defaultState, action) => {
   switch (action.type) {
-    case 'SHOW_ADD_CABAL':
+    case 'CHANGE_SCREEN':
       return {
         ...state,
-        screen: 'addcabal'
-      }
-    case 'HIDE_ADD_CABAL':
-      return {
-        ...state,
-        screen: 'main'
+        screen: action.screen
       }
     case 'VIEW_CABAL':
       return {
@@ -30,8 +25,8 @@ const reducer = (state = defaultState, action) => {
     case 'ADD_CABAL':
       return {
         ...state,
-        cabales: {
-          ...state.cabales,
+        cabals: {
+          ...state.cabals,
           [action.addr]: {
             ...action,
             messages: []
@@ -39,11 +34,11 @@ const reducer = (state = defaultState, action) => {
         }
       }
     case 'UPDATE_CABAL':
-      var cabal = state.cabales[action.addr]
+      var cabal = state.cabals[action.addr]
       return {
         ...state,
-        cabales: {
-          ...state.cabales,
+        cabals: {
+          ...state.cabals,
           [action.addr]: {
             ...cabal,
             ...action
@@ -51,12 +46,12 @@ const reducer = (state = defaultState, action) => {
         }
       }
     case 'UPDATE_MESSAGES':
-      var cabal = state.cabales[action.addr]
+      var cabal = state.cabals[action.addr]
       if (!cabal.messages) cabal.messages = []
       return {
         ...state,
-        cabales: {
-          ...state.cabales,
+        cabals: {
+          ...state.cabals,
           [action.addr]: {
             ...cabal,
             messages: action.messages
@@ -64,8 +59,8 @@ const reducer = (state = defaultState, action) => {
         }
       }
     case 'DELETE_CABAL':
-      const { [action.addr]: del, ...cabales } = state.cabales
-      return {...state, cabales}
+      const { [action.addr]: del, ...cabals } = state.cabals
+      return {...state, cabals}
     case 'DIALOGS_DELETE_CLOSE':
       return {
         ...state,

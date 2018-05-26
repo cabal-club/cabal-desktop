@@ -14,7 +14,7 @@ app.on('ready', () => {
     minHeight: 395
   })
   win.loadURL(`file://${__dirname}/index.html`)
-  win.webContents.openDevTools()
+  if (process.env.DEBUG) win.webContents.openDevTools()
   Menu.setApplicationMenu(Menu.buildFromTemplate(menu))
 })
 
