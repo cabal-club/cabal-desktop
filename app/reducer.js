@@ -50,6 +50,18 @@ const reducer = (state = defaultState, action) => {
           }
         }
       }
+    case 'UPDATE_USERNAME':
+      var cabal = state.cabales[action.addr]
+      return {
+        ...state,
+          cabales: {
+            ...state.cabales,
+            [action.addr]: {
+              ...cabal,
+              username: action.username
+            }
+          }
+      }
     case 'ADD_LINE':
       var cabal = state.cabales[action.addr]
       if (!cabal.messages) cabal.messages = {}

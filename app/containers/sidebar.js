@@ -2,7 +2,7 @@ import React from 'react'
 import { clipboard } from 'electron'
 import { connect } from 'react-redux'
 
-import { viewChannel, joinChannel } from '../actions'
+import { viewChannel, joinChannel, changeUsername } from '../actions'
 import InputPrompt from './InputPrompt'
 
 const mapStateToProps = state => ({
@@ -12,7 +12,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   joinChannel: ({addr, channel}) => dispatch(joinChannel({addr, channel})),
-  viewChannel: ({addr, channel}) => dispatch(viewChannel({addr, channel}))
+  viewChannel: ({addr, channel}) => dispatch(viewChannel({addr, channel})),
+  changeUsername: ({addr, username}) => dispatch(changeUsername({addr, username}))
 })
 
 class SidebarScreen extends React.Component {
@@ -34,7 +35,7 @@ class SidebarScreen extends React.Component {
 
   render () {
     var self = this
-    const { cabal } = this.props
+    const { cabal, addr } = this.props
 
     var userKeys = Object.keys(cabal.users)
     var channelKeys = Object.keys(cabal.channels)
@@ -72,9 +73,11 @@ class SidebarScreen extends React.Component {
             )}
           </ul>
           <ul className='status'>
-            <li className='username'>
-              {cabal.username}
-            </li>
+            <InputPrompt
+              placeholder='Enter name'
+              prompt={cabal.username}
+              onSubmit={username => this.props.changeUsername({ username, addr: this.props.addr })}
+            />
           </ul>
         </div>
       </div>
