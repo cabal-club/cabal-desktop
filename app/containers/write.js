@@ -70,8 +70,8 @@ class writeScreen extends Component {
           name='message'
           onKeyDown={this.onKeyDown.bind(this)}
           className='fun composer'
-          aria-label='Enter a message and press enter'
-          placeholder='Enter a message and press enter' />
+          aria-label='Type a message and press enter'
+          placeholder='Type a message and press enter' />
       </form>
     )
   }
