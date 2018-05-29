@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { getMessages } from '../actions'
 import Sidebar from './sidebar'
 import WriteContainer from './write'
+import MessagesContainer from './messages'
 
 const mapStateToProps = state => ({
   show: state.screen === 'main',
@@ -49,8 +50,6 @@ class LayoutScreen extends Component {
         </Fragment>
       )
     }
-    var lastAuthor = null
-    var messages = cabal.messages
 
     function onscroll (event) {
       var node = event.target
@@ -66,37 +65,10 @@ class LayoutScreen extends Component {
             <div className='top-bar'>
               <div className='channel-name'>{cabal.channel}</div>
             </div>
-            {messages.length === 0 &&
-              <div className='messages starterMessage'>
-              'This is a new channel. Send a message to start things off!'
-              </div>
-            }
-            {messages.length > 0 &&
-              <div className='messages'
-                onScroll={onscroll}
-                style={{paddingBottom: self.composerHeight}}>
-                {messages.map((message) => {
-                  var repeatedAuthor = message.author === lastAuthor
-                  var me = message.author === cabal.username
-                  lastAuthor = message.author
-                  if (message.type === 'local/system') {
-                    return (<li className='system message clearfix'>
-                      <div className='author'>System</div>
-                      <pre>{message.content}</pre>
-                    </li>)
-                  }
-                  if (message.type === 'chat/text') {
-                    return (<li className={(me ? 'me' : '') + ' message clearfix'}>
-                      {!repeatedAuthor && <div className='author'>{message.author}</div>}
-                      <div className='message-meta'>
-                        <div className='text'>{message.content}</div>
-                        <span className='timestamp'>{message.time}</span>
-                      </div>
-                    </li>)
-                  }
-                })}
-              </div>
-            }
+            <MessagesContainer
+              cabal={cabal}
+              composerHeight={self.composerHeight}
+              onscroll={onscroll.bind(self)} />
             <WriteContainer />
           </div>
         </div>
