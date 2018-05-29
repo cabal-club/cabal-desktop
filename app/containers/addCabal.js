@@ -51,7 +51,6 @@ class addCabalScreen extends Component {
         <input type='text'
           className='fun'
           id='add-cabal'
-          defaultValue='dat://3aa1176b5ebc981139a021dd89a632c3771b89e4796f7ca5bbdfbc8d26677e42'
           onKeyDown={this.joinClick.bind(this)}
           placeholder='Paste dat:// link and hit Enter' />
         <input type='text'
