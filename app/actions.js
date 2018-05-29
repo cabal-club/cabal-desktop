@@ -49,12 +49,12 @@ export const onCommand = ({addr, message}) => dispatch => {
 
 export const joinChannel = ({addr, channel}) => dispatch => {
   if (channel.length > 0) {
-    var currentCabal = cabals[addr]
-    currentCabal.joinChannel(channel)
-    dispatch({type: 'UPDATE_CABAL', addr, channels: currentCabal.channels})
+    var cabal = cabals[addr]
+    cabal.joinChannel(channel)
     dispatch(viewChannel({addr, channel}))
   }
 }
+
 export const leaveChannel = ({addr, channel}) => dispatch => {
   if (channel.length > 0) {
     var currentCabal = cabals[addr]
@@ -97,7 +97,6 @@ export const viewChannel = ({addr, channel}) => dispatch => {
   if (channel.length === 0) return
   var cabal = cabals[addr]
   cabal.channel = channel
-  cabal.joinChannel(channel)
   cabal.messages = []
   if (cabal.watcher) cabal.watcher.destroy()
   //storeOnDisk()
@@ -143,7 +142,11 @@ export const addCabal = ({input, username}) => dispatch => {
     cabal.swarm = swarm
     cabal.addr = addr
     cabals[addr] = cabal
-    dispatch(viewChannel({addr, channel: 'default'}))
+    cabal.getChannels((err, channels) => {
+      if (err) return console.error(err)
+      cabal.channels = channels
+      dispatch(joinChannel({addr, channel: 'default'}))
+    })
   })
 }
 

@@ -41,7 +41,6 @@ class SidebarScreen extends React.Component {
     const { cabal, addr, username } = this.props
 
     var userKeys = Object.keys(cabal.users)
-    var channelKeys = Object.keys(cabal.channels)
 
     return (<div className='sidebar'>
       <div className='copy-link'>
@@ -58,7 +57,7 @@ class SidebarScreen extends React.Component {
           <div className='heading'>Channels</div>
           <ul>
             {
-              channelKeys.map((channel) =>
+              cabal.channels.map((channel) =>
                 <li className={cabal.channel === channel ? 'active' : ''} key={channel}>
                   <button onClick={this.selectChannel.bind(this, channel)}>
                     {channel}
