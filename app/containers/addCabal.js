@@ -60,7 +60,12 @@ class addCabalScreen extends Component {
           onKeyDown={this.joinClick.bind(this)}
           name='nickname'
           placeholder='Pick a nickname' />
-          <h2>Don't have a swarm to join yet? <a href="#" onClick={this.newCabalPress.bind(this)}>Create a Cabal</a></h2>
+        <h2>
+          Don't have a swarm to join yet?
+          <a href='#' onClick={this.newCabalPress.bind(this)}>
+            Create a Cabal
+          </a>
+        </h2>
       </div>
     )
   }
