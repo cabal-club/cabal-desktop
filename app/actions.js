@@ -81,6 +81,12 @@ export const getMessages = ({addr, channel, count}) => dispatch => {
     if (err) return console.trace(err)
     rows.map((arr) => {
       arr.map((row) => {
+        if (!document.hasFocus()) {
+          window.Notification.requestPermission()
+          new window.Notification(row.value.author, {
+            body: row.value.content
+          })
+        }
         cabal.messages.push({
           type: row.value.type,
           time: strftime('%H:%M', new Date(row.value.time)),
