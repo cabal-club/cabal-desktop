@@ -1,5 +1,7 @@
 import React from 'react'
 
+import Avatar from './avatar'
+
 export default function MessagesContainer (props) {
   const { cabal, onscroll, composerHeight } = props
   var messages = cabal.messages
@@ -29,7 +31,12 @@ export default function MessagesContainer (props) {
           }
           if (message.type === 'chat/text') {
             return (<li className={(me ? 'me' : '') + ' message clearfix'}>
-              {!repeatedAuthor && <div className='author'>{message.author}</div>}
+              {!repeatedAuthor &&
+                <div className='message-author'>
+                  <Avatar name={message.author} />
+                  <div className='author'>{message.author}</div>
+                </div>
+              }
               <div className='message-meta'>
                 <div className='text'>{message.content}</div>
                 <span className='timestamp'>{message.time}</span>

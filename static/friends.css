@@ -331,12 +331,17 @@ button {
 .message a {
   color: #0084b4;
 }
+.message .message-author {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
 .message .avatar {
-  float: left;
-  border-radius: 5px;
-  width: 35px;
-  height: 35px;
+  border-radius: 3px;
+  width: 32px;
+  height: 32px;
   cursor: pointer;
+  overflow: hidden;
 }
 .message .author,
 .message .verified,
@@ -345,7 +350,7 @@ button {
 }
 .message .author {
   font-weight: bold;
-  margin: 7px 0px;
+  margin: 7px 10px;
   text-decoration: none;
   color: inherit;
 }
@@ -401,6 +406,7 @@ textarea {
 .message-meta {
   display: flex;
   justify-content: space-between;
+  margin-left: 45px
 }
 .message {
   padding: 5px;
