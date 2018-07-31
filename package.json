@@ -4,6 +4,7 @@
   "description": "Cabal p2p offline-first desktop application",
   "scripts": {
     "start": "electron .",
+    "build": "webpack",
     "watch": "webpack --watch"
   },
   "repository": "cabal-club/cabal-desktop",
