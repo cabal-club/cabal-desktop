@@ -68,7 +68,7 @@ class SidebarScreen extends React.Component {
           </ul>
         </div>
         <div className='users'>
-          <div className='heading'>Users</div>
+          <div className='heading'>Peers</div>
           <ul className='users-list'>
             {userKeys.map((_username) =>
               (_username !== username) && <li> {_username}</li>
