@@ -195,7 +195,7 @@ body {
 	background-color: #16161d;
 	user-select: none;
 	cursor: default;
-	font-size: 0.9rem;
+	font-size: 1.0rem;
 	line-height: 1.6;
 }
 .sidebar .sidebar-scroll{
@@ -298,7 +298,7 @@ body {
 	content: "#";
 }
 .content .messages-container .top-bar .channel-name{
-	font-size: 1rem;
+	font-size: 1.2rem;
 	font-weight: bold;
 	display: inline-block;
 }
@@ -318,7 +318,7 @@ body {
 }
 .content .messages-container .messages li{
 	list-style: none;
-	font-size: 0.9rem;
+	font-size: 1.0rem;
 	line-height: 1.2;
 }
 .content .messages-container .messages li a{
