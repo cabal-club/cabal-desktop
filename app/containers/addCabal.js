@@ -60,7 +60,7 @@ class addCabalScreen extends Component {
           name='nickname'
           placeholder='Pick a nickname' />
         <h2>
-          Don't have a swarm to join yet?
+          Don't have a swarm to join yet?<br/><br/>
           <a href='#' onClick={this.newCabalPress.bind(this)}>
             Create a Cabal
           </a>
