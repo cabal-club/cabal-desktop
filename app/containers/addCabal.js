@@ -11,6 +11,10 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class addCabalScreen extends Component {
+  onClickCancel () {
+    this.props.hide()
+  }
+
   newCabalPress (ev) {
     this.props.newCabal()
     this.props.hide()
@@ -54,6 +58,7 @@ class addCabalScreen extends Component {
             Create a Cabal
           </a>
         </h2>
+        <button onClick={this.onClickCancel.bind(this)}>Cancel</button>
       </div>
     )
   }

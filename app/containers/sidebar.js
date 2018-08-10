@@ -2,7 +2,7 @@ import React from 'react'
 import { clipboard } from 'electron'
 import { connect } from 'react-redux'
 
-import { viewChannel, joinChannel, changeUsername, changeScreen } from '../actions'
+import { viewCabal, viewChannel, joinChannel, changeUsername, changeScreen } from '../actions'
 import InputPrompt from './InputPrompt'
 
 const mapStateToProps = state => {
@@ -18,6 +18,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   changeScreen: ({screen}) => dispatch(changeScreen({screen})),
   joinChannel: ({addr, channel}) => dispatch(joinChannel({addr, channel})),
+  viewCabal: ({addr}) => dispatch(viewCabal({addr})),
   viewChannel: ({addr, channel}) => dispatch(viewChannel({addr, channel})),
   changeUsername: ({addr, username}) => dispatch(changeUsername({addr, username}))
 })
@@ -33,8 +34,12 @@ class SidebarScreen extends React.Component {
     alert('Copied cabal:// link to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.')
   }
 
-  selectCabal (addr) {
+  joinCabal () {
+    this.props.changeScreen({screen: 'addCabal'})
+  }
 
+  selectCabal (addr) {
+    this.props.viewCabal({addr})
   }
 
   selectChannel (channel) {
@@ -53,20 +58,24 @@ class SidebarScreen extends React.Component {
     return (<div className='sidebar'>
       <div className=''>
         <div className=''>
-        <div className='add-channel'>
-          <button onClick={addCabal}> Add Cabal</button>
-        </div>
-          <div className='heading'>Cabals</div>
-          {cabalKeys.map(function (addr) {
-            var cabal = cabals[addr]
-            return (
-              <li className={addr === cabal.addr ? 'active': '' } key={addr}>
-                <button onClick={self.selectCabal.bind(self, addr)}>
-                  {cabal.addr}
-                </button>
-              </li>
-            )
-          })}
+          <div className='add-channel'>
+            <button onClick={self.joinCabal.bind(self)}> Add Cabal</button>
+          </div>
+          <div className='cabals'>
+            <div className='heading'>Cabals</div>
+            <ul>
+              {cabalKeys.map(function (key) {
+                var cabal = cabals[key]
+                return (
+                  <li className={addr === cabal.addr ? 'active' : ''} key={key}>
+                    <button onClick={self.selectCabal.bind(self, key)}>
+                      {cabal.addr}
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
         </div>
       </div>
       <div className='copy-link'>

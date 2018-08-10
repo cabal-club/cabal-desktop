@@ -136,7 +136,7 @@ export const viewChannel = ({addr, channel}) => dispatch => {
   })
 }
 
-export const changeScreen = (screen) => ({ type: 'CHANGE_SCREEN', screen })
+export const changeScreen = ({screen}) => ({ type: 'CHANGE_SCREEN', screen })
 export const addCabal = ({addr, input, username}) => dispatch => {
   if (!addr) {
     try {
