@@ -27,8 +27,8 @@ class SidebarScreen extends React.Component {
   }
 
   copyClick () {
-    clipboard.writeText('dat://' + this.props.addr)
-    alert('Copied dat:// link to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.')
+    clipboard.writeText('cabal://' + this.props.addr)
+    alert('Copied cabal:// link to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.')
   }
 
   selectChannel (channel) {
@@ -44,7 +44,7 @@ class SidebarScreen extends React.Component {
 
     return (<div className='sidebar'>
       <div className='copy-link'>
-        <button onClick={self.copyClick.bind(self)}>Copy Dat Link</button>
+        <button onClick={self.copyClick.bind(self)}>Copy Secret Key</button>
       </div>
       <div className='add-channel'>
         <InputPrompt

@@ -140,7 +140,7 @@ export const addCabal = ({input, username}) => dispatch => {
 
   if (cabals[addr]) return console.error('cabal already exists')
   var dir = path.join(homedir(), '.cabal-desktop', addr || username)
-  var cabal = Cabal(dir, addr ? 'dat://' + addr : null, {username})
+  var cabal = Cabal(dir, addr ? 'cabal://' + addr : null, {username})
   cabal.db.ready(function (err) {
     if (err) return console.error(err)
     if (!addr) addr = cabal.db.key.toString('hex')
