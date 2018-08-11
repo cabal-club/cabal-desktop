@@ -7,9 +7,8 @@ import WriteContainer from './write'
 import MessagesContainer from './messages'
 
 const mapStateToProps = state => ({
-  show: state.screen === 'main',
   addr: state.currentCabal,
-  cabal: state.cabales[state.currentCabal]
+  cabal: state.cabals[state.currentCabal]
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -40,10 +39,10 @@ class LayoutScreen extends Component {
   }
 
   render () {
-    const { show, cabal } = this.props
+    const { cabal } = this.props
     var self = this
 
-    if (!show || !cabal) {
+    if (!cabal) {
       return (
         <Fragment>
           <div />

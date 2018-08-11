@@ -15,13 +15,12 @@ const writeFile = promisify(fs.writeFile)
 const mkdir = promisify(fs.mkdir)
 
 var cabals = {}
-var stream = null
 
 export const viewCabal = ({addr}) => dispatch => {
   var cabal = cabals[addr]
   if (cabal) {
     dispatch({type: 'VIEW_CABAL', addr})
-    //storeOnDisk()
+    storeOnDisk()
   }
 }
 
@@ -35,9 +34,8 @@ export const confirmDeleteCabal = addr => dispatch => {
       con.removeAllListeners()
     }
   }
-  // obj.cabal.db.close()
   delete cabals[addr]
-  //storeOnDisk()
+  storeOnDisk()
   dispatch({ type: 'DELETE_CABAL', addr })
   dispatch({ type: 'DIALOGS_DELETE_CLOSE' })
 }
@@ -47,6 +45,16 @@ export const onCommand = ({addr, message}) => dispatch => {
   dispatch(commander(cabal, message))
 }
 
+export const updateCabal = (opts) => dispatch => {
+  var cabal = cabals[opts.addr]
+  cabal[opts.addr] = {
+    ...cabal,
+    ...opts
+  }
+
+  storeOnDisk()
+  dispatch({type: 'UPDATE_CABAL', ...opts})
+}
 export const joinChannel = ({addr, channel}) => dispatch => {
   if (channel.length > 0) {
     var cabal = cabals[addr]
@@ -105,7 +113,7 @@ export const viewChannel = ({addr, channel}) => dispatch => {
   cabal.channel = channel
   cabal.messages = []
   if (cabal.watcher) cabal.watcher.destroy()
-  //storeOnDisk()
+  storeOnDisk()
   cabal.on('join', function (username) {
     dispatch({type: 'UPDATE_CABAL', addr, users: cabal.users})
   })
@@ -128,13 +136,14 @@ export const viewChannel = ({addr, channel}) => dispatch => {
   })
 }
 
-export const showAddCabal = () => ({ type: 'SHOW_ADD_CABAL' })
-export const hideAddCabal = () => ({ type: 'HIDE_ADD_CABAL' })
-export const addCabal = ({input, username}) => dispatch => {
-  try {
-    var key = decode(input)
-    var addr = encode(key)
-  } catch (err) {
+export const changeScreen = ({screen}) => ({ type: 'CHANGE_SCREEN', screen })
+export const addCabal = ({addr, input, username}) => dispatch => {
+  if (!addr) {
+    try {
+      var key = decode(input)
+      addr = encode(key)
+    } catch (err) {
+    }
   }
   username = username || catnames.random()
 
@@ -172,25 +181,27 @@ export const loadFromDisk = () => async dispatch => {
   try {
     blob = await readFile(`${homedir()}/.cabal-desktop/cabals.json`, 'utf8')
   } catch (_) {
-    return
+    blob = '{}'
   }
 
   const pastcabals = JSON.parse(blob)
+  const cabalkeys = Object.keys(pastcabals)
 
-  for (const key of Object.keys(pastcabals)) {
+  for (const key of cabalkeys) {
     const opts = JSON.parse(pastcabals[key])
-    addCabal(opts)(dispatch)
+    dispatch(addCabal(opts))
   }
+  dispatch({type: 'CHANGE_SCREEN', screen: cabalkeys.length ? 'main' : 'addCabal'})
 }
 
 const storeOnDisk = async () => {
   const dir = `${homedir()}/.cabal-desktop`
   const cabalsState = Object.keys(cabals).reduce(
-    (acc, key) => ({
+    (acc, addr) => ({
       ...acc,
-      [key]: JSON.stringify({
-        username: cabals[key].username,
-        addr: cabals[key].addr
+      [addr]: JSON.stringify({
+        username: cabals[addr].username,
+        addr: cabals[addr].addr
       })
     }),
     {}

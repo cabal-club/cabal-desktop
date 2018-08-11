@@ -248,6 +248,24 @@ body {
 	font-weight: inherit;
 }
 /* Sidebar Specific */
+/* Cabals */
+.sidebar .cabals{
+  padding-bottom: 1rem;
+}
+.sidebar .cabals .heading{}
+.sidebar .cabals ul{}
+.sidebar .cabals ul li{}
+.sidebar .cabals ul li button{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  text-align: left;
+}
+.sidebar .cabals ul li.active{
+	background-color: rgba(255,255,255,0.10);
+	color: rgba(255,255,255,1);
+	font-weight: bold;
+}
 /* Channels */
 .sidebar .sidebar-scroll .channels{
 	padding-bottom: 1rem;
