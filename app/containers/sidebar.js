@@ -51,7 +51,7 @@ class SidebarScreen extends React.Component {
     var self = this
     const { addCabal, addr, cabals, cabal, username } = this.props
 
-    var userKeys = Object.keys(cabal.users)
+    var userKeys = Object.keys(cabal.users).sort()
     var channelKeys = Object.keys(cabal.channels)
     var cabalKeys = Object.keys(cabals)
 
