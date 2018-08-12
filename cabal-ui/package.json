@@ -1,0 +1,31 @@
+{
+  "name": "seed",
+  "version": "1.0.0",
+  "description": "A Pug + Sass + Browsersync seed.",
+  "main": "gulpfile.js",
+  "author": "Unknown",
+  "scripts": {
+    "start": "gulp",
+    "build": "gulp build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.9.3",
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^5.0.0",
+    "gulp-data": "^1.2.0",
+    "gulp-pug": "^4.0.1",
+    "gulp-sass": "^4.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "none"
+  },
+  "keywords": [
+    "jade",
+    "gulp",
+    "pug",
+    "sass",
+    "browsersync"
+  ]
+}

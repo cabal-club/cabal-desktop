@@ -1,0 +1,322 @@
+*
+	box-sizing: border-box
+html
+	font-size: 100%
+	font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif
+	-webkit-font-smoothing: antialiased
+	text-rendering: optimizeLegibility
+	vertical-align: baseline
+	height: 100%
+body
+	height: 100%
+
+/* Layout: Container */
+.client
+	display: flex
+	flex-direction: row
+	min-width: 560px
+	height: 100%
+
+
+/* Layout: Switch */
+.client__cabals
+	flex: 0 0 4rem
+	background-color: rgba(22,22,29,0.7)
+	background-color: rgba(22,22,29,1)
+	border-right: 1px solid rgba(255,255,255,0.10)
+	color: #fff
+	padding: 1rem
+	overflow-y: auto
+.client__cabals.hidden
+	display: none
+	visibility: hidden
+	width: 0
+.client__cabals::-webkit-scrollbar
+	display: none
+
+/* Switcher */
+.client__cabals .switcher
+	display: flex
+	flex-direction: column
+.client__cabals .switcher__item
+	display: flex
+	align-items: center
+	justify-content: center
+	border: 2px solid rgba(255,255,255,0.25)
+	width: 2rem
+	height: 2rem
+	margin: 0 0 0.75rem 0
+	//border-radius: 0.1875rem
+	border-radius: 100rem
+	transition: all 0.05s ease-in-out
+	font-size: 0.75rem
+	font-weight: 700
+	color: rgba(255,255,255,0.25)
+.client__cabals .switcher__item:hover
+	transform: scale(1.150)
+	border: 3px solid rgba(255,255,255,0.50)
+	color: rgba(255,255,255,0.50)
+	cursor: pointer
+.client__cabals .switcher__item--addnew
+.client__cabals .switcher__item--active
+	background-color: rgba(255,255,255,0.25)
+	background-color: #693AFA
+	border: none
+	color: rgba(255,255,255,1)!important
+
+/* Layout: Sidebar */
+.client__sidebar
+	flex: 0 0 13.75rem
+	background-color: rgba(22,22,29,0.7)
+	background-color: rgba(22,22,29,1)
+	color: #fff
+/* Sidebar */
+.client__sidebar .sidebar
+	height: 100%
+	display: flex
+	flex-direction: column
+.client__sidebar .sidebar .sidebar__header
+.client__sidebar .sidebar .sidebar__section
+	width: 13.75rem
+	overflow-x: hidden
+	overflow-y: auto
+	height: 100%
+.client__sidebar .sidebar .sidebar__section::-webkit-scrollbar
+	display: none
+
+
+/* Session */
+.client__sidebar .session
+	display: flex
+	align-items: center
+	width: 13.75rem
+	padding: 1rem
+.client__sidebar .session .session__avatar
+	flex-basis: 2rem
+.client__sidebar .session .session__avatar__img
+	width: 2rem
+	height: 2rem
+	border-radius: 0.1875rem
+	background-color: rgba(255,255,255,0.25)
+.client__sidebar .session .session__meta
+	flex-basis: 7.75rem
+	margin: 0 0.75rem 0 0.75rem
+.client__sidebar .session .session__meta h1, .sidebar .session .session__meta h2
+	white-space: nowrap
+	text-overflow: ellipsis
+	overflow: hidden
+.client__sidebar .session .session__meta h1
+	font-size: 0.875rem
+	font-weight: 700
+	margin-bottom: 0.25rem
+.client__sidebar .session .session__meta h2
+	font-size: 0.75rem
+	color: rgba(255,255,255,0.5)
+.client__sidebar .session .session__configuration
+	flex: 0 0 1.25rem
+	text-align: center
+	background-color: rgba(255,255,255,0)
+	opacity: 0.5
+	cursor: pointer
+	transition: all 0.05s ease-in-out
+.client__sidebar .session .session__configuration:hover
+	opacity: 0.75
+
+
+/* Collection */
+.client__sidebar .collection
+	margin-bottom: 2rem
+.client__sidebar .collection--push
+	margin-top: 1rem
+/* Collection heading */
+.client__sidebar .collection .collection__heading
+	display: table
+	width: 100%
+	padding: 0 1rem
+	margin-bottom: 0.25rem
+.client__sidebar .collection .collection__heading .collection__heading__title
+	display: table-cell
+	font-size: 0.75rem
+	font-weight: 600
+	color: rgba(255,255,255,0.5)
+	text-transform: uppercase
+	vertical-align: middle
+.client__sidebar .collection .collection__heading .collection__heading__handle
+	display: table-cell
+	width: 1.25rem
+	height: 1.25rem
+	vertical-align: middle
+	text-align: center
+	transition: all 0.05s ease-in-out
+	opacity: 0.5
+.client__sidebar .collection .collection__heading .collection__heading__handle:hover
+	opacity: 0.75
+/* Collection item */
+.client__sidebar .collection .collection__item
+	display: table
+	width: 100%
+	padding: 0.25rem 1rem 0.25rem 1rem
+	transition: all 0.05s ease-in-out
+.client__sidebar .collection .collection__item:hover
+	background-color: rgba(255,255,255,0.10)
+	cursor: pointer
+.client__sidebar .collection .collection__item .collection__item__icon
+	display: table-cell
+	width: 1.25rem
+	vertical-align: middle
+	text-align: center
+	opacity: 0.5
+.client__sidebar .collection .collection__item .collection__item__status
+	display: table-cell
+	width: 1.25rem
+	vertical-align: middle
+	text-align: center
+	opacity: 1
+.client__sidebar .collection .collection__item .collection__item__content
+	display: table-cell
+	display: inline-block
+	font-size: 0.875rem
+	line-height: 1.4
+	color: rgba(255,255,255,0.5)
+	padding: 0 0.5rem
+	width: 9.25rem
+	vertical-align: middle
+	white-space: nowrap
+	text-overflow: ellipsis
+	overflow: hidden
+.client__sidebar .collection .collection__item .collection__item__handle
+	display: table-cell
+	width: 1.25rem
+	height: 1.25rem
+	vertical-align: middle
+/* States */
+.client__sidebar .collection .collection__item.active .collection__item__content
+	font-weight: 700
+	color: rgba(255,255,255,1)
+.client__sidebar .collection .collection__item.active .collection__item__icon
+	opacity: 1
+
+
+/* Client main */
+.client__main
+	flex-grow: 1
+	background-color: #fff
+	height: 100%
+.client__main .window
+	display: flex
+	flex-direction: column
+	height: 100%
+.client__main .window__header
+
+/* Channel metadata */
+.client__main .channel-meta
+	display: table
+	width: 100%
+	padding: 1rem
+	border-bottom: 1px solid rgba(0,0,0,0.10)
+.client__main .channel-meta__data
+	display: table-cell
+	vertical-align: middle
+.client__main .channel-meta__data .channel-meta__data__details
+.client__main .channel-meta__data .channel-meta__data__details h1
+	font-size: 0.875rem
+	font-weight: 600
+	margin-bottom: 0.25rem
+.client__main .channel-meta__data .channel-meta__data__details h2
+	font-size: 0.75rem
+	color: rgba(0,0,0,0.5)
+.client__main .channel-meta__other
+	display: table-cell
+	vertical-align: middle
+	text-align: right
+.client__main .channel-meta__other .channel-meta__other__share
+	display: inline-block
+	vertical-align: middle
+	font-size: 0.875rem
+	font-weight: 600
+	margin-left: 1rem
+	border: 1px solid rgba(0,0,0,0.15)
+	padding: 0.4rem 0.875rem
+	border-radius: 3px
+	color: rgba(0,0,0,0.66)
+	transition: all 0.075s ease-in-out
+	cursor: pointer
+.client__main .channel-meta__other .channel-meta__other__share:hover
+	transform: scale(1.05)
+	box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.1)
+
+
+.client__main .channel-meta__other .channel-meta__other__more
+	display: inline-block
+	vertical-align: middle
+	margin-left: 1rem
+.client__main .window__main
+	flex-grow: 1
+	overflow-x: hidden
+	overflow-y: auto
+
+.client__main .messages
+	margin: 1rem 0
+.client__main .messages__item
+	display: table
+	width: 100%
+	margin-bottom: 0.33rem
+	margin-left: 0.125rem
+.client__main .messages__item__avatar
+	display: table-cell
+	padding: 0 1rem
+	width: 4rem
+.client__main .messages__item__avatar__img
+	width: 2rem
+	height: 2rem
+	border-radius: 0.1875rem
+	background-color: #000
+.client__main .messages__item__metadata
+	display: table-cell
+	padding: 0 1.5rem 0 0
+	font-size: 0.875rem
+	line-height: 1.5
+.client__main .messages__item__metadata h2
+	font-weight: 600
+.client__main .messages__item__metadata span
+	color: rgba(0,0,0,0.33)
+	font-size: 0.75rem
+	font-weight: 500
+	margin-left: 0.5rem
+.client__main .messages__item__metadata p.text
+	margin-bottom: 0.33rem
+
+.client__main .window__footer
+	margin: 0 1rem 1rem 1rem
+.client__main .composer
+	display: table
+	width: 100%
+	height: 40px
+	border: 2px solid rgba(0,0,0,0.25)
+	border-radius: 3px
+	//margin: 0 1rem 1rem 1rem
+	height: 2.5rem
+.client__main .composer .composer__meta
+	display: table-cell
+	width: 2.25rem
+	vertical-align: middle
+	border-right: 2px solid rgba(0,0,0,0.25)
+	text-align: center
+	cursor: pointer
+.client__main .composer .composer__input
+	display: table-cell
+	vertical-align: middle
+	padding: 0 1rem
+.client__main .composer .composer__input input
+	border: 0
+	display: block
+	width: 100%
+	vertical-align: middle
+	font-size: 0.875rem
+	outline: none
+.client__main .composer .composer__other
+	display: table-cell
+	width: 2.25rem
+	vertical-align: middle
+	text-align: center
+	cursor: pointer
