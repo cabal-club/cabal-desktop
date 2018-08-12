@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>icon-composerother</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon-composerother" transform="translate(-8.000000, -8.000000)">
+            <g>
+                <rect id="Rectangle-8" x="0" y="0" width="36" height="36"></rect>
+                <g id="Group" opacity="0.5" transform="translate(8.000000, 8.000000)" fill-rule="nonzero">
+                    <rect id="Rectangle-3-Copy" stroke="#000000" stroke-width="2" x="1" y="1" width="18" height="18" rx="9"></rect>
+                    <path d="M12.8292943,12 L7.17070571,12 C7.58254212,13.1651924 8.69378117,14 10,14 C11.3062188,14 12.4174579,13.1651924 12.8292943,12 Z" id="Rectangle-3-Copy-4" stroke="#000000" stroke-width="2"></path>
+                    <rect id="Path-Copy-2" fill="#000000" x="6" y="6" width="3" height="3" rx="1.5"></rect>
+                    <rect id="Path-Copy-3" fill="#000000" x="11" y="6" width="3" height="3" rx="1.5"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
