@@ -63,15 +63,23 @@ class writeScreen extends Component {
       )
     }
     return (
-      <form onSubmit={this.onsubmit.bind(this)}>
-        <input type='text'
-          id='message-bar'
-          name='message'
-          onKeyDown={this.onKeyDown.bind(this)}
-          className='fun composer'
-          aria-label='Type a message and press enter'
-          placeholder='Type a message and press enter' />
-      </form>
+      <div className={'composerContainer'}>
+        <div className={'composer'}>
+          {/* <div className={'composer__meta'}><img src='static/images/icon-composermeta.svg' /></div> */}
+          <div className={'composer__input'}>
+            <form onSubmit={this.onsubmit.bind(this)}>
+              <input
+                id='message-bar'
+                name='message'
+                onKeyDown={this.onKeyDown.bind(this)}
+                aria-label='Type a message and press enter'
+                placeholder='Write a message'
+              />
+            </form>
+          </div>
+          {/* <div className={'composer__other'}><img src='static/images/icon-composerother.svg' /></div> */}
+        </div>
+      </div>
     )
   }
 }

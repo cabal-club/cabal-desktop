@@ -1,7 +1,9 @@
 import React, { Fragment, Component } from 'react'
+import { clipboard } from 'electron'
 import { connect } from 'react-redux'
 
 import { getMessages } from '../actions'
+import CabalsList from './cabalsList'
 import Sidebar from './sidebar'
 import WriteContainer from './write'
 import MessagesContainer from './messages'
@@ -32,10 +34,17 @@ class LayoutScreen extends Component {
     this.scrollToBottom()
   }
 
+  copyClick () {
+    clipboard.writeText('cabal://' + this.props.addr)
+    alert('Copied cabal:// link to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.')
+  }
+
   scrollToBottom (force) {
     if (!force && !this.shouldAutoScroll) return
-    var messagesDiv = document.querySelector('.messages')
-    if (messagesDiv) messagesDiv.scrollTop = messagesDiv.scrollHeight
+    var messagesDiv = document.querySelector('.window__main')
+    if (messagesDiv) {
+      messagesDiv.scrollTop = messagesDiv.scrollHeight
+    }
   }
 
   render () {
@@ -50,24 +59,42 @@ class LayoutScreen extends Component {
       )
     }
 
-    function onscroll (event) {
+    var onscroll = (event) => {
       var node = event.target
-      if (node.scrollHeight <= node.clientHeight + node.scrollTop) self.shouldAutoScroll = true
-      else self.shouldAutoScroll = false
+      if (node.scrollHeight <= node.clientHeight + node.scrollTop) {
+        self.shouldAutoScroll = true
+      } else {
+        self.shouldAutoScroll = false
+      }
     }
 
     return (
-      <div className='layout'>
+      <div className='client'>
+        <CabalsList />
         <Sidebar />
-        <div className='content'>
-          <div className='messages-container'>
-            <div className='top-bar'>
-              <div className='channel-name'>{cabal.channel}</div>
+        <div className='client__main'>
+          <div className='window'>
+            <div className='window__header'>
+              <div className='channel-meta'>
+                <div className='channel-meta__data'>
+                  <div className='channel-meta__data__details'>
+                    <h1>#{cabal.channel}</h1>
+                    <h2>{Object.keys(cabal.users).length} peers connected</h2>
+                  </div>
+                </div>
+                <div className='channel-meta__other'>
+                  <div className='channel-meta__other__share' onClick={self.copyClick.bind(self)}>Share Cabal</div>
+                  {/* <div className='channel-meta__other__more'><img src='static/images/icon-channelother.svg' /></div> */}
+                </div>
+              </div>
             </div>
-            <MessagesContainer
-              cabal={cabal}
-              composerHeight={self.composerHeight}
-              onscroll={onscroll.bind(self)} />
+            <div className='window__main'>
+              <MessagesContainer
+                cabal={cabal}
+                composerHeight={self.composerHeight}
+                onscroll={onscroll.bind(self)}
+              />
+            </div>
             <WriteContainer />
           </div>
         </div>

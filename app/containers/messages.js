@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 
 import Avatar from './avatar'
 
@@ -8,7 +9,7 @@ export default function MessagesContainer (props) {
   if (messages.length === 0) {
     return (
       <div className='messages starterMessage'>
-      'This is a new channel. Send a message to start things off!'
+        'This is a new channel. Send a message to start things off!'
       </div>
     )
   }
@@ -16,41 +17,48 @@ export default function MessagesContainer (props) {
 
   if (messages.length > 0) {
     return (
-      <div className='messages'
-        style={{paddingBottom: composerHeight}}
-        onScroll={onscroll}>
-        {messages.map((message) => {
+      <div className='messages' onScroll={onscroll}>
+        {messages.map((message, index) => {
           var repeatedAuthor = message.author === lastAuthor
           var me = message.author === cabal.username
           lastAuthor = message.author
           if (message.type === 'local/system') {
-            return (<li className='system message clearfix'>
-              <div className='author'>System</div>
-              <pre>{message.content}</pre>
-            </li>)
+            return (
+              <div key={index} className='messages__item messages__item--system'>
+                <div className='messages__item__metadata'>
+                  <div className='messages__item__metadata__name'>System<span>{moment(message.time).format('h:mm A')}</span></div>
+                  <p className='text'>{message.content}</p>
+                </div>
+              </div>
+            )
           }
           if (message.type === 'chat/text') {
-            return (<li className={(me ? 'me' : '') + ' message clearfix'}>
-              {!repeatedAuthor &&
-                <div className='message-author'>
+            return (
+              <div key={index} className='messages__item'>
+                <div className='messages__item__avatar'>
                   <Avatar name={message.author} />
-                  <div className='author'>{message.author}</div>
                 </div>
-              }
-              <div className='message-meta'>
-                <div className='text'>{message.content}</div>
-                <span className='timestamp'>{message.time}</span>
+                <div className='messages__item__metadata'>
+                  <div className='messages__item__metadata__name'>{message.author}<span>{moment(message.time).format('h:mm A')}</span></div>
+                  <p className='text'>{message.content}</p>
+                </div>
               </div>
-            </li>)
+            )
           }
           if (message.type === 'chat/emote') {
-            return (<li className={(me ? 'me' : '') + ' message clearfix'}>
-              {!repeatedAuthor && <div className='author'>{message.author}</div>}
-              <div className='message-meta'>
-                <div className='text'>{message.content}</div>
-                <span className='timestamp'>{message.time}</span>
+            return (
+              <div key={index} className='messages__item messages__item--emote'>
+                <div className='messages__item__avatar'>
+                  <div className='messages__item__avatar__img'>
+                    <Avatar name={message.author} />
+                  </div>
+                </div>
+                <div className='messages__item__metadata'>
+                  <div className='messages__item__metadata__name'>{message.author}<span>{moment(message.time).format('h:mm A')}</span></div>
+                  <p className='text'>{message.content}</p>
+                </div>
               </div>
-            </li>)
+            )
           }
         })}
       </div>

@@ -24,6 +24,19 @@ module.exports = {
             'transform-object-rest-spread'
           ]
         }
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: 'style-loader',
+            options: {
+              hmr: true
+            }
+          },
+          'css-loader',
+          'sass-loader'
+        ]
       }
     ]
   }
