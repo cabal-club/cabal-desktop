@@ -96,10 +96,12 @@ export const getMessages = ({addr, channel, count}) => dispatch => {
           })
         }
         cabal.messages.push({
-          type: row.value.type,
-          time: strftime('%H:%M', new Date(row.value.time)),
           author: row.value.author,
-          content: row.value.content
+          content: row.value.content,
+          deleted: row.deleted,
+          key: row.value.key,
+          time: row.value.time,
+          type: row.value.type
         })
       })
     })

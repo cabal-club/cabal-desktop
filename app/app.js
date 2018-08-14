@@ -5,6 +5,8 @@ import AddCabalContainer from './containers/addCabal'
 import Layout from './containers/layout'
 import { loadFromDisk } from './actions'
 
+import styles from './styles/style.scss'
+
 const mapStateToProps = state => ({
   screen: state.screen
 })
