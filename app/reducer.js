@@ -20,7 +20,8 @@ const reducer = (state = defaultState, action) => {
     case 'VIEW_CABAL':
       return {
         ...state,
-        currentCabal: action.addr
+        currentCabal: action.addr,
+        currentChannel: action.channel
       }
     case 'ADD_CABAL':
       return {
