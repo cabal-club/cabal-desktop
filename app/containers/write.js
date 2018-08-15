@@ -8,7 +8,8 @@ const mapStateToProps = state => {
   return {
     addr: state.currentCabal,
     cabal,
-    users: cabal.users
+    users: cabal.users,
+    currentChannel: state.currentChannel
   }
 }
 
@@ -22,12 +23,26 @@ class writeScreen extends Component {
     super(props)
     this.minimumHeight = 48
     this.defaultHeight = 17 + this.minimumHeight
+    this.focusInput = this.focusInput.bind(this);
+    // state = {
+    //   oldMessages:{}
+    // }
+  }
+
+  componentDidMount(){
+    this.focusInput()
+  }
+
+  componentDidUpdate(prevProps){
+    if (this.props.currentChannel !== prevProps.currentChannel){
+      this.focusInput()
+    }
   }
 
   onKeyDown (e) {
     const {cabal} = this.props
     if (e.key === 'Tab') {
-      var el = document.querySelector('#message-bar')
+      var el = this.textInput
       var line = el.value
       var users = Object.keys(cabal.users).sort()
       var pattern = (/^(\w+)$/)
@@ -37,12 +52,15 @@ class writeScreen extends Component {
         users = users.filter(user => user.startsWith(match[0]))
         if (users.length > 0) el.value = users[0] + ': '
       }
+      e.preventDefault()
+      e.stopPropagation()
+      el.focus();
     }
   }
 
   onsubmit (e) {
     const data = form(e.target)
-    var el = document.querySelector('#message-bar')
+    var el = this.textInput
     el.value = ''
     const {addr, addMessage, onCommand} = this.props
     var opts = {message: data.message, addr}
@@ -50,6 +68,11 @@ class writeScreen extends Component {
     else addMessage(opts)
     e.preventDefault()
     e.stopPropagation()
+  }
+
+  focusInput () {
+    this.textInput.focus();
+    this.textInput.value = ''
   }
 
   render () {
@@ -62,6 +85,7 @@ class writeScreen extends Component {
         </Fragment>
       )
     }
+
     return (
       <div className={'composerContainer'}>
         <div className={'composer'}>
@@ -72,6 +96,7 @@ class writeScreen extends Component {
                 id='message-bar'
                 name='message'
                 onKeyDown={this.onKeyDown.bind(this)}
+                ref={(input) => { this.textInput = input;}} 
                 aria-label='Type a message and press enter'
                 placeholder='Write a message'
               />
