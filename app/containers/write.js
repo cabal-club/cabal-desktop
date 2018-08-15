@@ -24,13 +24,12 @@ class writeScreen extends Component {
     this.minimumHeight = 48
     this.defaultHeight = 17 + this.minimumHeight
     this.focusInput = this.focusInput.bind(this);
-    // state = {
-    //   oldMessages:{}
-    // }
+    this.resizeTextInput = this.resizeTextInput.bind(this);
   }
 
   componentDidMount(){
     this.focusInput()
+    this.resizeTextInput()
   }
 
   componentDidUpdate(prevProps){
@@ -55,19 +54,32 @@ class writeScreen extends Component {
       e.preventDefault()
       e.stopPropagation()
       el.focus();
+    } else if (e.keyCode === 13 && e.shiftKey){
+      this.textInput.value = this.textInput.value + "\n"
+      e.preventDefault()
+      e.stopPropagation()
+    } else if (e.keyCode === 13 && !e.shiftKey){
+      const data = form(this.formField)
+      var el = this.textInput
+      el.value = ''
+      const {addr, addMessage, onCommand} = this.props
+      var opts = {message: data.message, addr}
+      if (data.message.startsWith('/')) onCommand(opts)
+      else addMessage(opts)
+      e.preventDefault()
+      e.stopPropagation()
     }
   }
 
   onsubmit (e) {
-    const data = form(e.target)
-    var el = this.textInput
-    el.value = ''
-    const {addr, addMessage, onCommand} = this.props
-    var opts = {message: data.message, addr}
-    if (data.message.startsWith('/')) onCommand(opts)
-    else addMessage(opts)
+    // only prevent default keydown now handles logic to better support shift commands
     e.preventDefault()
     e.stopPropagation()
+  }
+
+  resizeTextInput () {
+    this.textInput.style.height = "5px";
+    this.textInput.style.height = (this.textInput.scrollHeight)+"px";
   }
 
   focusInput () {
@@ -91,11 +103,14 @@ class writeScreen extends Component {
         <div className={'composer'}>
           {/* <div className={'composer__meta'}><img src='static/images/icon-composermeta.svg' /></div> */}
           <div className={'composer__input'}>
-            <form onSubmit={this.onsubmit.bind(this)}>
-              <input
+            <form 
+              onSubmit={this.onsubmit.bind(this)}
+              ref={(form) => { this.formField = form;}}>
+              <textarea
                 id='message-bar'
                 name='message'
                 onKeyDown={this.onKeyDown.bind(this)}
+                onKeyUp={(e) => this.resizeTextInput()}
                 ref={(input) => { this.textInput = input;}} 
                 aria-label='Type a message and press enter'
                 placeholder='Write a message'

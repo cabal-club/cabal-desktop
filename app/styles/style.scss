@@ -442,6 +442,8 @@ form {
   .messages__item__metadata p.text {
     margin-bottom: 0.33rem;
     word-break: break-word;
+    word-wrap: break-word;
+    white-space: pre-wrap;
   }
 
   .composerContainer {
@@ -451,11 +453,10 @@ form {
   .composer {
     display: table;
     width: 100%;
-    height: 40px;
     border: 2px solid rgba(0, 0, 0, 0.25);
     border-radius: 3px;
-    height: 2.5rem;
     transition: all 0.1s ease-in-out;
+    padding: .5rem 0;
 
     &:hover {
       border-color: rgba(0, 0, 0, 0.5);
@@ -471,9 +472,23 @@ form {
     }
 
     .composer__input {
-      display: table-cell;
-      vertical-align: middle;
       padding: 0 1rem;
+    }
+
+    .composer__input form{
+      width: 100%;
+      display: flex;
+      align-content: center;
+    }
+
+    .composer__input textarea {
+      border: 0;
+      display: block;
+      width: 100%;
+      vertical-align: middle;
+      font-size: 0.875rem;
+      outline: none;
+      max-height: 200px; // this is a guess!?
     }
 
     .composer__input input {
@@ -590,6 +605,12 @@ form {
   }
 
   input {
+    width: 20rem;
+    margin: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  textarea {
     width: 20rem;
     margin: 0.5rem;
     padding: 0.5rem;
