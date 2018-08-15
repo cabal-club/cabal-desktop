@@ -116,11 +116,19 @@ form {
   color: rgba(255, 255, 255, 0.25);
 }
 
+.client__cabals .switcher__item.--addnew img{
+  opacity: 0.25;
+}
+
 .client__cabals .switcher__item:hover {
   transform: scale(1.15);
   border: 3px solid rgba(255, 255, 255, 0.5);
   color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
+}
+
+.client__cabals .switcher__item:hover img {
+  opacity: 0.5;
 }
 
 .client__cabals .switcher__item--active {
@@ -166,11 +174,12 @@ form {
     flex-basis: 2rem;
   }
 
-  .session .session__avatar__img {
+  .session .session__avatar__img {}
+
+  .session .session__avatar__img .identicon {
     width: 2rem;
     height: 2rem;
-    border-radius: 0.1875rem;
-    background-color: rgba(255, 255, 255, 0.25);
+    border-radius: 10rem;
   }
 
   .session .session__meta {
@@ -254,6 +263,7 @@ form {
 
   .collection .collection__heading .collection__heading__handle:hover {
     opacity: 0.75;
+    transform: scale(1.2);
   }
 
   /* Collection item */
@@ -395,7 +405,7 @@ form {
   .messages__item {
     display: flex;
     width: 100%;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.6rem;
     margin-left: 0.125rem;
   }
 
@@ -406,7 +416,7 @@ form {
 
   .messages__item__avatar .identicon {
     overflow: hidden;
-    border-radius: 0.1875rem;
+    border-radius: 10rem;
   }
 
   .messages__item__metadata {
