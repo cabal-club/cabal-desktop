@@ -44,8 +44,8 @@ class CabalsListScreen extends React.Component {
               </div>
             )
           })}
-          <div className='switcher__item switcher__item--addnew' onClick={self.joinCabal.bind(self)}>
-            <span>+</span>
+          <div className='switcher__item --addnew' onClick={self.joinCabal.bind(self)}>
+            <img src='static/images/icon-newchannel.svg' />
           </div>
         </div>
       </div>
