@@ -5,11 +5,14 @@
   "scripts": {
     "build": "webpack",
     "start": "DEBUG=* electron .",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
+  "productName": "Cabal",
   "repository": "cabal-club/cabal-desktop",
-  "author": "Karissa McKelvey",
-  "license": "GPLv3",
+  "author": "Cabal Club",
+  "license": "GPL-3.0",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
@@ -17,6 +20,8 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "css-loader": "^1.0.0",
+    "electron": "^1.7.10",
+    "electron-builder": "^20.28.1",
     "node-sass": "^4.9.3",
     "prettier-standard": "^8.0.0",
     "sass-loader": "^7.1.0",
@@ -31,7 +36,6 @@
     "dat-encoding": "^5.0.1",
     "dialogs": "^1.1.20",
     "discovery-swarm": "^5.1.1",
-    "electron": "^1.7.10",
     "electron-default-menu": "^1.0.1",
     "get-form-data": "^2.0.0",
     "mirror-folder": "^2.1.1",
@@ -55,7 +59,7 @@
     "util-promisify": "^2.1.0"
   },
   "build": {
-    "appId": "com.datproject.cabal",
+    "appId": "club.cabal.desktop",
     "mac": {
       "category": "public.app-category.utilities"
     },
