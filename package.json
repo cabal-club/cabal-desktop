@@ -34,6 +34,7 @@
     "electron": "^1.7.10",
     "electron-default-menu": "^1.0.1",
     "get-form-data": "^2.0.0",
+    "linkify-it": "^2.0.3",
     "mirror-folder": "^2.1.1",
     "moment": "^2.22.2",
     "ms": "^2.1.1",

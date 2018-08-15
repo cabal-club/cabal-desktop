@@ -1,7 +1,10 @@
 import React from 'react'
 import moment from 'moment'
+import createLinkify from 'linkify-it'
 
 import Avatar from './avatar'
+
+const linkify = createLinkify()
 
 export default function MessagesContainer (props) {
   const { cabal, onscroll, composerHeight } = props
@@ -27,7 +30,7 @@ export default function MessagesContainer (props) {
               <div key={index} className='messages__item messages__item--system'>
                 <div className='messages__item__metadata'>
                   <div className='messages__item__metadata__name'>System<span>{moment(message.time).format('h:mm A')}</span></div>
-                  <p className='text'>{message.content}</p>
+                  <p className='text'>{enrich(message.content)}</p>
                 </div>
               </div>
             )
@@ -40,7 +43,7 @@ export default function MessagesContainer (props) {
                 </div>
                 <div className='messages__item__metadata'>
                   <div className='messages__item__metadata__name'>{message.author}<span>{moment(message.time).format('h:mm A')}</span></div>
-                  <p className='text'>{message.content}</p>
+                  <p className='text'>{enrich(message.content)}</p>
                 </div>
               </div>
             )
@@ -55,7 +58,7 @@ export default function MessagesContainer (props) {
                 </div>
                 <div className='messages__item__metadata'>
                   <div className='messages__item__metadata__name'>{message.author}<span>{moment(message.time).format('h:mm A')}</span></div>
-                  <p className='text'>{message.content}</p>
+                  <p className='text'>{enrich(message.content)}</p>
                 </div>
               </div>
             )
@@ -64,4 +67,30 @@ export default function MessagesContainer (props) {
       </div>
     )
   }
+}
+
+function enrich (content) {
+  if (!linkify.pretest(content) || !linkify.test(content)) {
+    return content
+  }
+
+  let elements = []
+  let _lastIndex = 0
+
+  linkify.match(content).forEach(({ index, lastIndex, text, url }) => {
+    let nonLinkedText = content.substring(_lastIndex, index)
+    nonLinkedText && elements.push(nonLinkedText)
+    _lastIndex = lastIndex
+    elements.push(
+      <a
+        key={index}
+        className='link'
+        href={url}
+      >{text}</a>
+    )
+  })
+
+  elements.push(content.substring(_lastIndex, content.length))
+
+  return elements
 }
