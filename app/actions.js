@@ -131,7 +131,9 @@ export const viewChannel = ({addr, channel}) => dispatch => {
     channel: cabal.channel,
     channels: cabal.channels
   })
-  dispatch({type: 'VIEW_CABAL', addr})
+  dispatch({type: 'VIEW_CABAL', 
+    addr,
+    channel: cabal.channel})
   dispatch(getMessages({addr, channel, count: 100}))
   cabal.watcher = cabal.watch(channel, () => {
     dispatch(getMessages({addr, channel, count: 1}))
