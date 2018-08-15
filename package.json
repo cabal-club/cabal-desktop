@@ -26,7 +26,7 @@
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
-    "cabal-node": "^2.0.1",
+    "cabal-core": "^2.3.0",
     "cat-names": "^1.0.2",
     "dat-encoding": "^5.0.1",
     "dialogs": "^1.1.20",
