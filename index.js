@@ -100,6 +100,11 @@ app.on('ready', () => {
   })
   win.loadURL(`file://${__dirname}/index.html`)
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+
+  win.webContents.on('will-navigate', (event, url) => {
+    event.preventDefault()
+    shell.openExternal(url)
+  })
 })
 
 app.on('window-all-closed', () => app.quit())
