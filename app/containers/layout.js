@@ -20,14 +20,17 @@ const mapDispatchToProps = dispatch => ({
 class LayoutScreen extends Component {
   constructor (props) {
     super(props)
+    this.state = {showEmojiPicker:false}
     this.shouldAutoScroll = true
     this.scrollTop = 0
     this.composerHeight = 55
+    this.toggleEmoji = this.toggleEmoji.bind(this);
   }
 
   componentDidMount () {
     var messagesDiv = document.querySelector('.messages')
     if (messagesDiv) messagesDiv.scrollTop = this.scrollTop
+    console.log(this.state)
   }
 
   componentDidUpdate () {
@@ -47,6 +50,10 @@ class LayoutScreen extends Component {
     }
   }
 
+  toggleEmoji(bool) {
+    this.setState({showEmojiPicker: bool === false ? false : !this.state.showEmojiPicker})
+  }
+
   render () {
     const { cabal } = this.props
     var self = this
@@ -60,6 +67,7 @@ class LayoutScreen extends Component {
     }
 
     var onscroll = (event) => {
+      console.log("I got clicked")
       var node = event.target
       if (node.scrollHeight <= node.clientHeight + node.scrollTop) {
         self.shouldAutoScroll = true
@@ -70,8 +78,8 @@ class LayoutScreen extends Component {
 
     return (
       <div className='client'>
-        <CabalsList />
-        <Sidebar />
+        <CabalsList toggleEmojis={this.toggleEmoji}/>
+        <Sidebar toggleEmojis={this.toggleEmoji}/>
         <div className='client__main'>
           <div className='window'>
             <div className='window__header'>
@@ -93,9 +101,10 @@ class LayoutScreen extends Component {
                 cabal={cabal}
                 composerHeight={self.composerHeight}
                 onscroll={onscroll.bind(self)}
+                toggleEmojis={this.toggleEmoji}
               />
             </div>
-            <WriteContainer />
+            <WriteContainer showEmojiPicker={this.state.showEmojiPicker} toggleEmojis={this.toggleEmoji}/>
           </div>
         </div>
       </div>

@@ -7,7 +7,7 @@ import Avatar from './avatar'
 const linkify = createLinkify()
 
 export default function MessagesContainer (props) {
-  const { cabal, onscroll, composerHeight } = props
+  const { cabal, onscroll, toggleEmojis, composerHeight } = props
   var messages = cabal.messages
   if (messages.length === 0) {
     return (
@@ -20,7 +20,7 @@ export default function MessagesContainer (props) {
 
   if (messages.length > 0) {
     return (
-      <div className='messages' onScroll={onscroll}>
+      <div className='messages' onScroll={onscroll} onClick={(e) => toggleEmojis(false)}>
         {messages.map((message, index) => {
           var repeatedAuthor = message.author === lastAuthor
           var me = message.author === cabal.username

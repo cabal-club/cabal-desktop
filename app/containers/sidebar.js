@@ -65,7 +65,7 @@ class SidebarScreen extends React.Component {
     const { addr, cabal } = this.props
     var userKeys = this.sortByProperty(Object.keys(cabal.users))
     return (
-      <div className='client__sidebar'>
+      <div className='client__sidebar' onClick={(e) => this.props.toggleEmojis(false)}>
         <div className='sidebar'>
           <div className='session'>
             <div className='session__avatar'>
