@@ -76,12 +76,13 @@ form {
 
 /* Layout: Switch */
 .client__cabals {
-  flex: 0 0 4rem;
+  flex: 0 0 4.8rem;
   background-color: rgba(22, 22, 29, 0.7);
   background-color: #16161d;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   color: #fff;
   padding: 1rem;
+  padding-top: 44px;
   overflow-y: auto;
 }
 
@@ -99,6 +100,7 @@ form {
 .client__cabals .switcher {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .client__cabals .switcher__item {
@@ -168,6 +170,7 @@ form {
     align-items: center;
     width: 13.75rem;
     padding: 1rem;
+    -webkit-app-region: drag;
   }
 
   .session .session__avatar {
@@ -396,6 +399,10 @@ form {
     flex-grow: 1;
     overflow-x: hidden;
     overflow-y: auto;
+  }
+
+  .window__header{
+    -webkit-app-region: drag;
   }
 
   .messages {

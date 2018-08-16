@@ -96,7 +96,10 @@ app.on('ready', () => {
     width: 800,
     height: 600,
     minWidth: 640,
-    minHeight: 395
+    minHeight: 395,
+    frame: false,
+    // titleBarStyle: 'hidden'
+    titleBarStyle: 'hiddenInset'
   })
   win.loadURL(`file://${__dirname}/index.html`)
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
