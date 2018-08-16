@@ -76,7 +76,8 @@
           "type": "link",
           "path": "/Applications"
         }
-      ]
+      ],
+      "artifactName": "cabal-desktop-${version}-mac.${ext}"
     },
     "linux": {
       "target": "AppImage",
