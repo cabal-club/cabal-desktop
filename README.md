@@ -14,3 +14,9 @@ $ npm install             # install dependencies
 $ npm run build           # build assets
 $ npm start               # start the application
 ```
+
+## Distribute
+
+```
+$ npm run dist
+```
