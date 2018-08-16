@@ -76,7 +76,15 @@
           "type": "link",
           "path": "/Applications"
         }
-      ]
+      ],
+      "artifactName": "cabal-desktop-${version}-mac.${ext}"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Network"
+    },
+    "appImage": {
+      "artifactName": "cabal-desktop-${version}-linux-${arch}.${ext}"
     },
     "protocols": [
       {
