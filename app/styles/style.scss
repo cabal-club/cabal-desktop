@@ -447,7 +447,13 @@ form {
   }
 
   .messages__item__metadata a.link {
-    color: #004de4;
+    color: #1170c7;
+    text-decoration: none;
+
+    &:hover {
+      color: #24609e;
+      text-decoration: underline;
+    }
   }
 
   .composerContainer {
