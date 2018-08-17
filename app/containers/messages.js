@@ -39,11 +39,11 @@ export default function MessagesContainer (props) {
             return (
               <div key={index} className='messages__item'>
                 <div className='messages__item__avatar'>
-                  <Avatar name={message.author} />
+                {repeatedAuthor ? null : <Avatar name={message.author} />}
                 </div>
                 <div className='messages__item__metadata'>
-                  <div className='messages__item__metadata__name'>{message.author}<span>{moment(message.time).format('h:mm A')}</span></div>
-                  <p className='text'>{enrich(message.content)}</p>
+                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author}<span>{moment(message.time).format('h:mm A')}</span></div>}
+                  <p className={repeatedAuthor ? 'text indent' : 'text'}>{enrich(message.content)}</p>
                 </div>
               </div>
             )
@@ -53,12 +53,12 @@ export default function MessagesContainer (props) {
               <div key={index} className='messages__item messages__item--emote'>
                 <div className='messages__item__avatar'>
                   <div className='messages__item__avatar__img'>
-                    <Avatar name={message.author} />
+                  {repeatedAuthor ? null : <Avatar name={message.author} />}
                   </div>
                 </div>
                 <div className='messages__item__metadata'>
-                  <div className='messages__item__metadata__name'>{message.author}<span>{moment(message.time).format('h:mm A')}</span></div>
-                  <p className='text'>{enrich(message.content)}</p>
+                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author}<span>{moment(message.time).format('h:mm A')}</span></div>}
+                  <p className={repeatedAuthor ? 'text indent' : 'text'}>{enrich(message.content)}</p>
                 </div>
               </div>
             )

@@ -434,6 +434,11 @@ form {
     line-height: 1.5;
   }
 
+  .messages__item__metadata .text.indent{
+    margin-left: 32px;
+    margin-top: -8px; // HACK!!
+  }
+
   .messages__item__metadata .messages__item__metadata__name {
     font-weight: 700;
     margin-top: -5px;
