@@ -7,7 +7,8 @@
     "start": "DEBUG=* electron .",
     "watch": "webpack --watch",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "dist:multi": "electron-builder -mlw"
   },
   "productName": "Cabal",
   "repository": "cabal-club/cabal-desktop",
