@@ -157,7 +157,7 @@ class writeScreen extends Component {
               onSelect={(e) => this.addEmoji(e)}
               native={true}
               sheetSize={64}
-              showPreview={false}
+              // showPreview={false}
               autoFocus={true}
               emoji={"point_up"}
               title={"Pick an emoji..."}
