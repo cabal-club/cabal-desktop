@@ -40,7 +40,7 @@ class writeScreen extends Component {
   }
 
   componentWillUnmount () {
-    window.removeEventListener('focus')
+    window.removeEventListener('focus', (e) => this.focusInput())
   }
 
   componentDidUpdate(prevProps){
