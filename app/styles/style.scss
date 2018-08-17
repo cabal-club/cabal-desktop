@@ -461,6 +461,10 @@ form {
     cursor: text;
   }
 
+  .emoji-mart-scroll{
+    overflow-x: hidden;
+  }
+
   .composer {
     display: flex;
     justify-content: space-between;

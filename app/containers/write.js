@@ -101,13 +101,14 @@ class writeScreen extends Component {
     this.textInput.value = this.textInput.value + emoji.native
     this.resizeTextInput()
     this.focusInput()
+    this.props.toggleEmojis(false)
   }
 
   resizeTextInput () {
     this.textInput.style.height = "10px";
     this.textInput.style.height = (this.textInput.scrollHeight)+"px";
-    if(this.textInput.scrollHeight < 48){
-      this.emojiPicker.style.bottom = (88)+"px";
+    if(this.textInput.scrollHeight < 28){
+      this.emojiPicker.style.bottom = (68)+"px";
     } else {
       this.emojiPicker.style.bottom = (this.textInput.scrollHeight+40)+"px";
     }
@@ -133,10 +134,10 @@ class writeScreen extends Component {
     }
 
     return (
-      <div className={'composerContainer'} onClick={(e) => this.focusInput()}>
-        <div className={'composer'}>
+      <div className={'composerContainer'}>
+        <div className={'composer'} >
           {/* <div className={'composer__meta'}><img src='static/images/icon-composermeta.svg' /></div> */}
-          <div className={'composer__input'}>
+          <div className={'composer__input'} onClick={(e) => this.focusInput()}>
             <form 
               onSubmit={this.onsubmit.bind(this)}
               ref={(form) => { this.formField = form;}}>
@@ -151,10 +152,15 @@ class writeScreen extends Component {
               />
             </form>
           </div>
-          <div ref={(el) => { this.emojiPicker = el;}} style={{ position: 'absolute', bottom: '100px', right: '20px', display: 'none'}}>
+          <div ref={(el) => { this.emojiPicker = el;}} style={{ position: 'absolute', bottom: '100px', right: '18px', display: 'none'}}>
             <Picker 
-              onSelect={this.addEmoji}
+              onSelect={(e) => this.addEmoji(e)}
+              native={true}
               sheetSize={64}
+              showPreview={false}
+              autoFocus={true}
+              emoji={"point_up"}
+              title={"Pick an emoji..."}
               />
           </div>
           <div className={'composer__other'} onClick={(e) => this.props.toggleEmojis()}><img src='static/images/icon-composerother.svg' /></div>
