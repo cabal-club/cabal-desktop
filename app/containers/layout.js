@@ -33,8 +33,11 @@ class LayoutScreen extends Component {
     console.log(this.state)
   }
 
-  componentDidUpdate () {
-    this.scrollToBottom()
+  componentDidUpdate (prevProps) {
+    if (prevProps.cabal != this.props.cabal){
+      this.scrollToBottom()
+    }
+    //if you're in the same cabal and a new message arrives we should show a button prompting a scroll to bottom
   }
 
   copyClick () {

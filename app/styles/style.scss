@@ -436,12 +436,13 @@ form {
 
   .messages__item__metadata .text.indent{
     margin-left: 32px;
-    margin-top: -8px; // HACK!!
+    margin-top: -12px; // HACK!!
   }
 
   .messages__item__metadata .messages__item__metadata__name {
     font-weight: 700;
     margin-top: -5px;
+    display: flex;
   }
 
   .messages__item__metadata span {
@@ -471,6 +472,11 @@ form {
   .composerContainer {
     margin: 0 1rem 1rem 1rem;
     cursor: text;
+  }
+
+  .emoji__container{
+    box-shadow: 0 4px 10px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
   }
 
   .emoji-mart-scroll{

@@ -152,7 +152,7 @@ class writeScreen extends Component {
               />
             </form>
           </div>
-          <div ref={(el) => { this.emojiPicker = el;}} style={{ position: 'absolute', bottom: '100px', right: '18px', display: 'none'}}>
+          <div className={'emoji__container'} ref={(el) => { this.emojiPicker = el;}} style={{ position: 'absolute', bottom: '100px', right: '16px', display: 'none'}}>
             <Picker 
               onSelect={(e) => this.addEmoji(e)}
               native={true}
