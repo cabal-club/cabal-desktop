@@ -37,6 +37,15 @@ module.exports = {
           'css-loader',
           'sass-loader'
         ]
+      },
+      {
+        test: /\.css$/,
+        use: [
+          { loader: 'style-loader', options: {
+              hmr: true
+            } },
+          { loader: 'css-loader' }
+        ]
       }
     ]
   }

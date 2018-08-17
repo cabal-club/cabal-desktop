@@ -38,6 +38,7 @@
     "dialogs": "^1.1.20",
     "discovery-swarm": "^5.1.1",
     "electron-default-menu": "^1.0.1",
+    "emoji-mart": "^2.8.1",
     "get-form-data": "^2.0.0",
     "linkify-it": "^2.0.3",
     "mirror-folder": "^2.1.1",

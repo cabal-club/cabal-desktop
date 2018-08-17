@@ -32,7 +32,7 @@ class CabalsListScreen extends React.Component {
     const { addr, cabals } = this.props
     var cabalKeys = Object.keys(cabals).sort()
     return (
-      <div className='client__cabals'>
+      <div className='client__cabals' onClick={(e) => this.props.toggleEmojis(false)}>
         <div className='switcher'>
           {cabalKeys.map(function (key) {
             var cabal = cabals[key]

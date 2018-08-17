@@ -465,15 +465,23 @@ form {
 
   .composerContainer {
     margin: 0 1rem 1rem 1rem;
+    cursor: text;
+  }
+
+  .emoji-mart-scroll{
+    overflow-x: hidden;
   }
 
   .composer {
-    display: table;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
     border: 2px solid rgba(0, 0, 0, 0.25);
     border-radius: 3px;
     transition: all 0.1s ease-in-out;
     padding: .5rem 0;
+    min-height: 48px;
 
     &:hover {
       border-color: rgba(0, 0, 0, 0.5);
@@ -489,6 +497,7 @@ form {
     }
 
     .composer__input {
+      width: 100%;
       padding: 0 1rem;
     }
 
@@ -518,11 +527,18 @@ form {
     }
 
     .composer__other {
+      align-self: flex-end;
       display: table-cell;
-      width: 2.25rem;
+      width: 3rem;
+      height: 1.5rem;
       vertical-align: middle;
       text-align: center;
       cursor: pointer;
+      transform: scale(1);
+    }
+
+    .composer__other:hover{
+      transform: scale(1.02);
     }
   }
 }

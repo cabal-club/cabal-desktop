@@ -3,6 +3,9 @@ import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import { addMessage, onCommand } from '../actions'
 
+import '../../node_modules/emoji-mart/css/emoji-mart.css'
+import { Picker } from 'emoji-mart'
+
 const mapStateToProps = state => {
   var cabal = state.cabals[state.currentCabal]
   return {
@@ -24,17 +27,29 @@ class writeScreen extends Component {
     this.minimumHeight = 48
     this.defaultHeight = 17 + this.minimumHeight
     this.focusInput = this.focusInput.bind(this);
+    this.clearInput = this.clearInput.bind(this);
     this.resizeTextInput = this.resizeTextInput.bind(this);
+    this.addEmoji = this.addEmoji.bind(this);
+    this.showEmojis = this.showEmojis.bind(this);
   }
 
   componentDidMount(){
     this.focusInput()
     this.resizeTextInput()
+    window.addEventListener('focus', (e) => this.focusInput())
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('focus')
   }
 
   componentDidUpdate(prevProps){
+    if (this.props.showEmojiPicker !== prevProps.showEmojiPicker){
+      this.showEmojis()
+    }
     if (this.props.currentChannel !== prevProps.currentChannel){
       this.focusInput()
+      this.props.toggleEmojis(false)
     }
   }
 
@@ -77,13 +92,33 @@ class writeScreen extends Component {
     e.stopPropagation()
   }
 
+  showEmojis() {
+    this.emojiPicker.style.display = this.emojiPicker.style.display === 'none' ? 'block' : 'none';
+    this.resizeTextInput()
+  }
+
+  addEmoji (emoji) {
+    this.textInput.value = this.textInput.value + emoji.native
+    this.resizeTextInput()
+    this.focusInput()
+    this.props.toggleEmojis(false)
+  }
+
   resizeTextInput () {
-    this.textInput.style.height = "5px";
+    this.textInput.style.height = "10px";
     this.textInput.style.height = (this.textInput.scrollHeight)+"px";
+    if(this.textInput.scrollHeight < 28){
+      this.emojiPicker.style.bottom = (68)+"px";
+    } else {
+      this.emojiPicker.style.bottom = (this.textInput.scrollHeight+40)+"px";
+    }
   }
 
   focusInput () {
     this.textInput.focus();
+  }
+
+  clearInput () {
     this.textInput.value = ''
   }
 
@@ -100,9 +135,9 @@ class writeScreen extends Component {
 
     return (
       <div className={'composerContainer'}>
-        <div className={'composer'}>
+        <div className={'composer'} >
           {/* <div className={'composer__meta'}><img src='static/images/icon-composermeta.svg' /></div> */}
-          <div className={'composer__input'}>
+          <div className={'composer__input'} onClick={(e) => this.focusInput()}>
             <form 
               onSubmit={this.onsubmit.bind(this)}
               ref={(form) => { this.formField = form;}}>
@@ -117,7 +152,18 @@ class writeScreen extends Component {
               />
             </form>
           </div>
-          {/* <div className={'composer__other'}><img src='static/images/icon-composerother.svg' /></div> */}
+          <div ref={(el) => { this.emojiPicker = el;}} style={{ position: 'absolute', bottom: '100px', right: '18px', display: 'none'}}>
+            <Picker 
+              onSelect={(e) => this.addEmoji(e)}
+              native={true}
+              sheetSize={64}
+              // showPreview={false}
+              autoFocus={true}
+              emoji={"point_up"}
+              title={"Pick an emoji..."}
+              />
+          </div>
+          <div className={'composer__other'} onClick={(e) => this.props.toggleEmojis()}><img src='static/images/icon-composerother.svg' /></div>
         </div>
       </div>
     )
