@@ -94,5 +94,11 @@
     "appImage": {
       "artifactName": "cabal-desktop-${version}-linux-${arch}.${ext}"
     },
+    "win": {
+      "publisherName": "cabal"
+    },
+    "nsis": {
+      "artifactName": "cabal-desktop-${version}-windows.${ext}"
+    }
   }
 }
