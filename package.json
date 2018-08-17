@@ -7,7 +7,8 @@
     "start": "DEBUG=* electron .",
     "watch": "webpack --watch",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "dist:multi": "electron-builder -mlw"
   },
   "productName": "Cabal",
   "repository": "cabal-club/cabal-desktop",
@@ -61,6 +62,14 @@
   },
   "build": {
     "appId": "club.cabal.desktop",
+    "protocols": [
+      {
+        "name": "Dat Link",
+        "schemes": [
+          "dat"
+        ]
+      }
+    ],
     "mac": {
       "category": "public.app-category.utilities"
     },
@@ -86,13 +95,11 @@
     "appImage": {
       "artifactName": "cabal-desktop-${version}-linux-${arch}.${ext}"
     },
-    "protocols": [
-      {
-        "name": "Dat Link",
-        "schemes": [
-          "dat"
-        ]
-      }
-    ]
+    "win": {
+      "publisherName": "cabal"
+    },
+    "nsis": {
+      "artifactName": "cabal-desktop-${version}-windows.${ext}"
+    }
   }
 }
