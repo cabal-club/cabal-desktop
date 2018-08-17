@@ -61,6 +61,14 @@
   },
   "build": {
     "appId": "club.cabal.desktop",
+    "protocols": [
+      {
+        "name": "Dat Link",
+        "schemes": [
+          "dat"
+        ]
+      }
+    ],
     "mac": {
       "category": "public.app-category.utilities"
     },
@@ -86,13 +94,5 @@
     "appImage": {
       "artifactName": "cabal-desktop-${version}-linux-${arch}.${ext}"
     },
-    "protocols": [
-      {
-        "name": "Dat Link",
-        "schemes": [
-          "dat"
-        ]
-      }
-    ]
   }
 }
