@@ -1,4 +1,5 @@
 const nodeExternals = require('webpack-node-externals')
+const path = require('path')
 
 module.exports = {
   entry: './app/index.js',
@@ -16,7 +17,7 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        include: `${__dirname}/app`,
+        include: path.resolve(__dirname, 'app'),
         loader: 'babel-loader',
         query: {
           presets: ['react'],
