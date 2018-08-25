@@ -27,9 +27,6 @@ footer, header, hgroup, menu, nav, section {
 body {
 	line-height: 1;
 }
-ol, ul {
-	list-style: none;
-}
 blockquote, q {
 	quotes: none;
 }
@@ -453,11 +450,34 @@ form {
     margin-left: 0.5rem;
   }
 
-  .messages__item__metadata p.text {
+  .messages__item__metadata div.text {
     margin-bottom: 0.33rem;
     word-break: break-word;
     word-wrap: break-word;
     white-space: pre-wrap;
+
+    pre {
+      border-radius: 0.5em;
+      background-color: #f7f7f7;
+      padding: 1em;
+      font-weight: 700;
+    }
+
+    code {
+      font-family: monospace;
+    }
+
+    em {
+      font-style: italic;
+    }
+
+    strong {
+      font-weight: 700;
+    }
+
+    ul {
+      margin-left: 1rem;
+    }
   }
 
   .messages__item__metadata a.link {
