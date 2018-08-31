@@ -7,7 +7,6 @@
     "start:electron": "electron .",
     "start:webpack": "webpack",
     "start": "cross-env NODE_ENV=development npm-run-all --parallel start:*",
-    "watch": "webpack --watch",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "dist:multi": "electron-builder -mlw"
