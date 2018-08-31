@@ -1,5 +1,7 @@
 'use strict'
+
 const { app, BrowserWindow, shell, Menu } = require('electron')
+require('electron-reload')(__dirname)
 
 const template = [
   {
