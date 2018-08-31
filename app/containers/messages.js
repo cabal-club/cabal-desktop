@@ -10,6 +10,10 @@ export default function MessagesContainer (props) {
   const enrichText = (content) => {
     return remark().use(remarkReact).use(remarkEmoji).processSync(content).contents
   }
+
+  const renderTimestamp = _moment =>  _moment.format(timestamp(_moment))
+
+
   const { cabal, onscroll, toggleEmojis, composerHeight } = props
   var messages = cabal.messages
   if (messages.length === 0) {
@@ -32,7 +36,7 @@ export default function MessagesContainer (props) {
             return (
               <div key={index} className='messages__item messages__item--system'>
                 <div className='messages__item__metadata'>
-                  <div className='messages__item__metadata__name'>System<span>{moment(message.time).format('h:mm A')}</span></div>
+                  <div className='messages__item__metadata__name'>System<span>{renderTimestamp(moment(message.time))}</span></div>
                   <div className='text'>{enrichText(message.content)}</div>
                 </div>
               </div>
@@ -45,7 +49,7 @@ export default function MessagesContainer (props) {
                   {repeatedAuthor ? null : <Avatar name={message.author} />}
                 </div>
                 <div className='messages__item__metadata'>
-                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author}<span>{moment(message.time).format('h:mm A')}</span></div>}
+                  {repeatedAuthor ? null : <div className='messages__item__metadata__name' >{message.author}<span>{renderTimestamp(moment(message.time))}</span></div>}
                   <div className={repeatedAuthor ? 'text indent' : 'text'}>
                     {enrichText(message.content)}
                   </div>
@@ -73,3 +77,37 @@ export default function MessagesContainer (props) {
     )
   }
 }
+
+const today = moment()
+function timestamp(message) {
+  if ( !(message instanceof moment) ) return null
+
+  return strategy( matcher(message) )
+}
+
+function strategy(matches) {
+  const base = 'h:mm A'
+
+  if (!matches[2].isSame) {
+    return `DD/MM/YYYY - ${base}`
+  }
+
+  if (!matches[1].isSame) {
+    return `ddd DD MMM  - ${base}`
+  }
+
+  if (!matches[0].isSame) {
+    return `ddd - ${base}`
+  }
+
+  return base
+}
+
+function matcher(_moment) {
+  return [
+    {unit: 'day', isSame: null},
+    {unit: 'week', isSame: null},
+    {unit: 'year', isSame: null}
+  ].map( ({unit}) => ({ unit, isSame: today.isSame(_moment, unit)}) )
+}
+
