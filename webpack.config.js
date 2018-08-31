@@ -4,6 +4,7 @@ const path = require('path')
 module.exports = {
   entry: './app/index.js',
   target: 'electron',
+  watch: process.env.NODE_ENV === 'development',
   externals: [nodeExternals()],
   output: {
     filename: 'static/build.js',
@@ -42,9 +43,12 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          { loader: 'style-loader', options: {
+          {
+            loader: 'style-loader',
+            options: {
               hmr: true
-            } },
+            }
+          },
           { loader: 'css-loader' }
         ]
       }

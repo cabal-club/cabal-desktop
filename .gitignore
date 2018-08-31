@@ -3,3 +3,4 @@ static/build.js
 *.sw[op]
 .DS*
 dist
+.idea
