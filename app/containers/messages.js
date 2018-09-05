@@ -81,33 +81,15 @@ export default function MessagesContainer (props) {
 const today = moment()
 function timestamp(message) {
   if ( !(message instanceof moment) ) return null
-
-  return strategy( matcher(message) )
-}
-
-function strategy(matches) {
+  
   const base = 'h:mm A'
-
-  if (!matches[2].isSame) {
+  if (!today.isSame(message, 'year')) {
     return `DD/MM/YYYY - ${base}`
-  }
-
-  if (!matches[1].isSame) {
+  } else if (!today.isSame(message, 'week')) {
     return `ddd DD MMM  - ${base}`
-  }
-
-  if (!matches[0].isSame) {
+  } else if (!today.isSame(message, 'day')) {
     return `ddd - ${base}`
+  } else {
+    return base
   }
-
-  return base
 }
-
-function matcher(_moment) {
-  return [
-    {unit: 'day', isSame: null},
-    {unit: 'week', isSame: null},
-    {unit: 'year', isSame: null}
-  ].map( ({unit}) => ({ unit, isSame: today.isSame(_moment, unit)}) )
-}
-
