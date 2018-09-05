@@ -26,14 +26,14 @@ class writeScreen extends Component {
     super(props)
     this.minimumHeight = 48
     this.defaultHeight = 17 + this.minimumHeight
-    this.focusInput = this.focusInput.bind(this);
-    this.clearInput = this.clearInput.bind(this);
-    this.resizeTextInput = this.resizeTextInput.bind(this);
-    this.addEmoji = this.addEmoji.bind(this);
-    this.showEmojis = this.showEmojis.bind(this);
+    this.focusInput = this.focusInput.bind(this)
+    this.clearInput = this.clearInput.bind(this)
+    this.resizeTextInput = this.resizeTextInput.bind(this)
+    this.addEmoji = this.addEmoji.bind(this)
+    this.showEmojis = this.showEmojis.bind(this)
   }
 
-  componentDidMount(){
+  componentDidMount () {
     this.focusInput()
     this.resizeTextInput()
     window.addEventListener('focus', (e) => this.focusInput())
@@ -43,11 +43,11 @@ class writeScreen extends Component {
     window.removeEventListener('focus', (e) => this.focusInput())
   }
 
-  componentDidUpdate(prevProps){
-    if (this.props.showEmojiPicker !== prevProps.showEmojiPicker){
+  componentDidUpdate (prevProps) {
+    if (this.props.showEmojiPicker !== prevProps.showEmojiPicker) {
       this.showEmojis()
     }
-    if (this.props.currentChannel !== prevProps.currentChannel){
+    if (this.props.currentChannel !== prevProps.currentChannel) {
       this.focusInput()
       this.props.toggleEmojis(false)
     }
@@ -61,26 +61,40 @@ class writeScreen extends Component {
       var users = Object.keys(cabal.users).sort()
       var pattern = (/^(\w+)$/)
       var match = pattern.exec(line)
-
       if (match) {
         users = users.filter(user => user.startsWith(match[0]))
         if (users.length > 0) el.value = users[0] + ': '
       }
       e.preventDefault()
       e.stopPropagation()
-      el.focus();
-    } else if (e.keyCode === 13 && e.shiftKey){
-      this.textInput.value = this.textInput.value + "\n"
+      el.focus()
+    } else if (e.keyCode === 13 && e.shiftKey) {
+      this.textInput.value = this.textInput.value + '\n'
       e.preventDefault()
       e.stopPropagation()
-    } else if (e.keyCode === 13 && !e.shiftKey){
+    } else if (e.keyCode === 13 && !e.shiftKey) {
       const data = form(this.formField)
+      if (data.message.trim().length === 0) {
+        e.preventDefault()
+        e.stopPropagation()
+        return
+      }
       var el = this.textInput
       el.value = ''
       const {addr, addMessage, onCommand} = this.props
-      var opts = {message: data.message, addr}
-      if (data.message.startsWith('/')) onCommand(opts)
-      else addMessage(opts)
+      let message = {
+        content: {
+          channel: this.props.currentChannel,
+          text: data.message
+        },
+        type: 'chat/text'
+      }
+      var opts = {message, addr}
+      if (data.message.startsWith('/')) {
+        onCommand(opts)
+      } else {
+        addMessage(opts)
+      }
       e.preventDefault()
       e.stopPropagation()
     }
@@ -92,8 +106,8 @@ class writeScreen extends Component {
     e.stopPropagation()
   }
 
-  showEmojis() {
-    this.emojiPicker.style.display = this.emojiPicker.style.display === 'none' ? 'block' : 'none';
+  showEmojis () {
+    this.emojiPicker.style.display = this.emojiPicker.style.display === 'none' ? 'block' : 'none'
     this.resizeTextInput()
   }
 
@@ -105,17 +119,19 @@ class writeScreen extends Component {
   }
 
   resizeTextInput () {
-    this.textInput.style.height = "10px";
-    this.textInput.style.height = (this.textInput.scrollHeight)+"px";
-    if(this.textInput.scrollHeight < 28){
-      this.emojiPicker.style.bottom = (68)+"px";
+    this.textInput.style.height = '10px'
+    this.textInput.style.height = (this.textInput.scrollHeight) + 'px'
+    if (this.textInput.scrollHeight < 28) {
+      this.emojiPicker.style.bottom = (68) + 'px'
     } else {
-      this.emojiPicker.style.bottom = (this.textInput.scrollHeight+40)+"px";
+      this.emojiPicker.style.bottom = (this.textInput.scrollHeight + 40) + 'px'
     }
   }
 
   focusInput () {
-    this.textInput.focus();
+    if (this.textInput) {
+      this.textInput.focus()
+    }
   }
 
   clearInput () {
@@ -138,29 +154,29 @@ class writeScreen extends Component {
         <div className={'composer'} >
           {/* <div className={'composer__meta'}><img src='static/images/icon-composermeta.svg' /></div> */}
           <div className={'composer__input'} onClick={(e) => this.focusInput()}>
-            <form 
+            <form
               onSubmit={this.onsubmit.bind(this)}
-              ref={(form) => { this.formField = form;}}>
+              ref={(form) => { this.formField = form }}>
               <textarea
                 id='message-bar'
                 name='message'
                 onKeyDown={this.onKeyDown.bind(this)}
                 onKeyUp={(e) => this.resizeTextInput()}
-                ref={(input) => { this.textInput = input;}} 
+                ref={(input) => { this.textInput = input }}
                 aria-label='Type a message and press enter'
                 placeholder='Write a message'
               />
             </form>
           </div>
-          <div className={'emoji__container'} ref={(el) => { this.emojiPicker = el;}} style={{ position: 'absolute', bottom: '100px', right: '16px', display: 'none'}}>
-            <Picker 
+          <div className={'emoji__container'} ref={(el) => { this.emojiPicker = el }} style={{ position: 'absolute', bottom: '100px', right: '16px', display: 'none'}}>
+            <Picker
               onSelect={(e) => this.addEmoji(e)}
-              native={true}
+              native
               sheetSize={64}
               // showPreview={false}
-              autoFocus={true}
-              emoji={"point_up"}
-              title={"Pick an emoji..."}
+              autoFocus
+              emoji={'point_up'}
+              title={'Pick an emoji...'}
               />
           </div>
           <div className={'composer__other'} onClick={(e) => this.props.toggleEmojis()}><img src='static/images/icon-composerother.svg' /></div>
