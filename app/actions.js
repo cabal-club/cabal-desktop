@@ -1,13 +1,13 @@
 import { homedir } from 'os'
 import { decode, encode } from 'dat-encoding'
-import Cabal from '@noffle/cabal-core'
+import Cabal from 'cabal-core'
 import catnames from 'cat-names'
 import collect from 'collect-stream'
 import del from 'del'
 import fs from 'fs'
 import path from 'path'
 import promisify from 'util-promisify'
-import Swarm from '@noffle/cabal-core/swarm'
+import Swarm from 'cabal-core/swarm'
 
 import commander from './commander'
 
