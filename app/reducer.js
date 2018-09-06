@@ -21,7 +21,7 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         currentCabal: action.addr,
-        currentChannel: action.channel
+        currentChannel: action.channel || 'default'
       }
     case 'ADD_CABAL':
       return {

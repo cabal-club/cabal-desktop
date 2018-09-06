@@ -1,6 +1,6 @@
 {
   "name": "cabal-desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Cabal p2p offline-first desktop application",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
@@ -35,14 +35,16 @@
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
+    "cabal-core": "^3.0.2",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
-    "cabal-core": "^2.3.0",
     "cat-names": "^1.0.2",
+    "collect-stream": "^1.2.1",
     "dat-encoding": "^5.0.1",
+    "del": "^3.0.0",
     "dialogs": "^1.1.20",
     "discovery-swarm": "^5.1.1",
     "electron-default-menu": "^1.0.1",

@@ -90,7 +90,7 @@ class LayoutScreen extends Component {
                 <div className='channel-meta__data'>
                   <div className='channel-meta__data__details'>
                     <h1>#{cabal.channel}</h1>
-                    <h2>{Object.keys(cabal.users).length} peers connected</h2>
+                    {/* <h2>{Object.keys(cabal.users).length} peers connected</h2> */}
                   </div>
                 </div>
                 <div className='channel-meta__other'>
