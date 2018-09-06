@@ -1,6 +1,6 @@
 # Cabal Desktop
 
-Decentralized private chat, built with Electron.
+> Decentralized chat, built with Electron.
 
 <center><img src="screenshot.png"/></center>
 
