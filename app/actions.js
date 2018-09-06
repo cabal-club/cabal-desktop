@@ -218,13 +218,21 @@ const initializeCabal = ({addr, username, dispatch}) => {
     cabal.users.getAll((err, users) => {
       if (err) return
       cabal.client.users = users
+      // Correct any bad user data
+      Object.keys(cabal.client.users).forEach((key) => {
+        let user = cabal.client.users[key]
+        if (!user.name || user.name.trim().length === 0) {
+          user.name = user.name || `conspirator ${user.key.substring(0, 4)}`
+        }
+        cabal.client.users[key] = user
+      })
 
       const updateLocalKey = () => {
         cabal.getLocalKey((err, lkey) => {
           if (err) return
-          Object.keys(users).forEach((key) => {
+          Object.keys(cabal.client.users).forEach((key) => {
             if (key === lkey) {
-              cabal.client.user = users[key]
+              cabal.client.user = cabal.client.users[key]
               cabal.client.user.local = true
               cabal.client.user.online = true
               cabal.client.user.key = key

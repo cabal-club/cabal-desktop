@@ -55,7 +55,9 @@ class SidebarScreen extends React.Component {
       if (a[property]) {
         return (a[property] || '').toLowerCase() < (b[property] || '').toLowerCase() ? -direction : direction
       } else {
-        return (a || '').toLowerCase() < (b || '').toLowerCase() ? -direction : direction
+        if (a.toLowerCase && b.toLowerCase) {
+          return (a || '').toLowerCase() < (b || '').toLowerCase() ? -direction : direction
+        }
       }
     })
   }
