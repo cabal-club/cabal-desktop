@@ -12,6 +12,7 @@ const mapStateToProps = state => {
     addr: state.currentCabal,
     cabals: state.cabals,
     cabal,
+    channelMessagesUnread: cabal.channelMessagesUnread,
     username: cabal.username
   }
 }
@@ -99,6 +100,9 @@ class SidebarScreen extends React.Component {
                 <div key={channel} onClick={this.selectChannel.bind(this, channel)} className={cabal.channel === channel ? 'collection__item active' : 'collection__item'}>
                   <div className='collection__item__icon'><img src='static/images/icon-channel.svg' /></div>
                   <div className='collection__item__content'>{channel}</div>
+                  {this.props.channelMessagesUnread && this.props.channelMessagesUnread[channel] > 0 &&
+                    <div className='collection__item__messagesUnreadCount'>{this.props.channelMessagesUnread[channel]}</div>
+                  }
                   <div className='collection__item__handle' />
                 </div>
               )}
