@@ -81,17 +81,15 @@ export const changeUsername = ({addr, username}) => dispatch => {
 export const getMessages = ({addr, channel, count}) => dispatch => {
   if (channel.length === 0) return
   var cabal = cabals[addr]
-  if (!cabal.client.messages) cabal.client.messages = []
-
   let rs = cabal.messages.read(channel, {limit: count, lt: '~'})
   collect(rs, (err, msgs) => {
     if (err) return
     msgs.reverse()
-    cabal.client.messages = []
+    cabal.client.channelMessages[channel] = []
     msgs.forEach((msg) => {
       let author = cabal.client.users[msg.key].name
       let {type, timestamp, content} = msg.value
-      cabal.client.messages.push({
+      cabal.client.channelMessages[channel].push({
         author,
         content: content.text,
         key: msg.key + timestamp,
@@ -99,7 +97,7 @@ export const getMessages = ({addr, channel, count}) => dispatch => {
         type
       })
     })
-    dispatch({type: 'UPDATE_CABAL', addr, messages: cabal.client.messages})
+    dispatch({type: 'UPDATE_CABAL', addr, messages: cabal.client.channelMessages[channel]})
   })
 }
 
@@ -107,13 +105,13 @@ export const viewChannel = ({addr, channel}) => dispatch => {
   if (channel.length === 0) return
   var cabal = cabals[addr]
   cabal.client.channel = channel
-  cabal.client.messages = []
+  cabal.client.channelMessagesUnread[channel] = 0
   storeOnDisk()
 
   // dont pass around swarm and watcher, only the things that matter.
   dispatch({type: 'ADD_CABAL',
     addr,
-    messages: cabal.client.messages,
+    messages: cabal.client.channelMessages[channel],
     username: cabal.username,
     users: cabal.client.users,
     channel: cabal.client.channel,
@@ -172,14 +170,19 @@ const initializeCabal = ({addr, username, dispatch}) => {
     cabal.client.channels = []
     cabal.client.user = {}
     cabal.client.users = {}
-    cabal.client.messages = []
+    cabal.client.channelMessages = {}
+    cabal.client.channelMessagesUnread = {}
     cabal.client.channelListeners = {}
 
     const onMessage = (message) => {
+      let {type, timestamp, content} = message.value
+      let channel = content.channel
       if (cabal.client.users[message.key]) {
         let author = cabal.client.users[message.key].name
-        let {type, timestamp, content} = message.value
-        cabal.client.messages.push({
+        if (!cabal.client.channelMessages[channel]) {
+          cabal.client.channelMessages[channel] = []
+        }
+        cabal.client.channelMessages[channel].push({
           author,
           content: content.text,
           key: message.key + timestamp,
@@ -193,7 +196,16 @@ const initializeCabal = ({addr, username, dispatch}) => {
           })
         }
       }
-      dispatch({type: 'UPDATE_CABAL', addr, messages: cabal.client.messages})
+      if (cabal.client.channel === channel) {
+        dispatch({type: 'UPDATE_CABAL', addr, messages: cabal.client.channelMessages[channel]})
+      } else {
+        if (!cabal.client.channelMessagesUnread[channel]) {
+          cabal.client.channelMessagesUnread[channel] = 1
+        } else {
+          cabal.client.channelMessagesUnread[channel] = cabal.client.channelMessagesUnread[channel] + 1
+        }
+        dispatch({type: 'UPDATE_CABAL', addr, channelMessagesUnread: cabal.client.channelMessagesUnread})
+      }
     }
 
     cabal.channels.events.on('add', (channel) => {

@@ -272,6 +272,7 @@ form {
     width: 100%;
     padding: 0.25rem 1rem 0.25rem 1rem;
     transition: all 0.05s ease-in-out;
+    position: relative;
   }
 
   .collection .collection__item:hover {
@@ -307,6 +308,23 @@ form {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+  }
+
+  .collection .collection__item .collection__item__messagesUnreadCount {
+    display: table-cell;
+    display: inline-block;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: #fff;
+    background-color: #693AFA;
+    padding: 0 0.5rem;
+    border-radius: 5rem;
+    vertical-align: middle;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    position: absolute;
+    right: 1rem;
   }
 
   .collection .collection__item .collection__item__handle {

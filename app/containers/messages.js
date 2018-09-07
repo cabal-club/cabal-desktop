@@ -15,7 +15,7 @@ export default function MessagesContainer (props) {
   if (messages.length === 0) {
     return (
       <div className='messages starterMessage'>
-        'This is a new channel. Send a message to start things off!'
+        This is a new channel. Send a message to start things off!
       </div>
     )
   }
@@ -58,7 +58,7 @@ export default function MessagesContainer (props) {
               <div key={index} className='messages__item messages__item--emote'>
                 <div className='messages__item__avatar'>
                   <div className='messages__item__avatar__img'>
-                  {repeatedAuthor ? null : <Avatar name={message.author} />}
+                    {repeatedAuthor ? null : <Avatar name={message.author} />}
                   </div>
                 </div>
                 <div className='messages__item__metadata'>
