@@ -42,10 +42,10 @@ export default function MessagesContainer (props) {
             return (
               <div key={index} className='messages__item'>
                 <div className='messages__item__avatar'>
-                  {repeatedAuthor ? null : <Avatar name={message.author} />}
+                  {repeatedAuthor ? null : <Avatar name={message.author || 'conspirator'} />}
                 </div>
                 <div className='messages__item__metadata'>
-                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author}<span>{moment(message.time).format('h:mm A')}</span></div>}
+                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author || 'conspirator'}<span>{moment(message.time).format('h:mm A')}</span></div>}
                   <div className={repeatedAuthor ? 'text indent' : 'text'}>
                     {enrichText(message.content)}
                   </div>
@@ -58,7 +58,7 @@ export default function MessagesContainer (props) {
               <div key={index} className='messages__item messages__item--emote'>
                 <div className='messages__item__avatar'>
                   <div className='messages__item__avatar__img'>
-                    {repeatedAuthor ? null : <Avatar name={message.author} />}
+                    {repeatedAuthor ? null : <Avatar name={message.author || 'conspirator'} />}
                   </div>
                 </div>
                 <div className='messages__item__metadata'>

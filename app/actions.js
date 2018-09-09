@@ -15,6 +15,8 @@ const readFile = promisify(fs.readFile)
 const writeFile = promisify(fs.writeFile)
 const mkdir = promisify(fs.mkdir)
 
+const DEFAULT_CHANNEL = 'default'
+
 var cabals = {}
 
 export const viewCabal = ({addr}) => dispatch => {
@@ -57,8 +59,6 @@ export const updateCabal = (opts) => dispatch => {
 }
 export const joinChannel = ({addr, channel}) => dispatch => {
   if (channel.length > 0) {
-    // var cabal = cabals[addr]
-    // cabal.joinChannel(channel)
     dispatch(viewChannel({addr, channel}))
   }
 }
@@ -73,7 +73,7 @@ export const leaveChannel = ({addr, channel}) => dispatch => {
 
 export const changeUsername = ({addr, username}) => dispatch => {
   var currentCabal = cabals[addr]
-  currentCabal.username = username || catnames.random()
+  currentCabal.username = username
   currentCabal.publishNick(username)
   dispatch({ type: 'UPDATE_CABAL', addr, username })
 }
@@ -140,7 +140,6 @@ export const addCabal = ({addr, input, username}) => dispatch => {
     initializeCabal({addr, username, dispatch})
   } else {
     // Create new Cabal
-    username = username || catnames.random()
     var tempDir = path.join(homedir(), '.cabal-desktop/.tmp')
     var newCabal = Cabal(tempDir, null, {username})
     newCabal.getLocalKey((err, key) => {
@@ -151,6 +150,7 @@ export const addCabal = ({addr, input, username}) => dispatch => {
 }
 
 const initializeCabal = ({addr, username, dispatch}) => {
+  username = username || 'conspirator'
   var dir = path.join(homedir(), '.cabal-desktop', addr)
   var cabal = Cabal(dir, addr ? 'cabal://' + addr : null, {username})
 
@@ -164,11 +164,12 @@ const initializeCabal = ({addr, username, dispatch}) => {
     cabal.key = addr
     var swarm = Swarm(cabal)
 
+    cabal.username = username
     cabal.client.swarm = swarm
     cabal.client.addr = addr
-    cabal.client.channel = 'default'
+    cabal.client.channel = DEFAULT_CHANNEL
     cabal.client.channels = []
-    cabal.client.user = {}
+    cabal.client.user = {name: username}
     cabal.client.users = {}
     cabal.client.channelMessages = {}
     cabal.client.channelMessagesUnread = {}
@@ -209,16 +210,21 @@ const initializeCabal = ({addr, username, dispatch}) => {
     }
 
     cabal.channels.events.on('add', (channel) => {
-      cabal.client.channels.push(channel)
-      if (!cabal.client.channelListeners[channel]) {
-        cabal.messages.events.on(channel, onMessage)
-        cabal.client.channelListeners[channel] = onMessage
+      if (!cabal.client.channels.includes(channel)) {
+        cabal.client.channels.push(channel)
+        if (!cabal.client.channelListeners[channel]) {
+          cabal.messages.events.on(channel, onMessage)
+          cabal.client.channelListeners[channel] = onMessage
+        }
       }
     })
     cabal.channels.get((err, channels) => {
       if (err) return console.error(err)
       cabal.client.channels = channels
-      dispatch(joinChannel({addr, channel: 'default'}))
+      if (cabal.client.channels.length === 0) {
+        cabal.client.channels.push(DEFAULT_CHANNEL)
+      }
+      dispatch(joinChannel({addr, channel: DEFAULT_CHANNEL}))
       cabal.client.channels.forEach((channel) => {
         if (!cabal.client.channelListeners[channel]) {
           cabal.messages.events.on(channel, onMessage)
@@ -230,25 +236,24 @@ const initializeCabal = ({addr, username, dispatch}) => {
     cabal.users.getAll((err, users) => {
       if (err) return
       cabal.client.users = users
-      // Correct any bad user data
-      Object.keys(cabal.client.users).forEach((key) => {
-        let user = cabal.client.users[key]
-        if (!user.name || user.name.trim().length === 0) {
-          user.name = user.name || `conspirator ${user.key.substring(0, 4)}`
-        }
-        cabal.client.users[key] = user
-      })
-
       const updateLocalKey = () => {
         cabal.getLocalKey((err, lkey) => {
           if (err) return
+          if (!Object.keys(cabal.client.users).includes(lkey)) {
+            cabal.client.users[lkey] = {
+              local: true,
+              online: true,
+              key: lkey,
+              name: cabal.client.user.name || 'conspirator'
+            }
+          }
           Object.keys(cabal.client.users).forEach((key) => {
             if (key === lkey) {
               cabal.client.user = cabal.client.users[key]
               cabal.client.user.local = true
               cabal.client.user.online = true
               cabal.client.user.key = key
-              cabal.username = cabal.client.user.name || catnames.random()
+              cabal.username = cabal.client.user.name
               cabal.publishNick(cabal.username)
             }
           })
@@ -330,7 +335,7 @@ const storeOnDisk = async () => {
     (acc, addr) => ({
       ...acc,
       [addr]: JSON.stringify({
-        username: cabals[addr].client.user.name,
+        username: cabals[addr].username || 'conspirator',
         addr: cabals[addr].client.addr
       })
     }),
