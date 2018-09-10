@@ -65,8 +65,7 @@
     "remark-emoji": "^2.0.1",
     "remark-react": "^4.0.3",
     "strftime": "^0.10.0",
-    "to2": "^1.0.0",
-    "util-promisify": "^2.1.0"
+    "to2": "^1.0.0"    
   },
   "build": {
     "appId": "club.cabal.desktop",

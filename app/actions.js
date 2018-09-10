@@ -6,21 +6,28 @@ import collect from 'collect-stream'
 import del from 'del'
 import fs from 'fs'
 import path from 'path'
-import promisify from 'util-promisify'
 import Swarm from 'cabal-core/swarm'
-
 import commander from './commander'
 
-const readFile = promisify(fs.readFile)
-const writeFile = promisify(fs.writeFile)
-const mkdir = promisify(fs.mkdir)
+const {
+  readFile,
+  writeFile,
+  readdir,
+  mkdir,
+} = fs.promises
 
 const DEFAULT_CHANNEL = 'default'
+const HOME_DIR = homedir()
+const DATA_DIR = path.join(HOME_DIR, '.cabal-desktop')
+const TEMP_DIR = path.join(DATA_DIR, '.tmp')
+const STATE_FILE = path.join(DATA_DIR, 'cabals.json')
+const DEFAULT_USERNAME = "conspirator"
+const NOOP = function () {}
 
-var cabals = {}
+const cabals = {}
 
 export const viewCabal = ({addr}) => dispatch => {
-  var cabal = cabals[addr]
+  const cabal = cabals[addr]
   if (cabal) {
     dispatch({type: 'VIEW_CABAL', addr})
     storeOnDisk()
@@ -44,12 +51,11 @@ export const confirmDeleteCabal = addr => dispatch => {
 }
 
 export const onCommand = ({addr, message}) => dispatch => {
-  var cabal = cabals[addr]
-  dispatch(commander(cabal, message))
+  dispatch(commander(cabals[addr], message))
 }
 
 export const updateCabal = (opts) => dispatch => {
-  var cabal = cabals[opts.addr]
+  const cabal = cabals[opts.addr]
   cabal[opts.addr] = {
     ...cabal,
     ...opts
@@ -72,7 +78,7 @@ export const leaveChannel = ({addr, channel}) => dispatch => {
 }
 
 export const changeUsername = ({addr, username}) => dispatch => {
-  var currentCabal = cabals[addr]
+  const currentCabal = cabals[addr]
   currentCabal.username = username
   currentCabal.publishNick(username)
   dispatch({ type: 'UPDATE_CABAL', addr, username })
@@ -80,15 +86,15 @@ export const changeUsername = ({addr, username}) => dispatch => {
 
 export const getMessages = ({addr, channel, count}) => dispatch => {
   if (channel.length === 0) return
-  var cabal = cabals[addr]
-  let rs = cabal.messages.read(channel, {limit: count, lt: '~'})
+  const cabal = cabals[addr]
+  const rs = cabal.messages.read(channel, {limit: count, lt: '~'})
   collect(rs, (err, msgs) => {
     if (err) return
     msgs.reverse()
     cabal.client.channelMessages[channel] = []
     msgs.forEach((msg) => {
-      let author = cabal.client.users[msg.key].name
-      let {type, timestamp, content} = msg.value
+      const author = cabal.client.users[msg.key].name
+      const {type, timestamp, content} = msg.value
       cabal.client.channelMessages[channel].push({
         author,
         content: content.text,
@@ -103,7 +109,7 @@ export const getMessages = ({addr, channel, count}) => dispatch => {
 
 export const viewChannel = ({addr, channel}) => dispatch => {
   if (channel.length === 0) return
-  var cabal = cabals[addr]
+  const cabal = cabals[addr]
   cabal.client.channel = channel
   cabal.client.channelMessagesUnread[channel] = 0
   storeOnDisk()
@@ -129,7 +135,7 @@ export const changeScreen = ({screen}) => ({ type: 'CHANGE_SCREEN', screen })
 export const addCabal = ({addr, input, username}) => dispatch => {
   if (!addr) {
     try {
-      var key = decode(input)
+      const key = decode(input)
       addr = encode(key)
     } catch (err) {
     }
@@ -140,19 +146,18 @@ export const addCabal = ({addr, input, username}) => dispatch => {
     initializeCabal({addr, username, dispatch})
   } else {
     // Create new Cabal
-    var tempDir = path.join(homedir(), '.cabal-desktop/.tmp')
-    var newCabal = Cabal(tempDir, null, {username})
+    const newCabal = Cabal(TEMP_DIR, null, {username})
     newCabal.getLocalKey((err, key) => {
       initializeCabal({addr: key, username, dispatch})
-      del(tempDir, {force: true})
+      del(TEMP_DIR, {force: true})
     })
   }
 }
 
 const initializeCabal = ({addr, username, dispatch}) => {
-  username = username || 'conspirator'
-  var dir = path.join(homedir(), '.cabal-desktop', addr)
-  var cabal = Cabal(dir, addr ? 'cabal://' + addr : null, {username})
+  username = username || DEFAULT_USERNAME
+  const dir = path.join(DATA_DIR, addr)
+  const cabal = Cabal(dir, addr ? 'cabal://' + addr : null, {username})
 
   // Add an object to place client data onto the
   // Cabal instance to keep the client somewhat organized
@@ -162,7 +167,7 @@ const initializeCabal = ({addr, username, dispatch}) => {
   cabal.db.ready(function (err) {
     if (err) return console.error(err)
     cabal.key = addr
-    var swarm = Swarm(cabal)
+    const swarm = Swarm(cabal)
 
     cabal.username = username
     cabal.client.swarm = swarm
@@ -176,10 +181,10 @@ const initializeCabal = ({addr, username, dispatch}) => {
     cabal.client.channelListeners = {}
 
     const onMessage = (message) => {
-      let {type, timestamp, content} = message.value
-      let channel = content.channel
+      const {type, timestamp, content} = message.value
+      const channel = content.channel
       if (cabal.client.users[message.key]) {
-        let author = cabal.client.users[message.key].name
+        const author = cabal.client.users[message.key].name
         if (!cabal.client.channelMessages[channel]) {
           cabal.client.channelMessages[channel] = []
         }
@@ -244,7 +249,7 @@ const initializeCabal = ({addr, username, dispatch}) => {
               local: true,
               online: true,
               key: lkey,
-              name: cabal.client.user.name || 'conspirator'
+              name: cabal.client.user.name || DEFAULT_USERNAME
             }
           }
           Object.keys(cabal.client.users).forEach((key) => {
@@ -273,7 +278,7 @@ const initializeCabal = ({addr, username, dispatch}) => {
         })
       })
       cabal.on('peer-added', (key) => {
-        var found = false
+        let found = false
         Object.keys(cabal.client.users).forEach((k) => {
           if (k === key) {
             cabal.client.users[k].online = true
@@ -298,48 +303,102 @@ const initializeCabal = ({addr, username, dispatch}) => {
       })
     })
 
-    cabals[addr] = cabal
+
   })
+  cabals[addr] = cabal
 }
 
 export const addMessage = ({ message, addr }) => dispatch => {
-  var cabal = cabals[addr]
-  cabal.publish(message)
+  cabals[addr].publish(message)
+}
+
+async function lskeys() {
+  let list
+  try {
+    list = filterForKeys(await readdir(DATA_DIR))
+  }
+  catch (_) {
+    list = []
+    await mkdir(DATA_DIR)
+  }
+  return list
+}
+
+function encodeStateForKey(key) {
+  const username = (cabals[key] && cabals[key].username) || DEFAULT_USERNAME
+  return `{"username":"${username}","addr":"${key}"}`
+}
+
+async function readstate() {
+  let state
+  try {
+    state = JSON.parse(await readFile(STATE_FILE, 'utf8'))
+  } catch (_) {
+    state = {}
+  }
+  const keys = await lskeys()
+  let l = keys.length
+  while (--l > 0) {
+    const key = keys[l]
+    if (state[key] === undefined) {
+      state[key] = encodeStateForKey(key)
+    }
+  }
+  return state
+}
+
+function iterateCabals(state, fn) {
+  const statekeys = Object.keys(state)
+  for (const key of statekeys) {
+    fn(JSON.parse(state[key]))
+  }
+  return statekeys.length
+}
+
+// TODO: consolidate closure pattern
+let _dispatch = NOOP
+function _dispatch_add_cabal(opts) {
+  _dispatch(addCabal(opts))
 }
 
 export const loadFromDisk = () => async dispatch => {
-  var blob
-  try {
-    await mkdir(`${homedir()}/.cabal-desktop`)
-  } catch (_) {}
-
-  try {
-    blob = await readFile(`${homedir()}/.cabal-desktop/cabals.json`, 'utf8')
-  } catch (_) {
-    blob = '{}'
-  }
-
-  const pastcabals = JSON.parse(blob)
-  const cabalkeys = Object.keys(pastcabals)
-
-  for (const key of cabalkeys) {
-    const opts = JSON.parse(pastcabals[key])
-    dispatch(addCabal(opts))
-  }
-  dispatch({type: 'CHANGE_SCREEN', screen: cabalkeys.length ? 'main' : 'addCabal'})
+  const state = await readstate()
+  _dispatch = dispatch
+  const cabalsLength = iterateCabals(state, _dispatch_add_cabal)
+  dispatch({type: 'CHANGE_SCREEN', screen: cabalsLength ? 'main' : 'addCabal'})
+  _dispatch = NOOP
 }
 
 const storeOnDisk = async () => {
-  const dir = `${homedir()}/.cabal-desktop`
   const cabalsState = Object.keys(cabals).reduce(
-    (acc, addr) => ({
+    (acc, addr) => {
+      // if (cabals[addr].client.addr !== addr) debugger
+      return ({
       ...acc,
-      [addr]: JSON.stringify({
-        username: cabals[addr].username || 'conspirator',
-        addr: cabals[addr].client.addr
-      })
-    }),
+      [addr]: encodeStateForKey(addr)
+    })
+    },
     {}
   )
-  await writeFile(`${dir}/cabals.json`, JSON.stringify(cabalsState))
+  await writeFile(STATE_FILE, JSON.stringify(cabalsState))
+}
+
+// removes non-key items via unordered insertion & length clamping
+// monomorphic, zero closure & arr allocs
+// hoisting var declarations to respect v8 deopt edgecases with let & unary ops
+function filterForKeys(arr) {
+  var l = arr.length
+  var last = --l
+  while (l > -1) {
+    const charcount = arr[l].length
+    if (charcount !== 64) {
+      if (l !== last) {
+        arr[l] = arr[last]
+      }
+      arr.length = last
+      last--
+    }
+    l--
+  }
+  return arr
 }
