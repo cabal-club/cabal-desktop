@@ -1,7 +1,8 @@
 node_modules
 static/build.js
-package-lock.json
 *.sw[op]
 .DS*
 dist
 .idea
+package-lock.json
+yarn-error.log
