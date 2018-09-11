@@ -11,7 +11,7 @@ export default function MessagesContainer (props) {
     return remark().use(remarkReact).use(remarkEmoji).processSync(content).contents
   }
   const { cabal, onscroll, toggleEmojis, composerHeight } = props
-  var messages = cabal.messages
+  const messages = cabal.messages
   if (messages.length === 0) {
     return (
       <div className='messages starterMessage'>
@@ -19,14 +19,14 @@ export default function MessagesContainer (props) {
       </div>
     )
   }
-  var lastAuthor = null
+  let lastAuthor = null
 
   if (messages.length > 0) {
     return (
       <div className='messages' onScroll={onscroll} onClick={(e) => toggleEmojis(false)}>
         {messages.map((message, index) => {
-          var repeatedAuthor = message.author === lastAuthor
-          var me = message.author === cabal.username
+          const repeatedAuthor = message.author === lastAuthor
+          const me = message.author === cabal.username
           lastAuthor = message.author
           if (message.type === 'local/system') {
             return (
