@@ -1,7 +1,6 @@
 'use strict'
 
-const { app, BrowserWindow, shell, Menu, protocol } = require('electron')
-// const path = require('path')
+const { app, BrowserWindow, shell, Menu } = require('electron')
 require('electron-reload')(__dirname)
 
 const template = [
@@ -94,8 +93,6 @@ Menu.setApplicationMenu(menu)
 
 let win
 
-protocol.registerStandardSchemes(['cabal'])
-
 app.on('ready', () => {
   win = new BrowserWindow({
     width: 800,
@@ -104,6 +101,7 @@ app.on('ready', () => {
     minHeight: 395,
     frame: false,
     titleBarStyle: 'hidden'
+    // titleBarStyle: 'hiddenInset'
   })
   win.loadURL(`file://${__dirname}/index.html`)
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
@@ -111,15 +109,6 @@ app.on('ready', () => {
   win.webContents.on('will-navigate', (event, url) => {
     event.preventDefault()
     shell.openExternal(url)
-  })
-
-  protocol.registerHttpProtocol('cabal', (request, callback) => {
-    const url = request.url.substr(8)
-    // callback({path: path.normalize(`${__dirname}/${url}`)})
-
-    console.log('callback', request, url, win.webContents)
-  }, (error) => {
-    if (error) console.error('Failed to register protocol')
   })
 })
 
