@@ -15,7 +15,8 @@ const reducer = (state = defaultState, action) => {
     case 'CHANGE_SCREEN':
       return {
         ...state,
-        screen: action.screen
+        screen: action.screen,
+        addr: action.addr
       }
     case 'VIEW_CABAL':
       return {

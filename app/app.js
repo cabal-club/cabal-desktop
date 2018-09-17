@@ -23,7 +23,6 @@ export class AppScreen extends Component {
 
   render () {
     const {screen} = this.props
-    console.log('screen', screen)
     return (
       <Fragment>
         {screen === 'addCabal'

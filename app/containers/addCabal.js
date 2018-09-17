@@ -45,7 +45,9 @@ class addCabalScreen extends Component {
           className='fun'
           id='add-cabal'
           onKeyDown={this.joinClick.bind(this)}
-          placeholder='Paste cabal:// link and hit Enter' />
+          placeholder='Paste cabal:// link and hit Enter'
+          defaultValue={this.props.addr}
+        />
         <input type='text'
           className='fun'
           id='nickname'

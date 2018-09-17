@@ -1,8 +1,8 @@
 import React, { Fragment, Component } from 'react'
-import { clipboard } from 'electron'
+import { clipboard, ipcRenderer } from 'electron'
 import { connect } from 'react-redux'
 
-import { getMessages } from '../actions'
+import { changeScreen, getMessages, viewCabal } from '../actions'
 import CabalsList from './cabalsList'
 import Sidebar from './sidebar'
 import WriteContainer from './write'
@@ -10,39 +10,54 @@ import MessagesContainer from './messages'
 
 const mapStateToProps = state => ({
   addr: state.currentCabal,
-  cabal: state.cabals[state.currentCabal]
+  cabal: state.cabals[state.currentCabal],
+  cabals: state.cabals
 })
 
 const mapDispatchToProps = dispatch => ({
-  getMessages: ({addr, channel, count}) => dispatch(getMessages({addr, channel, count}))
+  getMessages: ({addr, channel, count}) => dispatch(getMessages({addr, channel, count})),
+  changeScreen: ({screen, addr}) => dispatch(changeScreen({screen, addr})),
+  viewCabal: ({addr}) => dispatch(viewCabal({addr}))
 })
 
 class LayoutScreen extends Component {
   constructor (props) {
     super(props)
-    this.state = {showEmojiPicker:false}
+    this.state = {showEmojiPicker: false}
     this.shouldAutoScroll = true
     this.scrollTop = 0
     this.composerHeight = 55
-    this.toggleEmoji = this.toggleEmoji.bind(this);
+    this.toggleEmoji = this.toggleEmoji.bind(this)
+    this.handleOpenCabalUrl = this.handleOpenCabalUrl.bind(this)
   }
 
   componentDidMount () {
     var messagesDiv = document.querySelector('.messages')
     if (messagesDiv) messagesDiv.scrollTop = this.scrollTop
-    console.log(this.state)
+    ipcRenderer.on('open-cabal-url', (event, arg) => {
+      this.handleOpenCabalUrl(arg)
+    })
   }
 
   componentDidUpdate (prevProps) {
-    if (prevProps.cabal != this.props.cabal){
+    if (prevProps.cabal != this.props.cabal) {
       this.scrollToBottom()
     }
-    //if you're in the same cabal and a new message arrives we should show a button prompting a scroll to bottom
+    // if you're in the same cabal and a new message arrives we should show a button prompting a scroll to bottom
   }
 
   copyClick () {
     clipboard.writeText('cabal://' + this.props.addr)
     alert('Copied cabal:// link to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.')
+  }
+
+  handleOpenCabalUrl ({url = ''}) {
+    let addr = url.replace('cabal://', '').trim()
+    if (this.props.cabals[addr]) {
+      this.props.viewCabal({addr})
+    } else {
+      this.props.changeScreen({screen: 'addCabal', addr: url})
+    }
   }
 
   scrollToBottom (force) {
@@ -53,7 +68,7 @@ class LayoutScreen extends Component {
     }
   }
 
-  toggleEmoji(bool) {
+  toggleEmoji (bool) {
     this.setState({showEmojiPicker: bool === false ? false : !this.state.showEmojiPicker})
   }
 
@@ -70,7 +85,6 @@ class LayoutScreen extends Component {
     }
 
     var onscroll = (event) => {
-      console.log("I got clicked")
       var node = event.target
       if (node.scrollHeight <= node.clientHeight + node.scrollTop) {
         self.shouldAutoScroll = true
@@ -81,8 +95,8 @@ class LayoutScreen extends Component {
 
     return (
       <div className='client'>
-        <CabalsList toggleEmojis={this.toggleEmoji}/>
-        <Sidebar toggleEmojis={this.toggleEmoji}/>
+        <CabalsList toggleEmojis={this.toggleEmoji} />
+        <Sidebar toggleEmojis={this.toggleEmoji} />
         <div className='client__main'>
           <div className='window'>
             <div className='window__header'>
@@ -107,7 +121,7 @@ class LayoutScreen extends Component {
                 toggleEmojis={this.toggleEmoji}
               />
             </div>
-            <WriteContainer showEmojiPicker={this.state.showEmojiPicker} toggleEmojis={this.toggleEmoji}/>
+            <WriteContainer showEmojiPicker={this.state.showEmojiPicker} toggleEmojis={this.toggleEmoji} />
           </div>
         </div>
       </div>

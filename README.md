@@ -16,8 +16,8 @@ https://github.com/cabal-club/cabal-desktop/releases/
 $ git clone https://github.com/cabal-club/cabal-desktop
 $ cd cabal-desktop
 
-$ npm install             # install dependencies
-$ npm start               # start the application
+$ yarn install             # install dependencies
+$ yarn start               # start the application
 ```
 
 ## Distribute
@@ -25,7 +25,7 @@ $ npm start               # start the application
 build for current platform:
 
 ```
-$ npm run dist
+$ yarn run dist
 ```
 
 build for [multiple platforms](https://www.electron.build/multi-platform-build#docker):
