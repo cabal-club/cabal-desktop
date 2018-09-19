@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 
 import AddCabalContainer from './containers/addCabal'
+import AppSettingsContainer from './containers/settings'
 import Layout from './containers/layout'
 import { loadFromDisk } from './actions'
 
@@ -23,12 +24,15 @@ export class AppScreen extends Component {
 
   render () {
     const { screen } = this.props
+    let Container = Layout
+    if (screen === 'addCabal') {
+      Container = AddCabalContainer
+    } else if (screen === 'appSettings') {
+      Container = AppSettingsContainer
+    }
     return (
       <Fragment>
-        {screen === 'addCabal'
-          ? <AddCabalContainer />
-          : <Layout />
-        }
+        <Container />
       </Fragment>
     )
   }

@@ -137,6 +137,18 @@ form {
   color: white !important;
 }
 
+.client__cabals .client__cabals__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .settingsButton {
+    padding-top: 1.5rem;
+    text-align: center;
+    font-size: 1.5rem;
+  }
+}
+
 /* Layout: Sidebar */
 .client__sidebar {
   flex: 0 0 13.75rem;
@@ -682,6 +694,31 @@ form {
   }
 }
 
+.modalScreen {
+  display: flex;
+  background: #fff;
+
+  .modalScreen__close {
+    font-size: 2rem;
+    color: rgba(0, 0, 0, 0.5);
+    padding: 1.5rem;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: 0;
+    cursor: pointer;
+    transition: all 0.1s ease-in-out;
+
+    &:hover {
+      color: rgba(0, 0, 0, 1);
+    }
+  }
+
+  h1 {
+    margin: 2rem;
+    font-size: 2rem;
+  }
+}
 /*
   ------------------------------------------------------
   Remaining styles from previous stylesheet.
