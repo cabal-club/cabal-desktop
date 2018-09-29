@@ -17,11 +17,6 @@
   "author": "Cabal Club",
   "license": "GPL-3.0",
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "^6.24.1",
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
     "electron": "^3.0.0-beta.10",
@@ -36,6 +31,11 @@
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
     "cabal-core": "^3.0.2",
     "cat-names": "^1.0.2",
     "collect-stream": "^1.2.1",
