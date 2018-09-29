@@ -132,7 +132,7 @@ export const viewChannel = ({addr, channel}) => dispatch => {
   dispatch(getMessages({addr, channel, count: 100}))
 }
 
-export const changeScreen = ({screen}) => ({ type: 'CHANGE_SCREEN', screen })
+export const changeScreen = ({screen, addr}) => ({ type: 'CHANGE_SCREEN', screen, addr })
 
 export const addCabal = ({addr, input, username}) => dispatch => {
   if (!addr) {

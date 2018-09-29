@@ -44,7 +44,7 @@ const template = [
     submenu: [
       {
         label: 'Learn More',
-        click () { require('electron').shell.openExternal('https://electronjs.org') }
+        click () { require('electron').shell.openExternal('https://cabal.chat') }
       }
     ]
   }
@@ -93,6 +93,8 @@ Menu.setApplicationMenu(menu)
 
 let win
 
+app.setAsDefaultProtocolClient('cabal')
+
 app.on('ready', () => {
   win = new BrowserWindow({
     width: 800,
@@ -109,6 +111,12 @@ app.on('ready', () => {
   win.webContents.on('will-navigate', (event, url) => {
     event.preventDefault()
     shell.openExternal(url)
+  })
+
+  // Protocol handler for osx
+  app.on('open-url', (event, url) => {
+    event.preventDefault()
+    win.webContents.send('open-cabal-url', {url})
   })
 })
 
