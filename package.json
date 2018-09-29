@@ -36,11 +36,6 @@
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "^6.24.1",
     "cabal-core": "^3.0.2",
     "cat-names": "^1.0.2",
     "collect-stream": "^1.2.1",
@@ -65,7 +60,7 @@
     "remark-emoji": "^2.0.1",
     "remark-react": "^4.0.3",
     "strftime": "^0.10.0",
-    "to2": "^1.0.0"    
+    "to2": "^1.0.0"
   },
   "build": {
     "appId": "club.cabal.desktop",
