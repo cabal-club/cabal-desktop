@@ -4,5 +4,4 @@ static/build.js
 .DS*
 dist
 .idea
-package-lock.json
 yarn-error.log
