@@ -326,7 +326,7 @@ async function lskeys () {
 
 function encodeStateForKey (key) {
   const username = (cabals[key] && cabals[key].username) || DEFAULT_USERNAME
-  return `{"username":"${username}","addr":"${key}"}`
+  return JSON.stringify({"username":username,"addr":key})
 }
 
 async function readstate () {
