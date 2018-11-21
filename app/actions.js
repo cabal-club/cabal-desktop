@@ -18,7 +18,7 @@ const {
 
 const DEFAULT_CHANNEL = 'default'
 const HOME_DIR = homedir()
-const DATA_DIR = path.join(HOME_DIR, '.cabal-desktop')
+const DATA_DIR = path.join(HOME_DIR, '.cabal-desktop', `v${Cabal.databaseVersion}`)
 const TEMP_DIR = path.join(DATA_DIR, '.tmp')
 const STATE_FILE = path.join(DATA_DIR, 'cabals.json')
 const DEFAULT_USERNAME = 'conspirator'
