@@ -103,8 +103,8 @@ app.on('ready', () => {
     minHeight: 395,
     frame: false,
     titleBarStyle: 'hidden'
-    // titleBarStyle: 'hiddenInset'
   })
+  win.maximize()
   win.loadURL(`file://${__dirname}/index.html`)
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 
