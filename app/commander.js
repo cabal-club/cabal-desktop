@@ -9,20 +9,20 @@ const commander = (cabal, message) => (dispatch) => {
   switch (cmd) {
     case 'join':
       var channel = arg
-      dispatch(joinChannel({addr, channel}))
+      dispatch(joinChannel({ addr, channel }))
       break
     case 'nick':
       var username = arg
       if (!username.length) return
       cabal.username = username
-      dispatch(updateCabal({addr, username}))
+      dispatch(updateCabal({ addr, username }))
       break
     case 'channels':
       return cabal.getChannels((err, channels) => {
         if (err) console.trace(err)
         var content = `${channels.join('  \n')}\n`
-        cabal.messages.push({type: 'local/system', content})
-        dispatch(updateCabal({addr, messages: cabal.messages}))
+        cabal.messages.push({ type: 'local/system', content })
+        dispatch(updateCabal({ addr, messages: cabal.messages }))
       })
     default:
       break

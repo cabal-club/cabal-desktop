@@ -15,15 +15,15 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getMessages: ({addr, channel, count}) => dispatch(getMessages({addr, channel, count})),
-  changeScreen: ({screen, addr}) => dispatch(changeScreen({screen, addr})),
-  viewCabal: ({addr}) => dispatch(viewCabal({addr}))
+  getMessages: ({ addr, channel, count }) => dispatch(getMessages({ addr, channel, count })),
+  changeScreen: ({ screen, addr }) => dispatch(changeScreen({ screen, addr })),
+  viewCabal: ({ addr }) => dispatch(viewCabal({ addr }))
 })
 
 class LayoutScreen extends Component {
   constructor (props) {
     super(props)
-    this.state = {showEmojiPicker: false}
+    this.state = { showEmojiPicker: false }
     this.shouldAutoScroll = true
     this.scrollTop = 0
     this.composerHeight = 55
@@ -51,12 +51,12 @@ class LayoutScreen extends Component {
     alert('Copied cabal:// link to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.')
   }
 
-  handleOpenCabalUrl ({url = ''}) {
+  handleOpenCabalUrl ({ url = '' }) {
     let addr = url.replace('cabal://', '').trim()
     if (this.props.cabals[addr]) {
-      this.props.viewCabal({addr})
+      this.props.viewCabal({ addr })
     } else {
-      this.props.changeScreen({screen: 'addCabal', addr: url})
+      this.props.changeScreen({ screen: 'addCabal', addr: url })
     }
   }
 
@@ -69,7 +69,7 @@ class LayoutScreen extends Component {
   }
 
   toggleEmoji (bool) {
-    this.setState({showEmojiPicker: bool === false ? false : !this.state.showEmojiPicker})
+    this.setState({ showEmojiPicker: bool === false ? false : !this.state.showEmojiPicker })
   }
 
   render () {

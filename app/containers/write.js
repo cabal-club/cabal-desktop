@@ -17,8 +17,8 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  addMessage: ({addr, message}) => dispatch(addMessage({addr, message})),
-  onCommand: ({addr, message}) => dispatch(onCommand({addr, message}))
+  addMessage: ({ addr, message }) => dispatch(addMessage({ addr, message })),
+  onCommand: ({ addr, message }) => dispatch(onCommand({ addr, message }))
 })
 
 class writeScreen extends Component {
@@ -54,7 +54,7 @@ class writeScreen extends Component {
   }
 
   onKeyDown (e) {
-    const {cabal} = this.props
+    const { cabal } = this.props
     if (e.key === 'Tab') {
       var el = this.textInput
       var line = el.value
@@ -81,7 +81,7 @@ class writeScreen extends Component {
       }
       var el = this.textInput
       el.value = ''
-      const {addr, addMessage, onCommand} = this.props
+      const { addr, addMessage, onCommand } = this.props
       let message = {
         content: {
           channel: this.props.currentChannel,
@@ -89,7 +89,7 @@ class writeScreen extends Component {
         },
         type: 'chat/text'
       }
-      var opts = {message, addr}
+      var opts = { message, addr }
       if (data.message.startsWith('/')) {
         onCommand(opts)
       } else {
@@ -168,7 +168,7 @@ class writeScreen extends Component {
               />
             </form>
           </div>
-          <div className={'emoji__container'} ref={(el) => { this.emojiPicker = el }} style={{ position: 'absolute', bottom: '100px', right: '16px', display: 'none'}}>
+          <div className={'emoji__container'} ref={(el) => { this.emojiPicker = el }} style={{ position: 'absolute', bottom: '100px', right: '16px', display: 'none' }}>
             <Picker
               onSelect={(e) => this.addEmoji(e)}
               native
@@ -177,7 +177,7 @@ class writeScreen extends Component {
               autoFocus
               emoji={'point_up'}
               title={'Pick an emoji...'}
-              />
+            />
           </div>
           <div className={'composer__other'} onClick={(e) => this.props.toggleEmojis()}><img src='static/images/icon-composerother.svg' /></div>
         </div>

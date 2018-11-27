@@ -62,7 +62,7 @@ const reducer = (state = defaultState, action) => {
       }
     case 'DELETE_CABAL':
       const { [action.addr]: del, ...cabals } = state.cabals
-      return {...state, cabals}
+      return { ...state, cabals }
     case 'DIALOGS_DELETE_CLOSE':
       return {
         ...state,

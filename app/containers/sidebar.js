@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { viewChannel, joinChannel, changeUsername, changeScreen } from '../actions'
 import Avatar from './avatar'
 
-var Dialogs = require('dialogs')
+var Dialogs = require('smalltalk')
 
 const mapStateToProps = state => {
   var cabal = state.cabals[state.currentCabal]
@@ -18,37 +18,41 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  changeScreen: ({screen}) => dispatch(changeScreen({screen})),
-  joinChannel: ({addr, channel}) => dispatch(joinChannel({addr, channel})),
-  viewChannel: ({addr, channel}) => dispatch(viewChannel({addr, channel})),
-  changeUsername: ({addr, username}) => dispatch(changeUsername({addr, username}))
+  changeScreen: ({ screen }) => dispatch(changeScreen({ screen })),
+  joinChannel: ({ addr, channel }) => dispatch(joinChannel({ addr, channel })),
+  viewChannel: ({ addr, channel }) => dispatch(viewChannel({ addr, channel })),
+  changeUsername: ({ addr, username }) => dispatch(changeUsername({ addr, username }))
 })
 
 class SidebarScreen extends React.Component {
   onClickNewChannel () {
-    Dialogs().prompt('New channel name:', undefined, (newChannelName) => {
+    Dialogs.prompt('Create a channel', 'New channel name:', undefined).then((newChannelName) => {
       if (newChannelName && newChannelName.trim().length > 0) {
         this.joinChannel(newChannelName)
       }
+    }).catch(() => {
+      console.log('cancelled new channel')
     })
   }
 
   onClickUsername () {
-    Dialogs().prompt('Set nickname', this.props.cabal.username, (username) => {
+    Dialogs.prompt('Set nickname', 'What would you like to call yourself?', this.props.cabal.username).then((username) => {
       if (username && username.trim().length > 0) {
         this.props.changeUsername({ username, addr: this.props.addr })
       }
+    }).catch(() => {
+      console.log('cancelled username')
     })
   }
 
   joinChannel (channel) {
     var addr = this.props.addr
-    this.props.joinChannel({addr, channel})
+    this.props.joinChannel({ addr, channel })
   }
 
   selectChannel (channel) {
     var addr = this.props.addr
-    this.props.viewChannel({addr, channel})
+    this.props.viewChannel({ addr, channel })
   }
 
   sortByProperty (items = [], property = 'name', direction = 1) {
