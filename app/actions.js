@@ -26,10 +26,10 @@ const NOOP = function () {}
 
 const cabals = {}
 
-export const viewCabal = ({addr}) => dispatch => {
+export const viewCabal = ({ addr }) => dispatch => {
   const cabal = cabals[addr]
   if (cabal) {
-    dispatch({type: 'VIEW_CABAL', addr})
+    dispatch({ type: 'VIEW_CABAL', addr })
     storeOnDisk()
   }
 }
@@ -50,7 +50,7 @@ export const confirmDeleteCabal = addr => dispatch => {
   dispatch({ type: 'DIALOGS_DELETE_CLOSE' })
 }
 
-export const onCommand = ({addr, message}) => dispatch => {
+export const onCommand = ({ addr, message }) => dispatch => {
   dispatch(commander(cabals[addr], message))
 }
 
@@ -61,16 +61,16 @@ export const updateCabal = (opts) => dispatch => {
     ...opts
   }
   storeOnDisk()
-  dispatch({type: 'UPDATE_CABAL', ...opts})
+  dispatch({ type: 'UPDATE_CABAL', ...opts })
 }
-export const joinChannel = ({addr, channel}) => dispatch => {
+export const joinChannel = ({ addr, channel }) => dispatch => {
   if (channel.length > 0) {
-    dispatch(addChannel({addr, channel}))
-    dispatch(viewChannel({addr, channel}))
+    dispatch(addChannel({ addr, channel }))
+    dispatch(viewChannel({ addr, channel }))
   }
 }
 
-export const leaveChannel = ({addr, channel}) => dispatch => {
+export const leaveChannel = ({ addr, channel }) => dispatch => {
   if (channel.length > 0) {
     // TODO
     // var currentCabal = cabals[addr]
@@ -79,24 +79,24 @@ export const leaveChannel = ({addr, channel}) => dispatch => {
   }
 }
 
-export const changeUsername = ({addr, username}) => dispatch => {
+export const changeUsername = ({ addr, username }) => dispatch => {
   const currentCabal = cabals[addr]
   currentCabal.username = username
   currentCabal.publishNick(username)
   dispatch({ type: 'UPDATE_CABAL', addr, username })
 }
 
-export const getMessages = ({addr, channel, count}) => dispatch => {
+export const getMessages = ({ addr, channel, count }) => dispatch => {
   if (channel.length === 0) return
   const cabal = cabals[addr]
-  const rs = cabal.messages.read(channel, {limit: count, lt: '~'})
+  const rs = cabal.messages.read(channel, { limit: count, lt: '~' })
   collect(rs, (err, msgs) => {
     if (err) return
     msgs.reverse()
     cabal.client.channelMessages[channel] = []
     msgs.forEach((msg) => {
       const author = cabal.client.users[msg.key] ? cabal.client.users[msg.key].name : DEFAULT_USERNAME
-      const {type, timestamp, content} = msg.value
+      const { type, timestamp, content } = msg.value
       cabal.client.channelMessages[channel].push({
         author,
         content: content.text,
@@ -105,11 +105,11 @@ export const getMessages = ({addr, channel, count}) => dispatch => {
         type
       })
     })
-    dispatch({type: 'UPDATE_CABAL', addr, messages: cabal.client.channelMessages[channel]})
+    dispatch({ type: 'UPDATE_CABAL', addr, messages: cabal.client.channelMessages[channel] })
   })
 }
 
-export const viewChannel = ({addr, channel}) => dispatch => {
+export const viewChannel = ({ addr, channel }) => dispatch => {
   if (channel.length === 0) return
   const cabal = cabals[addr]
   cabal.client.channel = channel
@@ -117,7 +117,7 @@ export const viewChannel = ({addr, channel}) => dispatch => {
   storeOnDisk()
 
   // dont pass around swarm and watcher, only the things that matter.
-  dispatch({type: 'ADD_CABAL',
+  dispatch({ type: 'ADD_CABAL',
     addr,
     messages: cabal.client.channelMessages[channel],
     username: cabal.username,
@@ -125,16 +125,16 @@ export const viewChannel = ({addr, channel}) => dispatch => {
     channel: cabal.client.channel,
     channels: cabal.client.channels
   })
-  dispatch({type: 'VIEW_CABAL',
+  dispatch({ type: 'VIEW_CABAL',
     addr,
     channel: cabal.client.channel
   })
-  dispatch(getMessages({addr, channel, count: 100}))
+  dispatch(getMessages({ addr, channel, count: 100 }))
 }
 
-export const changeScreen = ({screen, addr}) => ({ type: 'CHANGE_SCREEN', screen, addr })
+export const changeScreen = ({ screen, addr }) => ({ type: 'CHANGE_SCREEN', screen, addr })
 
-export const addCabal = ({addr, input, username}) => dispatch => {
+export const addCabal = ({ addr, input, username }) => dispatch => {
   if (!addr) {
     try {
       const key = decode(input)
@@ -145,21 +145,21 @@ export const addCabal = ({addr, input, username}) => dispatch => {
   if (cabals[addr]) return console.error('cabal already exists')
   if (addr) {
     // Load existing Cabal
-    initializeCabal({addr, username, dispatch})
+    initializeCabal({ addr, username, dispatch })
   } else {
     // Create new Cabal
-    const newCabal = Cabal(TEMP_DIR, null, {username})
+    const newCabal = Cabal(TEMP_DIR, null, { username })
     newCabal.getLocalKey((err, key) => {
-      initializeCabal({addr: key, username, dispatch})
-      del(TEMP_DIR, {force: true})
+      initializeCabal({ addr: key, username, dispatch })
+      del(TEMP_DIR, { force: true })
     })
   }
 }
 
-export const addChannel = ({addr, channel}) => dispatch => {
+export const addChannel = ({ addr, channel }) => dispatch => {
   const cabal = cabals[addr]
   const onMessage = (message) => {
-    const {type, timestamp, content} = message.value
+    const { type, timestamp, content } = message.value
     const channel = content.channel
     if (cabal.client.users[message.key]) {
       const author = cabal.client.users[message.key] ? cabal.client.users[message.key].name : DEFAULT_USERNAME
@@ -181,14 +181,14 @@ export const addChannel = ({addr, channel}) => dispatch => {
       }
     }
     if (cabal.client.channel === channel) {
-      dispatch({type: 'UPDATE_CABAL', addr, messages: cabal.client.channelMessages[channel]})
+      dispatch({ type: 'UPDATE_CABAL', addr, messages: cabal.client.channelMessages[channel] })
     } else {
       if (!cabal.client.channelMessagesUnread[channel]) {
         cabal.client.channelMessagesUnread[channel] = 1
       } else {
         cabal.client.channelMessagesUnread[channel] = cabal.client.channelMessagesUnread[channel] + 1
       }
-      dispatch({type: 'UPDATE_CABAL', addr, channelMessagesUnread: cabal.client.channelMessagesUnread})
+      dispatch({ type: 'UPDATE_CABAL', addr, channelMessagesUnread: cabal.client.channelMessagesUnread })
     }
   }
   if (!cabal.client.channels.includes(channel)) {
@@ -204,10 +204,10 @@ export const addMessage = ({ message, addr }) => dispatch => {
   cabals[addr].publish(message)
 }
 
-const initializeCabal = ({addr, username, dispatch}) => {
+const initializeCabal = ({ addr, username, dispatch }) => {
   username = username || DEFAULT_USERNAME
   const dir = path.join(DATA_DIR, addr)
-  const cabal = Cabal(dir, addr ? 'cabal://' + addr : null, {username})
+  const cabal = Cabal(dir, addr ? 'cabal://' + addr : null, { username })
 
   // Add an object to place client data onto the
   // Cabal instance to keep the client somewhat organized
@@ -224,14 +224,14 @@ const initializeCabal = ({addr, username, dispatch}) => {
     cabal.client.addr = addr
     cabal.client.channel = DEFAULT_CHANNEL
     cabal.client.channels = []
-    cabal.client.user = {name: username}
+    cabal.client.user = { name: username }
     cabal.client.users = {}
     cabal.client.channelMessages = {}
     cabal.client.channelMessagesUnread = {}
     cabal.client.channelListeners = {}
 
     cabal.channels.events.on('add', (channel) => {
-      dispatch(addChannel({addr, channel}))
+      dispatch(addChannel({ addr, channel }))
     })
     cabal.channels.get((err, channels) => {
       if (err) return console.error(err)
@@ -239,9 +239,9 @@ const initializeCabal = ({addr, username, dispatch}) => {
         channels.push(DEFAULT_CHANNEL)
       }
       channels.forEach((channel) => {
-        dispatch(addChannel({addr, channel}))
+        dispatch(addChannel({ addr, channel }))
       })
-      dispatch(joinChannel({addr, channel: DEFAULT_CHANNEL}))
+      dispatch(joinChannel({ addr, channel: DEFAULT_CHANNEL }))
     })
 
     cabal.users.getAll((err, users) => {
@@ -268,7 +268,7 @@ const initializeCabal = ({addr, username, dispatch}) => {
               cabal.publishNick(cabal.username)
             }
           })
-          dispatch({type: 'UPDATE_CABAL', addr, users: cabal.client.users, username: cabal.username})
+          dispatch({ type: 'UPDATE_CABAL', addr, users: cabal.client.users, username: cabal.username })
         })
       }
       updateLocalKey()
@@ -281,7 +281,7 @@ const initializeCabal = ({addr, username, dispatch}) => {
           cabal.client.users[key].name = cabal.client.users[key].name || DEFAULT_USERNAME
           if (cabal.client.user && key === cabal.client.user.key) cabal.client.user = cabal.client.users[key]
           if (!cabal.client.user) updateLocalKey()
-          dispatch({type: 'UPDATE_CABAL', addr, users: cabal.client.users})
+          dispatch({ type: 'UPDATE_CABAL', addr, users: cabal.client.users })
         })
       })
       cabal.on('peer-added', (key) => {
@@ -298,13 +298,13 @@ const initializeCabal = ({addr, username, dispatch}) => {
             online: true
           }
         }
-        dispatch({type: 'UPDATE_CABAL', addr, users: cabal.client.users})
+        dispatch({ type: 'UPDATE_CABAL', addr, users: cabal.client.users })
       })
       cabal.on('peer-dropped', (key) => {
         Object.keys(cabal.client.users).forEach((k) => {
           if (k === key) {
             cabal.client.users[k].online = false
-            dispatch({type: 'UPDATE_CABAL', addr, users: cabal.client.users})
+            dispatch({ type: 'UPDATE_CABAL', addr, users: cabal.client.users })
           }
         })
       })
@@ -326,7 +326,7 @@ async function lskeys () {
 
 function encodeStateForKey (key) {
   const username = (cabals[key] && cabals[key].username) || DEFAULT_USERNAME
-  return JSON.stringify({"username":username,"addr":key})
+  return JSON.stringify({ 'username': username, 'addr': key })
 }
 
 async function readstate () {
@@ -365,7 +365,7 @@ export const loadFromDisk = () => async dispatch => {
   const state = await readstate()
   _dispatch = dispatch
   const cabalsLength = iterateCabals(state, _dispatch_add_cabal)
-  dispatch({type: 'CHANGE_SCREEN', screen: cabalsLength ? 'main' : 'addCabal'})
+  dispatch({ type: 'CHANGE_SCREEN', screen: cabalsLength ? 'main' : 'addCabal' })
   _dispatch = NOOP
 }
 

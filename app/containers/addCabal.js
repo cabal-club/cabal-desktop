@@ -5,9 +5,9 @@ import { addCabal } from '../actions'
 const mapStateToProps = state => state
 
 const mapDispatchToProps = dispatch => ({
-  add: (input, username) => dispatch(addCabal({input, username})),
-  newCabal: (username) => dispatch(addCabal({username})),
-  hide: () => dispatch({type: 'CHANGE_SCREEN', screen: 'main'})
+  add: (input, username) => dispatch(addCabal({ input, username })),
+  newCabal: (username) => dispatch(addCabal({ username })),
+  hide: () => dispatch({ type: 'CHANGE_SCREEN', screen: 'main' })
 })
 
 class addCabalScreen extends Component {

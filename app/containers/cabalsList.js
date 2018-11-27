@@ -14,17 +14,17 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  changeScreen: ({screen}) => dispatch(changeScreen({screen})),
-  viewCabal: ({addr}) => dispatch(viewCabal({addr}))
+  changeScreen: ({ screen }) => dispatch(changeScreen({ screen })),
+  viewCabal: ({ addr }) => dispatch(viewCabal({ addr }))
 })
 
 class CabalsListScreen extends React.Component {
   joinCabal () {
-    this.props.changeScreen({screen: 'addCabal'})
+    this.props.changeScreen({ screen: 'addCabal' })
   }
 
   selectCabal (addr) {
-    this.props.viewCabal({addr})
+    this.props.viewCabal({ addr })
   }
 
   render () {
