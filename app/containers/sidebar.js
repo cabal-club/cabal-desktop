@@ -1,10 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import prompt from 'electron-prompt'
 
 import { viewChannel, joinChannel, changeUsername, changeScreen } from '../actions'
 import Avatar from './avatar'
-
-var Dialogs = require('smalltalk')
 
 const mapStateToProps = state => {
   var cabal = state.cabals[state.currentCabal]
@@ -26,7 +25,12 @@ const mapDispatchToProps = dispatch => ({
 
 class SidebarScreen extends React.Component {
   onClickNewChannel () {
-    Dialogs.prompt('Create a channel', 'New channel name:', undefined).then((newChannelName) => {
+    prompt({
+      title: 'Create a channel',
+      label: 'New channel name',
+      value: undefined,
+      type: 'input'
+    }).then((newChannelName) => {
       if (newChannelName && newChannelName.trim().length > 0) {
         this.joinChannel(newChannelName)
       }
@@ -36,7 +40,12 @@ class SidebarScreen extends React.Component {
   }
 
   onClickUsername () {
-    Dialogs.prompt('Set nickname', 'What would you like to call yourself?', this.props.cabal.username).then((username) => {
+    prompt({
+      title: 'Set nickname',
+      label: 'What would you like to call yourself?',
+      value: this.props.cabal.username,
+      type: 'input'
+    }).then((username) => {
       if (username && username.trim().length > 0) {
         this.props.changeUsername({ username, addr: this.props.addr })
       }
