@@ -1,6 +1,6 @@
 {
   "name": "cabal-desktop",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Cabal p2p offline-first desktop application",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
@@ -16,13 +16,12 @@
   "repository": "cabal-club/cabal-desktop",
   "author": "Cabal Club",
   "license": "GPL-3.0",
-  "engines" : { "node" : ">=10.12.0" },
   "devDependencies": {
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
-    "electron": "^3.0.10",
+    "electron": "^3.0.13",
     "electron-builder": "20.36.2",
-    "node-sass": "^4.9.3",
+    "node-sass": "^4.11.0",
     "npm-run-all": "^4.1.5",
     "prettier-standard": "^8.0.0",
     "sass-loader": "^7.1.0",
@@ -42,17 +41,18 @@
     "collect-stream": "^1.2.1",
     "dat-encoding": "^5.0.1",
     "del": "^3.0.0",
-    "discovery-swarm": "^5.1.2",
+    "discovery-swarm": "^5.1.3",
     "electron-default-menu": "^1.0.1",
-    "electron-prompt": "^1.2.0",
-    "electron-reload": "^1.3.0",
-    "emoji-mart": "^2.9.1",
+    "electron-prompt": "^1.3.0",
+    "electron-reload": "^1.4.0",
+    "emoji-mart": "^2.9.2",
     "get-form-data": "^2.0.0",
-    "moment": "^2.22.2",
+    "mkdirp": "^0.5.1",
+    "moment": "^2.23.0",
     "ms": "^2.1.1",
-    "react": "^16.5.0",
+    "react": "^16.7.0",
     "react-blockies": "^1.3.0",
-    "react-dom": "^16.5.0",
+    "react-dom": "^16.7.0",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
     "redux-logger": "^3.0.6",
@@ -92,7 +92,10 @@
       "artifactName": "cabal-desktop-${version}-mac.${ext}"
     },
     "linux": {
-      "target": ["AppImage", "snap"],
+      "target": [
+        "AppImage",
+        "snap"
+      ],
       "category": "Network"
     },
     "appImage": {

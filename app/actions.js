@@ -5,6 +5,7 @@ import catnames from 'cat-names'
 import collect from 'collect-stream'
 import del from 'del'
 import fs from 'fs'
+import mkdirp from 'mkdirp'
 import path from 'path'
 import Swarm from 'cabal-core/swarm'
 import commander from './commander'
@@ -12,8 +13,7 @@ import commander from './commander'
 const {
   readFile,
   writeFile,
-  readdir,
-  mkdir
+  readdir
 } = fs.promises
 
 const DEFAULT_CHANNEL = 'default'
@@ -22,6 +22,7 @@ const DATA_DIR = path.join(HOME_DIR, '.cabal-desktop', `v${Cabal.databaseVersion
 const TEMP_DIR = path.join(DATA_DIR, '.tmp')
 const STATE_FILE = path.join(DATA_DIR, 'cabals.json')
 const DEFAULT_USERNAME = 'conspirator'
+const MAX_FEEDS = 1000
 const NOOP = function () {}
 
 const cabals = {}
@@ -148,7 +149,7 @@ export const addCabal = ({ addr, input, username }) => dispatch => {
     initializeCabal({ addr, username, dispatch })
   } else {
     // Create new Cabal
-    const newCabal = Cabal(TEMP_DIR, null, { username })
+    const newCabal = Cabal(TEMP_DIR, null, { maxFeeds: MAX_FEEDS, username })
     newCabal.getLocalKey((err, key) => {
       initializeCabal({ addr: key, username, dispatch })
       del(TEMP_DIR, { force: true })
@@ -207,7 +208,7 @@ export const addMessage = ({ message, addr }) => dispatch => {
 const initializeCabal = ({ addr, username, dispatch }) => {
   username = username || DEFAULT_USERNAME
   const dir = path.join(DATA_DIR, addr)
-  const cabal = Cabal(dir, addr ? 'cabal://' + addr : null, { username })
+  const cabal = Cabal(dir, addr ? 'cabal://' + addr : null, { maxFeeds: MAX_FEEDS, username })
 
   // Add an object to place client data onto the
   // Cabal instance to keep the client somewhat organized
@@ -319,7 +320,7 @@ async function lskeys () {
     list = filterForKeys(await readdir(DATA_DIR))
   } catch (_) {
     list = []
-    await mkdir(DATA_DIR, {recursive: true})
+    await mkdirp(DATA_DIR)
   }
   return list
 }
