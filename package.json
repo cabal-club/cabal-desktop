@@ -91,7 +91,7 @@
       "artifactName": "cabal-desktop-${version}-mac.${ext}"
     },
     "linux": {
-      "target": "AppImage",
+      "target": ["AppImage", "snap"],
       "category": "Network"
     },
     "appImage": {
