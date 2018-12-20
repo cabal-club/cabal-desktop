@@ -319,7 +319,7 @@ async function lskeys () {
     list = filterForKeys(await readdir(DATA_DIR))
   } catch (_) {
     list = []
-    await mkdir(DATA_DIR)
+    await mkdir(DATA_DIR, {recursive: true})
   }
   return list
 }
