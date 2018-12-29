@@ -1,43 +1,123 @@
 /* Reset */
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-	display: block;
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
 }
 body {
-	line-height: 1;
+  line-height: 1;
 }
-blockquote, q {
-	quotes: none;
+blockquote,
+q {
+  quotes: none;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
 }
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 * {
@@ -46,7 +126,8 @@ table {
 
 html {
   font-size: 100%;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   vertical-align: baseline;
@@ -115,7 +196,7 @@ form {
   color: rgba(255, 255, 255, 0.25);
 }
 
-.client__cabals .switcher__item.--addnew img{
+.client__cabals .switcher__item.--addnew img {
   opacity: 0.25;
 }
 
@@ -132,7 +213,7 @@ form {
 
 .client__cabals .switcher__item--active {
   background-color: rgba(255, 255, 255, 0.25);
-  background-color: #693AFA;
+  background-color: #693afa;
   border: none;
   color: white !important;
 }
@@ -174,7 +255,8 @@ form {
     flex-basis: 2rem;
   }
 
-  .session .session__avatar__img {}
+  .session .session__avatar__img {
+  }
 
   .session .session__avatar__img .identicon {
     width: 2rem;
@@ -187,7 +269,8 @@ form {
     margin: 0 0.75rem 0 0.75rem;
   }
 
-  .session .session__meta h1, .sidebar .session .session__meta h2 {
+  .session .session__meta h1,
+  .sidebar .session .session__meta h2 {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -316,7 +399,7 @@ form {
     font-size: 0.875rem;
     line-height: 1.4;
     color: #fff;
-    background-color: #693AFA;
+    background-color: #693afa;
     padding: 0 0.5rem;
     border-radius: 5rem;
     vertical-align: middle;
@@ -416,7 +499,7 @@ form {
     overflow-y: auto;
   }
 
-  .window__header{
+  .window__header {
     -webkit-app-region: drag;
   }
 
@@ -429,6 +512,10 @@ form {
     width: 100%;
     margin-bottom: 0.6rem;
     margin-left: 0.125rem;
+  }
+
+  .messages__item--emote {
+    font-style: italic;
   }
 
   .messages__item__avatar {
@@ -449,7 +536,7 @@ form {
     line-height: 1.5;
   }
 
-  .messages__item__metadata .text.indent{
+  .messages__item__metadata .text.indent {
     margin-left: 32px;
     margin-top: -12px; // HACK!!
   }
@@ -513,12 +600,12 @@ form {
     cursor: text;
   }
 
-  .emoji__container{
+  .emoji__container {
     box-shadow: 0 4px 10px 0px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
   }
 
-  .emoji-mart-scroll{
+  .emoji-mart-scroll {
     overflow-x: hidden;
   }
 
@@ -530,7 +617,7 @@ form {
     border: 2px solid rgba(0, 0, 0, 0.25);
     border-radius: 3px;
     transition: all 0.1s ease-in-out;
-    padding: .5rem 0;
+    padding: 0.5rem 0;
     min-height: 48px;
 
     &:hover {
@@ -551,7 +638,7 @@ form {
       padding: 0 1rem;
     }
 
-    .composer__input form{
+    .composer__input form {
       width: 100%;
       display: flex;
       align-content: center;
@@ -587,7 +674,7 @@ form {
       transform: scale(1);
     }
 
-    .composer__other:hover{
+    .composer__other:hover {
       transform: scale(1.02);
     }
   }
@@ -604,77 +691,83 @@ form {
   animation: fadein 5s;
 }
 @keyframes fadein {
-  0% { opacity: 0; }
-  50% { opacity: 0; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .modal-overlay {
-	background-color: rgba(0,0,0,0.001);
-	width: 100%;
-	height: 100%;
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.001);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
 }
 .modal-overlay .modal {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	z-index: 9998;
-	background-color: #fff;
-	border-radius: 3px;
-	padding: 0.5em;
-	color: #1e1e1e;
-	-webkit-box-shadow: 0 1px 6px rgba(0,0,0,0.12);
-	box-shadow: 0 1px 6px rgba(0,0,0,0.12);
-	margin-top: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 9998;
+  background-color: #fff;
+  border-radius: 3px;
+  padding: 0.5em;
+  color: #1e1e1e;
+  -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+  margin-top: 10px;
 }
 .modal-overlay .modal ul {
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
 }
 .modal-overlay .modal li {
-	list-style: none;
+  list-style: none;
 }
 .modal-overlay .modal li a,
 .modal-overlay .modal li button {
-	width: 100%;
-	display: block;
-	text-decoration: none;
-	color: #1e1e1e;
-	background: none;
-	border: none;
-	text-align: left;
-	padding: 0.3em;
-	cursor: pointer;
+  width: 100%;
+  display: block;
+  text-decoration: none;
+  color: #1e1e1e;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 0.3em;
+  cursor: pointer;
 }
 .modal-overlay .modal li a:hover,
 .modal-overlay .modal li button:hover {
-	background-color: #dcdcdc;
+  background-color: #dcdcdc;
 }
 ::-webkit-scrollbar {
-	width: 0.5rem;
+  width: 0.5rem;
 }
 ::-webkit-scrollbar-track {
-	background-color: transparent;
-	border-radius: 8px;
+  background-color: transparent;
+  border-radius: 8px;
 }
 ::-webkit-scrollbar-thumb {
-	background-color: rgba(0,0,0,0.175);
-	border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.175);
+  border-radius: 8px;
 }
 .sidebar ::-webkit-scrollbar-thumb {
-	background-color: rgba(255,255,255,0.175);
-	border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.175);
+  border-radius: 8px;
 }
 .add-cabal {
-	text-align: center;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   height: 100%;
 
   h1 {
