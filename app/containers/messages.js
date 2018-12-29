@@ -8,7 +8,6 @@ import Avatar from './avatar';
 
 export default function MessagesContainer(props) {
   const enrichText = content => {
-    console.log({content});
     return remark()
       .use(remarkReact)
       .use(remarkEmoji)
