@@ -101,7 +101,7 @@ app.on('ready', () => {
     height: 600,
     minWidth: 640,
     minHeight: 395,
-    frame: false,
+    frame: true,
     titleBarStyle: 'hidden'
   })
   win.maximize()
