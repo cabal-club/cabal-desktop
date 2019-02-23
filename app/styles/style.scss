@@ -397,6 +397,7 @@ form {
     color: rgba(0, 0, 0, 0.66);
     transition: all 0.075s ease-in-out;
     cursor: pointer;
+    -webkit-app-region: no-drag;
   }
 
   .channel-meta__other .channel-meta__other__share:hover {
