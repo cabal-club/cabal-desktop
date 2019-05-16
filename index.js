@@ -1,6 +1,7 @@
 'use strict'
 
 const { app, BrowserWindow, shell, Menu } = require('electron')
+const path = require('path')
 require('electron-reload')(__dirname)
 
 const template = [
@@ -105,7 +106,7 @@ app.on('ready', () => {
     titleBarStyle: 'hidden'
   })
   win.maximize()
-  win.loadURL(`file://${__dirname}/index.html`)
+  win.loadURL('file://' + path.join(__dirname, 'index.html'))
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 
   win.webContents.on('will-navigate', (event, url) => {

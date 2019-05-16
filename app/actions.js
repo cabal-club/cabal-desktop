@@ -10,12 +10,6 @@ import path from 'path'
 import Swarm from 'cabal-core/swarm'
 import commander from './commander'
 
-const {
-  readFile,
-  writeFile,
-  readdir
-} = fs.promises
-
 const DEFAULT_CHANNEL = 'default'
 const HOME_DIR = homedir()
 const DATA_DIR = path.join(HOME_DIR, '.cabal-desktop', `v${Cabal.databaseVersion}`)
@@ -242,7 +236,6 @@ const initializeCabal = ({ addr, username, dispatch }) => {
       channels.forEach((channel) => {
         dispatch(addChannel({ addr, channel }))
       })
-      dispatch(joinChannel({ addr, channel: DEFAULT_CHANNEL }))
     })
 
     cabal.users.getAll((err, users) => {
@@ -270,6 +263,7 @@ const initializeCabal = ({ addr, username, dispatch }) => {
             }
           })
           dispatch({ type: 'UPDATE_CABAL', addr, users: cabal.client.users, username: cabal.username })
+          dispatch(joinChannel({ addr, channel: DEFAULT_CHANNEL }))
         })
       }
       updateLocalKey()
@@ -317,7 +311,7 @@ const initializeCabal = ({ addr, username, dispatch }) => {
 async function lskeys () {
   let list
   try {
-    list = filterForKeys(await readdir(DATA_DIR))
+    list = filterForKeys(fs.readdirSync(DATA_DIR))
   } catch (_) {
     list = []
     await mkdirp(DATA_DIR)
@@ -333,7 +327,7 @@ function encodeStateForKey (key) {
 async function readstate () {
   let state
   try {
-    state = JSON.parse(await readFile(STATE_FILE, 'utf8'))
+    state = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'))
   } catch (_) {
     state = {}
   }
@@ -381,7 +375,7 @@ const storeOnDisk = async () => {
     },
     {}
   )
-  await writeFile(STATE_FILE, JSON.stringify(cabalsState))
+  fs.writeFileSync(STATE_FILE, JSON.stringify(cabalsState))
 }
 
 // removes non-key items via unordered insertion & length clamping
