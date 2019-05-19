@@ -1,0 +1,27 @@
+sudo: false
+language: node_js
+node_js:
+  - '10'
+
+os:
+  - osx
+  - linux
+  - windows
+
+script:
+  - npm rebuild
+  - npm run rebuild-leveldb
+  - npm run lint
+  - npm run build
+  - npm run dist
+
+install:
+  - npm install
+
+deploy:
+  provider: script
+  script: npm run dist
+  on:
+    all_branches: true
+  skip_cleanup: true
+  file_glob: true
