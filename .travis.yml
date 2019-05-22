@@ -10,17 +10,14 @@ os:
 
 script:
   - npm rebuild
-  - npm run rebuild-leveldb
-  - npm run lint
-  - npm run build
-  - npm run dist
+  - npm run dist:multi
 
 install:
   - npm install
 
 deploy:
   provider: script
-  script: npm run dist
+  script: npm run dist:multi
   on:
     all_branches: true
   skip_cleanup: true
