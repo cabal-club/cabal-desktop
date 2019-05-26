@@ -10,6 +10,15 @@ export default function MessagesContainer (props) {
   const enrichText = (content) => {
     return remark().use(remarkReact).use(remarkEmoji).processSync(content).contents
   }
+  const renderDate = (time) => {
+    const t = moment(time)
+    return (
+      <span>
+        {t.format('h:mm A')}
+        <span className='messages__item__metadata__date'>{t.format('LL')}</span>
+      </span>
+    )
+  }
   const { cabal, onscroll, toggleEmojis, composerHeight } = props
   const messages = cabal.messages
   if (messages.length === 0) {
@@ -32,7 +41,7 @@ export default function MessagesContainer (props) {
             return (
               <div key={index} className='messages__item messages__item--system'>
                 <div className='messages__item__metadata'>
-                  <div className='messages__item__metadata__name'>System<span>{moment(message.time).format('h:mm A')}</span></div>
+                  <div className='messages__item__metadata__name'>System{renderDate(message.time)}</div>
                   <div className='text'>{enrichText(message.content)}</div>
                 </div>
               </div>
@@ -45,7 +54,7 @@ export default function MessagesContainer (props) {
                   {repeatedAuthor ? null : <Avatar name={message.author || 'conspirator'} />}
                 </div>
                 <div className='messages__item__metadata'>
-                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author || 'conspirator'}<span>{moment(message.time).format('h:mm A')}</span></div>}
+                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author || 'conspirator'}{renderDate(message.time)}</div>}
                   <div className={repeatedAuthor ? 'text indent' : 'text'}>
                     {enrichText(message.content)}
                   </div>
@@ -62,7 +71,7 @@ export default function MessagesContainer (props) {
                   </div>
                 </div>
                 <div className='messages__item__metadata'>
-                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author}<span>{moment(message.time).format('h:mm A')}</span></div>}
+                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author}{renderDate(message.time)}</div>}
                   <div className={repeatedAuthor ? 'text indent' : 'text'}>{enrichText(message.content)}</div>
                 </div>
               </div>
