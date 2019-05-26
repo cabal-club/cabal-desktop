@@ -8,8 +8,8 @@ b, u, i, center,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
 	margin: 0;
@@ -460,6 +460,15 @@ form {
     display: flex;
     align-items: flex-end;
   }
+
+	.messages__item__metadata .messages__item__metadata__name .messages__item__metadata__date {
+		opacity: 0;
+		transition: opacity .2s ease-in-out;
+	}
+
+	.messages__item__metadata:hover .messages__item__metadata__name .messages__item__metadata__date {
+		opacity: 1;
+	}
 
   .messages__item__metadata span {
     color: rgba(0, 0, 0, 0.33);
