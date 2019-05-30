@@ -15,7 +15,10 @@
   },
   "productName": "Cabal",
   "repository": "cabal-club/cabal-desktop",
-  "author": "Cabal Club",
+  "author": {
+    "name": "Cabal Club",
+    "email": "github-noreply@cabal.club"
+  },
   "license": "GPL-3.0",
   "devDependencies": {
     "cross-env": "^5.2.0",
