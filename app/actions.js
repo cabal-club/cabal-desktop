@@ -209,7 +209,7 @@ const initializeCabal = ({ addr, username, dispatch }) => {
   // and distinct from the class funcationality.
   cabal.client = {}
 
-  cabal.db.ready(function (err) {
+  cabal.ready(function (err) {
     if (err) return console.error(err)
     cabal.key = addr
     const swarm = Swarm(cabal)
