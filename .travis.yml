@@ -9,11 +9,10 @@ os:
   - windows
 
 script:
-  - npm rebuild
-  - npm run dist
-
-install:
   - npm install
+  - npm rebuild
+  - npm run build
+  - npm run dist
 
 deploy:
   provider: script
