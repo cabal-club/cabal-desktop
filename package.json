@@ -9,7 +9,7 @@
     "watch": "webpack --watch",
     "start": "cross-env NODE_ENV=development npm-run-all --parallel start:*",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder",
+    "dist": "npm run build && electron-builder",
     "dist:multi": "electron-builder -mlw",
     "postinstall": "electron-builder install-app-deps"
   },
