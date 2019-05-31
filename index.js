@@ -45,8 +45,12 @@ const template = [
     submenu: [
       {
         label: 'Learn More',
-        click () { require('electron').shell.openExternal('https://cabal.chat') }
-      }
+        click () { require('electron').shell.openExternal('https://cabal-club.github.io/') }
+      },
+			{
+				label: 'Report Issue',
+				click () { require('electron').shell.openExternal('https://github.com/cabal-club/cabal-desktop/issues/new')}
+			}
     ]
   }
 ]
