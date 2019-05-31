@@ -46,6 +46,7 @@
     "electron-default-menu": "^1.0.1",
     "electron-prompt": "^1.3.0",
     "electron-reload": "^1.4.0",
+    "electron-context-menu": "^0.12.1",
     "emoji-mart": "^2.9.2",
     "get-form-data": "^2.0.0",
     "mkdirp": "^0.5.1",

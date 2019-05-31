@@ -1,9 +1,25 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
+import contextMenu from 'electron-context-menu'
 
 import { viewChannel, joinChannel, changeUsername, changeScreen } from '../actions'
 import Avatar from './avatar'
+
+contextMenu({
+	prepend: (params, browserWindow) => [{
+		label: 'Remove',
+		// Only show it when right-clicking text
+		visible: params.mediaType === 'text'
+	}],
+  showInspectElement: true,
+  menu: actions => [
+		actions.separator(),
+		{
+			label: 'Remove'
+		}
+	]
+});
 
 const mapStateToProps = state => {
   var cabal = state.cabals[state.currentCabal]
