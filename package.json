@@ -37,7 +37,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
-    "cabal-core": "^5.0.1",
+    "cabal-core": "^5.1.2",
     "cat-names": "^1.0.2",
     "collect-stream": "^1.2.1",
     "dat-encoding": "^5.0.1",
