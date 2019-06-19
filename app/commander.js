@@ -12,17 +12,40 @@ const commander = (cabal, message) => (dispatch) => {
   var arg = m[2] ? m[2].trim() : ''
   switch (cmd) {
     case 'help':
-      var helpContent = `/nick\n&nbsp;&nbsp;change your display name\n/join\n&nbsp;&nbsp;join a new channel\n/help\n&nbsp;&nbsp;display this help message\n/topic\n&nbsp;&nbsp;set the topic/description/message of the day for a channel`
+      var content = `/nick or /n\n&nbsp;&nbsp;Change your display name\n/join or /j\n&nbsp;&nbsp;Join a new channel/switch to existing channel\n/help\n&nbsp;&nbsp;Display this help message\n/motd or /topic\n&nbsp;&nbsp;Set the topic/description/message of the day for a channel\n/remove\n&nbsp;&nbsp;Remove cabal from Cabal Desktop`
       dispatch(addLocalSystemMessage({
         addr,
-        helpContent
+        content
       }))
       break
     case 'join':
       var channel = arg
       dispatch(joinChannel({ addr, channel }))
       break
+    case 'j':
+      var channel = arg
+      dispatch(joinChannel({ addr, channel }))
+      break
+    case 'motd':
+      var topic = arg
+      if (topic && topic.trim().length > 0) {
+        cabal.topic = topic
+        dispatch(setChannelTopic({
+          addr,
+          channel: cabal.client.channel,
+          topic
+        }))
+      }
+      break
     case 'nick':
+      var username = arg
+      if (!username.length) return
+      cabal.username = username
+      if (username && username.trim().length > 0) {
+        dispatch(changeUsername({ addr, username }))
+      }
+      break
+    case 'n':
       var username = arg
       if (!username.length) return
       cabal.username = username
@@ -45,7 +68,7 @@ const commander = (cabal, message) => (dispatch) => {
       dispatch(removeCabal({ addr }))
       break
     default:
-      var content = `/${cmd} is not yet a command. \n Available commands: /nick /topic /remove /join \n`
+      var content = `/${cmd} is not yet a command. \nAvailable commands: /join, /j, /help, /motd, /nick, /n, /remove, /topic \nTry /help for a list of command descriptions!`
       dispatch(addLocalSystemMessage({
         addr,
         content
