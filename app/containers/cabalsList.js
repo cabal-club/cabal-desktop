@@ -29,20 +29,23 @@ class CabalsListScreen extends React.Component {
 
   render () {
     var self = this
-    const { addr, cabals } = this.props
-    var cabalKeys = Object.keys(cabals).sort()
+    var { addr, cabals } = this.props
+    cabals = cabals || {}
+    var cabalKeys = (Object.keys(cabals) || []).sort()
     return (
       <div className='client__cabals' onClick={(e) => this.props.toggleEmojis(false)}>
         <div className='switcher'>
           {cabalKeys.map(function (key) {
             var cabal = cabals[key]
-            return (
-              <div key={key} onClick={self.selectCabal.bind(self, key)} className={addr === cabal.addr ? 'switcher__item switcher__item--active' : 'switcher__item'}>
-                <span>
-                  {cabal.addr.slice(0, 2)}
-                </span>
-              </div>
-            )
+            if (cabal) {
+              return (
+                <div title={key} key={key} onClick={self.selectCabal.bind(self, key)} className={addr === cabal.addr ? 'switcher__item switcher__item--active' : 'switcher__item'}>
+                  <span>
+                    {key.slice(0, 2)}
+                  </span>
+                </div>
+              )
+            }
           })}
           <div className='switcher__item --addnew' onClick={self.joinCabal.bind(self)}>
             <img src='static/images/icon-newchannel.svg' />

@@ -9,6 +9,7 @@ import mkdirp from 'mkdirp'
 import path from 'path'
 import Swarm from 'cabal-core/swarm'
 import commander from './commander'
+const { dialog } = require('electron').remote
 
 const DEFAULT_CHANNEL = 'default'
 const HOME_DIR = homedir()
@@ -29,20 +30,39 @@ export const viewCabal = ({ addr }) => dispatch => {
   }
 }
 
-export const cancelDeleteCabal = () => ({ type: 'DIALOGS_DELETE_CLOSE' })
-export const deleteCabal = addr => ({ type: 'DIALOGS_DELETE_OPEN', addr })
-export const confirmDeleteCabal = addr => dispatch => {
-  const { cabal } = cabals[addr]
+export const showCabalSettings = ({ key }) => dispatch => {
+  dispatch({ type: 'SHOW_CABAL_SETTINGS', key })
+}
 
-  if (cabal.client.swarm) {
+export const removeCabal = ({ key }) => dispatch => {
+  dialog.showMessageBox({
+    type: 'question',
+    buttons: ['Cancel', 'Remove'],
+    message: 'Are you sure you want to remove this Cabal?'
+  }, (response) => {
+    if (response) {
+      dispatch(confirmRemoveCabal({ key }))
+    }
+  })
+}
+
+export const confirmRemoveCabal = ({ key }) => dispatch => {
+  const cabal = cabals[key]
+  if (cabal.client && cabal.client.swarm) {
     for (const con of cabal.client.swarm.connections) {
       con.removeAllListeners()
     }
   }
-  delete cabals[addr]
+  delete cabals[key]
   storeOnDisk()
-  dispatch({ type: 'DELETE_CABAL', addr })
-  dispatch({ type: 'DIALOGS_DELETE_CLOSE' })
+  dispatch({ type: 'DELETE_CABAL', key })
+
+  var cabalKeys = Object.keys(cabals)
+  if (cabalKeys.length) {
+    dispatch({ type: 'VIEW_CABAL', addr: cabalKeys[0] })
+  } else {
+    dispatch({ type: 'CHANGE_SCREEN', screen: 'addCabal' })
+  }
 }
 
 export const onCommand = ({ addr, message }) => dispatch => {
@@ -58,6 +78,7 @@ export const updateCabal = (opts) => dispatch => {
   storeOnDisk()
   dispatch({ type: 'UPDATE_CABAL', ...opts })
 }
+
 export const joinChannel = ({ addr, channel }) => dispatch => {
   if (channel.length > 0) {
     dispatch(addChannel({ addr, channel }))
@@ -330,14 +351,6 @@ async function readstate () {
     state = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'))
   } catch (_) {
     state = {}
-  }
-  const keys = await lskeys()
-  let l = keys.length
-  while (--l > 0) {
-    const key = keys[l]
-    if (state[key] === undefined) {
-      state[key] = encodeStateForKey(key)
-    }
   }
   return state
 }

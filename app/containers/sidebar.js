@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
 
-import { viewChannel, joinChannel, changeUsername, changeScreen } from '../actions'
+import { viewChannel, joinChannel, changeUsername, changeScreen, showCabalSettings } from '../actions'
 import Avatar from './avatar'
 
 const mapStateToProps = state => {
@@ -20,7 +20,8 @@ const mapDispatchToProps = dispatch => ({
   changeScreen: ({ screen }) => dispatch(changeScreen({ screen })),
   joinChannel: ({ addr, channel }) => dispatch(joinChannel({ addr, channel })),
   viewChannel: ({ addr, channel }) => dispatch(viewChannel({ addr, channel })),
-  changeUsername: ({ addr, username }) => dispatch(changeUsername({ addr, username }))
+  changeUsername: ({ addr, username }) => dispatch(changeUsername({ addr, username })),
+  showCabalSettings: ({ key }) => dispatch(showCabalSettings({ key }))
 })
 
 class SidebarScreen extends React.Component {
@@ -54,6 +55,10 @@ class SidebarScreen extends React.Component {
     })
   }
 
+  onClickCabalSettings (key) {
+    this.props.showCabalSettings({ key })
+  }
+
   joinChannel (channel) {
     var addr = this.props.addr
     this.props.joinChannel({ addr, channel })
@@ -85,7 +90,7 @@ class SidebarScreen extends React.Component {
     return (
       <div className='client__sidebar' onClick={(e) => this.props.toggleEmojis(false)}>
         <div className='sidebar'>
-          <div className='session'>
+          <div className='session' onClick={self.onClickCabalSettings.bind(self, cabal.key)}>
             <div className='session__avatar'>
               <div className='session__avatar__img'>
                 <Avatar name={username} />

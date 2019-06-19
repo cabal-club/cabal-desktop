@@ -168,6 +168,7 @@ form {
     width: 13.75rem;
     padding: 1rem;
     -webkit-app-region: drag;
+    cursor: pointer;
   }
 
   .session .session__avatar {
@@ -408,12 +409,25 @@ form {
     display: inline-block;
     vertical-align: middle;
     margin-left: 1rem;
+    cursor: pointer;
   }
 
   .window__main {
     flex-grow: 1;
     overflow-x: hidden;
     overflow-y: auto;
+  }
+
+  .window__main__content {
+    padding: 2rem 1rem;
+  }
+
+  .window__main__content ul {
+    list-style: none;
+  }
+
+  .window__main__content li {
+    margin-bottom: 1rem;
   }
 
   .window__header{

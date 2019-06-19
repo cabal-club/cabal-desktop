@@ -1,29 +1,31 @@
-import { joinChannel, updateCabal } from './actions'
+import { joinChannel, changeUsername, removeCabal } from './actions'
 const PATTERN = (/^\/(\w*)\s*(.*)/)
 
 const commander = (cabal, message) => (dispatch) => {
-  var addr = cabal.addr
-  var m = PATTERN.exec(message)
-  var cmd = m[1].trim()
-  var arg = m[2].trim()
+  var key = cabal.key
+  var text
+  if (message && message.content && message.content.text) {
+    text = message.content.text
+  }
+  var m = PATTERN.exec(text) || []
+  var cmd = m[1] ? m[1].trim() : ''
+  var arg = m[2] ? m[2].trim() : ''
   switch (cmd) {
     case 'join':
       var channel = arg
-      dispatch(joinChannel({ addr, channel }))
+      dispatch(joinChannel({ addr: key, channel }))
       break
     case 'nick':
       var username = arg
       if (!username.length) return
       cabal.username = username
-      dispatch(updateCabal({ addr, username }))
+      if (username && username.trim().length > 0) {
+        dispatch(changeUsername({ addr: key, username }))
+      }
       break
-    case 'channels':
-      return cabal.getChannels((err, channels) => {
-        if (err) console.trace(err)
-        var content = `${channels.join('  \n')}\n`
-        cabal.messages.push({ type: 'local/system', content })
-        dispatch(updateCabal({ addr, messages: cabal.messages }))
-      })
+    case 'remove':
+      dispatch(removeCabal({ key }))
+      break
     default:
       break
   }

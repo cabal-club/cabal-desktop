@@ -2,15 +2,11 @@ const defaultState = {
   screen: 'main',
   currentCabal: null,
   currentChannel: 'default',
-  dialogs: {
-    delete: {
-      cabal: null
-    }
-  },
   cabals: {}
 }
 
 const reducer = (state = defaultState, action) => {
+  state.cabalSettingsVisible = false
   switch (action.type) {
     case 'CHANGE_SCREEN':
       return {
@@ -61,27 +57,21 @@ const reducer = (state = defaultState, action) => {
         }
       }
     case 'DELETE_CABAL':
-      const { [action.addr]: del, ...cabals } = state.cabals
-      return { ...state, cabals }
-    case 'DIALOGS_DELETE_CLOSE':
+      var cabals = state.cabals
+      delete cabals[action.key]
+      return ({
+        ...state,
+        ...cabals
+      })
+    case 'SHOW_CABAL_SETTINGS':
       return {
         ...state,
-        dialogs: {
-          ...state.dialogs,
-          delete: {
-            cabal: null
-          }
-        }
+        cabalSettingsVisible: true
       }
-    case 'DIALOGS_DELETE_OPEN':
+    case 'HIDE_CABAL_SETTINGS':
       return {
         ...state,
-        dialogs: {
-          ...state.dialogs,
-          delete: {
-            cabal: action.addr
-          }
-        }
+        cabalSettingsVisible: false
       }
     default:
       return defaultState
