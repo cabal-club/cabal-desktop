@@ -12,10 +12,10 @@ const commander = (cabal, message) => (dispatch) => {
   var arg = m[2] ? m[2].trim() : ''
   switch (cmd) {
     case 'help':
-      var content = `/nick\n&nbsp;&nbsp;change your display name\n/join\n&nbsp;&nbsp;join a new channel\n/help\n&nbsp;&nbsp;display this help message\n/topic\n&nbsp;&nbsp;set the topic/description/message of the day for a channel`
+      var helpContent = `/nick\n&nbsp;&nbsp;change your display name\n/join\n&nbsp;&nbsp;join a new channel\n/help\n&nbsp;&nbsp;display this help message\n/topic\n&nbsp;&nbsp;set the topic/description/message of the day for a channel`
       dispatch(addLocalSystemMessage({
         addr,
-        content
+        helpContent
       }))
       break
     case 'join':
