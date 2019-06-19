@@ -1,12 +1,12 @@
 const defaultState = {
   screen: 'main',
+  cabalSettingsVisible: false,
   currentCabal: null,
   currentChannel: 'default',
   cabals: {}
 }
 
 const reducer = (state = defaultState, action) => {
-  state.cabalSettingsVisible = false
   switch (action.type) {
     case 'CHANGE_SCREEN':
       return {
@@ -17,6 +17,7 @@ const reducer = (state = defaultState, action) => {
     case 'VIEW_CABAL':
       return {
         ...state,
+        cabalSettingsVisible: false,
         currentCabal: action.addr,
         currentChannel: action.channel || 'default'
       }
@@ -29,7 +30,8 @@ const reducer = (state = defaultState, action) => {
             ...action,
             messages: []
           }
-        }
+        },
+        cabalSettingsVisible: false
       }
     case 'UPDATE_CABAL':
       var cabal = state.cabals[action.addr]
@@ -56,9 +58,21 @@ const reducer = (state = defaultState, action) => {
           }
         }
       }
+    case 'UPDATE_TOPIC':
+      var cabal = state.cabals[action.addr]
+      return {
+        ...state,
+        cabals: {
+          ...state.cabals,
+          [action.addr]: {
+            ...cabal,
+            topic: action.topic
+          }
+        }
+      }
     case 'DELETE_CABAL':
       var cabals = state.cabals
-      delete cabals[action.key]
+      delete cabals[action.addr]
       return ({
         ...state,
         ...cabals

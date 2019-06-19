@@ -1,8 +1,9 @@
 import React, { Fragment, Component } from 'react'
 import { clipboard, ipcRenderer } from 'electron'
 import { connect } from 'react-redux'
+import prompt from 'electron-prompt'
 
-import { changeScreen, getMessages, showCabalSettings, viewCabal } from '../actions'
+import { changeScreen, getMessages, setChannelTopic, showCabalSettings, viewCabal } from '../actions'
 import CabalSettings from './cabalSettings'
 import WriteContainer from './write'
 import MessagesContainer from './messages'
@@ -18,7 +19,8 @@ const mapDispatchToProps = dispatch => ({
   getMessages: ({ addr, channel, count }) => dispatch(getMessages({ addr, channel, count })),
   changeScreen: ({ screen, addr }) => dispatch(changeScreen({ screen, addr })),
   viewCabal: ({ addr }) => dispatch(viewCabal({ addr })),
-  showCabalSettings: ({ key }) => dispatch(showCabalSettings({ key })),
+  setChannelTopic: ({ addr, channel, topic }) => dispatch(setChannelTopic({ addr, channel, topic })),
+  showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr }))
 })
 
 class MainPanel extends Component {
@@ -47,6 +49,26 @@ class MainPanel extends Component {
     // if you're in the same cabal and a new message arrives we should show a button prompting a scroll to bottom
   }
 
+  onClickTopic () {
+    prompt({
+      title: 'Set channel topic',
+      label: 'New topic',
+      value: this.props.cabal.topic,
+      type: 'input'
+    }).then((topic) => {
+      if (topic && topic.trim().length > 0) {
+        this.props.cabal.topic = topic
+        this.props.setChannelTopic({
+          addr: this.props.cabal.addr,
+          channel: this.props.cabal.channel,
+          topic
+        })
+      }
+    }).catch(() => {
+      console.log('cancelled new topic')
+    })
+  }
+
   handleOpenCabalUrl ({ url = '' }) {
     let addr = url.replace('cabal://', '').trim()
     if (this.props.cabals[addr]) {
@@ -64,8 +86,8 @@ class MainPanel extends Component {
     }
   }
 
-  showCabalSettings (key) {
-    this.props.showCabalSettings({ key })
+  showCabalSettings (addr) {
+    this.props.showCabalSettings({ addr })
   }
 
   copyClick () {
@@ -102,6 +124,7 @@ class MainPanel extends Component {
       return <CabalSettings />
     }
 
+    var onlineUsers = Object.values(cabal.users).filter((user) => user.online)
     return (
       <div className='client__main'>
         <div className='window'>
@@ -110,12 +133,15 @@ class MainPanel extends Component {
               <div className='channel-meta__data'>
                 <div className='channel-meta__data__details'>
                   <h1>#{cabal.channel}</h1>
-                  {/* <h2>{Object.keys(cabal.users).length} peers connected</h2> */}
+                  <h2>
+                    {onlineUsers.length} {onlineUsers.length !== 1 ? 'peers' : 'peer'} connected
+                    <span className='channel-meta__data__topic' onClick={this.onClickTopic.bind(this)}> | {cabal.topic || 'Add a topic'}</span>
+                  </h2>
                 </div>
               </div>
               <div className='channel-meta__other'>
-                <div onClick={this.showCabalSettings.bind(this, cabal.key)} className='channel-meta__other__more'><img src='static/images/icon-channelother.svg' /></div>
-                <div className='channel-meta__other__share' onClick={self.copyClick.bind(self)}>Share Cabal</div>
+                <div onClick={this.showCabalSettings.bind(this, this.props.addr)} className='channel-meta__other__more'><img src='static/images/icon-channelother.svg' /></div>
+                <div className='button channel-meta__other__share' onClick={self.copyClick.bind(self)}>Share Cabal</div>
               </div>
             </div>
           </div>

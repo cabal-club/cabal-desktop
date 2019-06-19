@@ -1,8 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { removeCabal } from '../actions'
-import Avatar from './avatar'
+import { hideCabalSettings, removeCabal } from '../actions'
 
 const mapStateToProps = state => {
   var cabal = state.cabals[state.currentCabal]
@@ -12,15 +11,18 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  changeScreen: ({ screen }) => dispatch(changeScreen({ screen })),
-  changeUsername: ({ addr, username }) => dispatch(changeUsername({ addr, username })),
-  removeCabal: ({ key }) => dispatch(removeCabal({ key }))
+  hideCabalSettings: () => dispatch(hideCabalSettings()),
+  removeCabal: ({ addr }) => dispatch(removeCabal({ addr }))
 })
 
 class CabalSettingsContainer extends React.Component {
 
-  removeCabal (key) {
-    this.props.removeCabal({ key })
+  onClickCloseSettings () {
+    this.props.hideCabalSettings()
+  }
+
+  removeCabal (addr) {
+    this.props.removeCabal({ addr })
   }
 
   render () {
@@ -31,11 +33,11 @@ class CabalSettingsContainer extends React.Component {
             <div className='channel-meta'>
               <div className='channel-meta__data'>
                 <div className='channel-meta__data__details'>
-                  <h1>Settings</h1>
+                  <h1>
+                    <span onClick={this.onClickCloseSettings.bind(this)} className='cabal-settings__close'><img src='static/images/icon-composermeta.svg' /></span>
+                    Settings
+                  </h1>
                 </div>
-              </div>
-              <div className='channel-meta__other'>
-                {/* <div className='channel-meta__other__more'><img src='static/images/icon-channelother.svg' /></div> */}
               </div>
             </div>
           </div>
@@ -46,7 +48,7 @@ class CabalSettingsContainer extends React.Component {
                   <strong>Cabal Key:</strong> cabal://{this.props.cabal.addr}
                 </li>
                 <li>
-                  <button onClick={this.removeCabal.bind(this, this.props.cabal.addr)}>Remove this cabal from Cabal Desktop</button>
+                  <button className='button' onClick={this.removeCabal.bind(this, this.props.cabal.addr)}>Remove this cabal from Cabal Desktop</button>
                 </li>
               </ul>
             </div>

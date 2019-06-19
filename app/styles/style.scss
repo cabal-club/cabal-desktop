@@ -369,10 +369,20 @@ form {
     vertical-align: middle;
   }
 
+  .channel-meta__data .channel-meta__data__details {
+    align-items: center;
+  }
+
   .channel-meta__data .channel-meta__data__details h1 {
-    font-size: 0.875rem;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
+    font-size: 1.1rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+    align-items: center;
+    display: flex;
+  }
+
+  .channel-meta__data__topic {
+    cursor: pointer;
   }
 
   .channel-meta__data .channel-meta__data__details h2 {
@@ -386,23 +396,25 @@ form {
     text-align: right;
   }
 
-  .channel-meta__other .channel-meta__other__share {
+  .button {
     display: inline-block;
-    vertical-align: middle;
     font-size: 0.875rem;
     font-weight: 600;
-    margin-left: 1rem;
     border: 1px solid rgba(0, 0, 0, 0.15);
     padding: 0.4rem 0.875rem;
     border-radius: 3px;
     color: rgba(0, 0, 0, 0.66);
+    background-color: #fff;
     transition: all 0.075s ease-in-out;
     cursor: pointer;
   }
 
-  .channel-meta__other .channel-meta__other__share:hover {
-    transform: scale(1.05);
+  .button:hover {
     box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  .channel-meta__other .channel-meta__other__share {
+    margin-left: 1rem;
   }
 
   .channel-meta__other .channel-meta__other__more {
@@ -441,8 +453,16 @@ form {
   .messages__item {
     display: flex;
     width: 100%;
+    padding-top: 0.3rem;
     margin-bottom: 0.6rem;
     margin-left: 0.125rem;
+  }
+
+  .messages__item--emote {
+  }
+
+  .messages__item--system {
+    background: #f8f8f8;
   }
 
   .messages__item__avatar {
@@ -529,6 +549,11 @@ form {
       color: #24609e;
       text-decoration: underline;
     }
+  }
+
+  .cabal-settings__close {
+    transform: rotate(45deg);
+    cursor: pointer;
   }
 
   .composerContainer {

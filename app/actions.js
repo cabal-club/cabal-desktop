@@ -30,32 +30,36 @@ export const viewCabal = ({ addr }) => dispatch => {
   }
 }
 
-export const showCabalSettings = ({ key }) => dispatch => {
-  dispatch({ type: 'SHOW_CABAL_SETTINGS', key })
+export const showCabalSettings = ({ addr }) => dispatch => {
+  dispatch({ type: 'SHOW_CABAL_SETTINGS', addr })
 }
 
-export const removeCabal = ({ key }) => dispatch => {
+export const hideCabalSettings = () => dispatch => {
+  dispatch({ type: 'HIDE_CABAL_SETTINGS' })
+}
+
+export const removeCabal = ({ addr }) => dispatch => {
   dialog.showMessageBox({
     type: 'question',
     buttons: ['Cancel', 'Remove'],
     message: 'Are you sure you want to remove this Cabal?'
   }, (response) => {
     if (response) {
-      dispatch(confirmRemoveCabal({ key }))
+      dispatch(confirmRemoveCabal({ addr }))
     }
   })
 }
 
-export const confirmRemoveCabal = ({ key }) => dispatch => {
-  const cabal = cabals[key]
+export const confirmRemoveCabal = ({ addr }) => dispatch => {
+  const cabal = cabals[addr]
   if (cabal.client && cabal.client.swarm) {
     for (const con of cabal.client.swarm.connections) {
       con.removeAllListeners()
     }
   }
-  delete cabals[key]
+  delete cabals[addr]
   storeOnDisk()
-  dispatch({ type: 'DELETE_CABAL', key })
+  dispatch({ type: 'DELETE_CABAL', addr })
 
   var cabalKeys = Object.keys(cabals)
   if (cabalKeys.length) {
@@ -100,6 +104,10 @@ export const changeUsername = ({ addr, username }) => dispatch => {
   currentCabal.username = username
   currentCabal.publishNick(username)
   dispatch({ type: 'UPDATE_CABAL', addr, username })
+  dispatch(addLocalSystemMessage({
+    addr,
+    content: `Nick set to: ${username}`
+  }))
 }
 
 export const getMessages = ({ addr, channel, count }) => dispatch => {
@@ -121,6 +129,16 @@ export const getMessages = ({ addr, channel, count }) => dispatch => {
         type
       })
     })
+
+    let channelTopic = ''
+    cabal.topics.get(channel, (err, topic) => {
+      if (err) return
+      if (topic) {
+        channelTopic = topic
+        dispatch({ type: 'UPDATE_TOPIC', addr, topic: channelTopic })
+      }
+    })
+
     dispatch({ type: 'UPDATE_CABAL', addr, messages: cabal.client.channelMessages[channel] })
   })
 }
@@ -218,6 +236,25 @@ export const addChannel = ({ addr, channel }) => dispatch => {
 
 export const addMessage = ({ message, addr }) => dispatch => {
   cabals[addr].publish(message)
+}
+
+export const addLocalSystemMessage = ({ addr, channel, content }) => dispatch => {
+  var cabal = cabals[addr]
+  channel = channel || cabal.client.channel
+  cabal.client.channelMessages[cabal.client.channel].push({
+    content,
+    type: 'local/system'
+  })
+  dispatch(updateCabal({ addr, messages: cabal.client.channelMessages[cabal.client.channel] }))
+}
+
+export const setChannelTopic = ({ topic, channel, addr }) => dispatch => {
+  cabals[addr].publishChannelTopic(channel, topic)
+  dispatch(addLocalSystemMessage({
+    addr,
+    content: `Topic set to: ${topic}`
+  }))
+  dispatch({ type: 'UPDATE_TOPIC', addr, topic })
 }
 
 const initializeCabal = ({ addr, username, dispatch }) => {
