@@ -1,7 +1,8 @@
 import form from 'get-form-data'
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
-import { addMessage, onCommand } from '../actions'
+
+import { addMessage, listCommands, onCommand } from '../actions'
 
 import '../../node_modules/emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
@@ -18,6 +19,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   addMessage: ({ addr, message }) => dispatch(addMessage({ addr, message })),
+  listCommands: () => dispatch(listCommands()),
   onCommand: ({ addr, message }) => dispatch(onCommand({ addr, message }))
 })
 
@@ -54,16 +56,30 @@ class writeScreen extends Component {
   }
 
   onKeyDown (e) {
-    const { cabal } = this.props
     if (e.key === 'Tab') {
       var el = this.textInput
       var line = el.value
-      var users = Object.keys(cabal.users).sort()
-      var pattern = (/^(\w+)$/)
-      var match = pattern.exec(line)
-      if (match) {
-        users = users.filter(user => user.startsWith(match[0]))
-        if (users.length > 0) el.value = users[0] + ': '
+
+      if (line.length > 1 && line[0] === '/') {
+        // command completion
+        var soFar = line.slice(1)
+        var commands = Object.keys(this.props.listCommands())
+        var matchingCommands = commands.filter(cmd => cmd.startsWith(soFar))
+        if (matchingCommands.length === 1) {
+          el.value = '/' + matchingCommands[0] + ' '
+        }
+      } else {
+        // nick completion
+        var users = Object.keys(this.props.users)
+          .map(key => this.props.users[key])
+          .map(user => user.name || user.key.substring(0, 8))
+          .sort()
+        var pattern = (/^(\w+)$/)
+        var match = pattern.exec(line)
+        if (match) {
+          users = users.filter(user => user.startsWith(match[0]))
+          if (users.length > 0) el.value = users[0] + ': '
+        }
       }
       e.preventDefault()
       e.stopPropagation()

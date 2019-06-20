@@ -1,79 +1,129 @@
 import { addLocalSystemMessage, changeUsername, joinChannel, removeCabal, setChannelTopic } from './actions'
-const PATTERN = (/^\/(\w*)\s*(.*)/)
 
 const commander = (cabal, message) => (dispatch) => {
+  var self = this
+
+  this.commands = {
+    help: {
+      help: () => 'display this help message',
+      call: (arg) => {
+        var helpContent = ''
+        for (var key in this.commands) {
+          helpContent = helpContent + `/${key} - ${this.commands[key].help()} \n`
+        }
+        dispatch(addLocalSystemMessage({ addr, content: helpContent }))
+      }
+    },
+    nick: {
+      help: () => 'change your display name',
+      call: (arg) => {
+        var username = arg
+        if (!username.length) return
+        cabal.username = username
+        if (username && username.trim().length > 0) {
+          dispatch(changeUsername({ addr, username }))
+        }
+      }
+    },
+    // emote: {
+    //   help: () => 'write an old-school text emote',
+    //   call: (arg) => {
+    //     sendMessage({
+    //       text: arg,
+    //       type: 'chat/emote'
+    //     })
+    //   }
+    // },
+    join: {
+      help: () => 'join a new channel',
+      call: (arg) => {
+        var channel = arg || 'default'
+        dispatch(joinChannel({ addr, channel }))
+      }
+    },
+    // quit: {
+    //   help: () => 'exit the cabal process',
+    //   call: (arg) => {
+    //     // TODO
+    //     // process.exit(0)
+    //   }
+    // },
+    topic: {
+      help: () => 'set the topic/description/"message of the day" for a channel',
+      call: (arg) => {
+        var topic = arg
+        if (topic && topic.trim().length > 0) {
+          cabal.topic = topic
+          dispatch(setChannelTopic({
+            addr,
+            channel: cabal.client.channel,
+            topic
+          }))
+        }
+      }
+    },
+    // whoami: {
+    //   help: () => 'display your local user key',
+    //   call: (arg) => {
+    //     // TODO
+    //     // self.view.writeLine.bind(self.view)('Local user key: ' + self.cabal.client.user.key)
+    //   }
+    // },
+    // alias: {
+    //   help: () => 'set alias for the cabal',
+    //   call: (arg) => {
+    //     renameCabalAlias(arg)
+    //   }
+    // },
+    // add: {
+    //   help: () => 'add a cabal',
+    //   call: (arg) => {
+    //     addAnotherCabal(arg)
+    //   }
+    // },
+    remove: {
+      help: () => 'remove cabal from Cabal Desktop',
+      call: (addr) => {
+        dispatch(removeCabal({ addr }))
+      }
+    }
+  }
+
+  this.alias = (command, alias) => {
+    self.commands[alias] = {
+      help: self.commands[command].help,
+      call: self.commands[command].call
+    }
+  }
+
+  // add aliases to commands
+  // this.alias('emote', 'me')
+  this.alias('join', 'j')
+  this.alias('nick', 'n')
+  this.alias('topic', 'motd')
+  // this.alias('whoami', 'key')
+
+  if (!cabal) {
+    return this.commands
+  }
+
   var addr = cabal.key
+  this.history = []
+  this.pattern = (/^\/(\w*)\s*(.*)/)
+
   var text
   if (message && message.content && message.content.text) {
     text = message.content.text
   }
-  var m = PATTERN.exec(text) || []
+  var m = this.pattern.exec(text) || []
   var cmd = m[1] ? m[1].trim() : ''
   var arg = m[2] ? m[2].trim() : ''
-  switch (cmd) {
-    case 'help':
-      var helpContent = `/nick or /n\n&nbsp;&nbsp;Change your display name\n/join or /j\n&nbsp;&nbsp;Join a new channel/switch to existing channel\n/help\n&nbsp;&nbsp;Display this help message\n/motd or /topic\n&nbsp;&nbsp;Set the topic/description/message of the day for a channel\n/remove\n&nbsp;&nbsp;Remove cabal from Cabal Desktop`
-      dispatch(addLocalSystemMessage({
-        addr,
-        content: helpContent
-      }))
-      break
-    case 'join':
-      var channel = arg
-      dispatch(joinChannel({ addr, channel }))
-      break
-    case 'j':
-      var channel = arg
-      dispatch(joinChannel({ addr, channel }))
-      break
-    case 'motd':
-      var topic = arg
-      if (topic && topic.trim().length > 0) {
-        cabal.topic = topic
-        dispatch(setChannelTopic({
-          addr,
-          channel: cabal.client.channel,
-          topic
-        }))
-      }
-      break
-    case 'nick':
-      var username = arg
-      if (!username.length) return
-      cabal.username = username
-      if (username && username.trim().length > 0) {
-        dispatch(changeUsername({ addr, username }))
-      }
-      break
-    case 'n':
-      var username = arg
-      if (!username.length) return
-      cabal.username = username
-      if (username && username.trim().length > 0) {
-        dispatch(changeUsername({ addr, username }))
-      }
-      break
-    case 'topic':
-      var topic = arg
-      if (topic && topic.trim().length > 0) {
-        cabal.topic = topic
-        dispatch(setChannelTopic({
-          addr,
-          channel: cabal.client.channel,
-          topic
-        }))
-      }
-      break
-    case 'remove':
-      dispatch(removeCabal({ addr }))
-      break
-    default:
-      var content = `/${cmd} is not yet a command. \nAvailable commands: /join, /j, /help, /motd, /nick, /n, /remove, /topic \nTry /help for a list of command descriptions!`
-      dispatch(addLocalSystemMessage({
-        addr,
-        content
-      }))
-      break
+
+  if (cmd in this.commands) {
+    this.commands[cmd].call(arg)
+  } else if (cmd) {
+    var content = `/${cmd} is not yet a command. \nTry /help for a list of command descriptions`
+    dispatch(addLocalSystemMessage({ addr, content }))
   }
 }
 

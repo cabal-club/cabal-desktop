@@ -73,6 +73,10 @@ export const onCommand = ({ addr, message }) => dispatch => {
   dispatch(commander(cabals[addr], message))
 }
 
+export const listCommands = () => dispatch => {
+  return dispatch(commander())
+}
+
 export const updateCabal = (opts) => dispatch => {
   const cabal = cabals[opts.addr]
   cabal[opts.addr] = {
