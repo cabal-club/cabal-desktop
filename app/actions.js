@@ -9,6 +9,7 @@ import mkdirp from 'mkdirp'
 import path from 'path'
 import Swarm from 'cabal-core/swarm'
 import commander from './commander'
+const { dialog } = require('electron').remote
 
 const DEFAULT_CHANNEL = 'default'
 const HOME_DIR = homedir()
@@ -29,12 +30,29 @@ export const viewCabal = ({ addr }) => dispatch => {
   }
 }
 
-export const cancelDeleteCabal = () => ({ type: 'DIALOGS_DELETE_CLOSE' })
-export const deleteCabal = addr => ({ type: 'DIALOGS_DELETE_OPEN', addr })
-export const confirmDeleteCabal = addr => dispatch => {
-  const { cabal } = cabals[addr]
+export const showCabalSettings = ({ addr }) => dispatch => {
+  dispatch({ type: 'SHOW_CABAL_SETTINGS', addr })
+}
 
-  if (cabal.client.swarm) {
+export const hideCabalSettings = () => dispatch => {
+  dispatch({ type: 'HIDE_CABAL_SETTINGS' })
+}
+
+export const removeCabal = ({ addr }) => dispatch => {
+  dialog.showMessageBox({
+    type: 'question',
+    buttons: ['Cancel', 'Remove'],
+    message: 'Are you sure you want to remove this Cabal?'
+  }, (response) => {
+    if (response) {
+      dispatch(confirmRemoveCabal({ addr }))
+    }
+  })
+}
+
+export const confirmRemoveCabal = ({ addr }) => dispatch => {
+  const cabal = cabals[addr]
+  if (cabal.client && cabal.client.swarm) {
     for (const con of cabal.client.swarm.connections) {
       con.removeAllListeners()
     }
@@ -42,7 +60,13 @@ export const confirmDeleteCabal = addr => dispatch => {
   delete cabals[addr]
   storeOnDisk()
   dispatch({ type: 'DELETE_CABAL', addr })
-  dispatch({ type: 'DIALOGS_DELETE_CLOSE' })
+
+  var cabalKeys = Object.keys(cabals)
+  if (cabalKeys.length) {
+    dispatch({ type: 'VIEW_CABAL', addr: cabalKeys[0] })
+  } else {
+    dispatch({ type: 'CHANGE_SCREEN', screen: 'addCabal' })
+  }
 }
 
 export const onCommand = ({ addr, message }) => dispatch => {
@@ -58,6 +82,7 @@ export const updateCabal = (opts) => dispatch => {
   storeOnDisk()
   dispatch({ type: 'UPDATE_CABAL', ...opts })
 }
+
 export const joinChannel = ({ addr, channel }) => dispatch => {
   if (channel.length > 0) {
     dispatch(addChannel({ addr, channel }))
@@ -79,6 +104,10 @@ export const changeUsername = ({ addr, username }) => dispatch => {
   currentCabal.username = username
   currentCabal.publishNick(username)
   dispatch({ type: 'UPDATE_CABAL', addr, username })
+  dispatch(addLocalSystemMessage({
+    addr,
+    content: `Nick set to: ${username}`
+  }))
 }
 
 export const getMessages = ({ addr, channel, count }) => dispatch => {
@@ -100,6 +129,16 @@ export const getMessages = ({ addr, channel, count }) => dispatch => {
         type
       })
     })
+
+    let channelTopic = ''
+    cabal.topics.get(channel, (err, topic) => {
+      if (err) return
+      if (topic) {
+        channelTopic = topic
+        dispatch({ type: 'UPDATE_TOPIC', addr, topic: channelTopic })
+      }
+    })
+
     dispatch({ type: 'UPDATE_CABAL', addr, messages: cabal.client.channelMessages[channel] })
   })
 }
@@ -197,6 +236,25 @@ export const addChannel = ({ addr, channel }) => dispatch => {
 
 export const addMessage = ({ message, addr }) => dispatch => {
   cabals[addr].publish(message)
+}
+
+export const addLocalSystemMessage = ({ addr, channel, content }) => dispatch => {
+  var cabal = cabals[addr]
+  channel = channel || cabal.client.channel
+  cabal.client.channelMessages[cabal.client.channel].push({
+    content,
+    type: 'local/system'
+  })
+  dispatch(updateCabal({ addr, messages: cabal.client.channelMessages[cabal.client.channel] }))
+}
+
+export const setChannelTopic = ({ topic, channel, addr }) => dispatch => {
+  cabals[addr].publishChannelTopic(channel, topic)
+  dispatch(addLocalSystemMessage({
+    addr,
+    content: `Topic set to: ${topic}`
+  }))
+  dispatch({ type: 'UPDATE_TOPIC', addr, topic })
 }
 
 const initializeCabal = ({ addr, username, dispatch }) => {
@@ -330,14 +388,6 @@ async function readstate () {
     state = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'))
   } catch (_) {
     state = {}
-  }
-  const keys = await lskeys()
-  let l = keys.length
-  while (--l > 0) {
-    const key = keys[l]
-    if (state[key] === undefined) {
-      state[key] = encodeStateForKey(key)
-    }
   }
   return state
 }

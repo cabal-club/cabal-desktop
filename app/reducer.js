@@ -1,12 +1,8 @@
 const defaultState = {
   screen: 'main',
+  cabalSettingsVisible: false,
   currentCabal: null,
   currentChannel: 'default',
-  dialogs: {
-    delete: {
-      cabal: null
-    }
-  },
   cabals: {}
 }
 
@@ -21,6 +17,7 @@ const reducer = (state = defaultState, action) => {
     case 'VIEW_CABAL':
       return {
         ...state,
+        cabalSettingsVisible: false,
         currentCabal: action.addr,
         currentChannel: action.channel || 'default'
       }
@@ -33,7 +30,8 @@ const reducer = (state = defaultState, action) => {
             ...action,
             messages: []
           }
-        }
+        },
+        cabalSettingsVisible: false
       }
     case 'UPDATE_CABAL':
       var cabal = state.cabals[action.addr]
@@ -60,28 +58,34 @@ const reducer = (state = defaultState, action) => {
           }
         }
       }
-    case 'DELETE_CABAL':
-      const { [action.addr]: del, ...cabals } = state.cabals
-      return { ...state, cabals }
-    case 'DIALOGS_DELETE_CLOSE':
+    case 'UPDATE_TOPIC':
+      var cabal = state.cabals[action.addr]
       return {
         ...state,
-        dialogs: {
-          ...state.dialogs,
-          delete: {
-            cabal: null
+        cabals: {
+          ...state.cabals,
+          [action.addr]: {
+            ...cabal,
+            topic: action.topic
           }
         }
       }
-    case 'DIALOGS_DELETE_OPEN':
+    case 'DELETE_CABAL':
+      var cabals = state.cabals
+      delete cabals[action.addr]
+      return ({
+        ...state,
+        ...cabals
+      })
+    case 'SHOW_CABAL_SETTINGS':
       return {
         ...state,
-        dialogs: {
-          ...state.dialogs,
-          delete: {
-            cabal: action.addr
-          }
-        }
+        cabalSettingsVisible: true
+      }
+    case 'HIDE_CABAL_SETTINGS':
+      return {
+        ...state,
+        cabalSettingsVisible: false
       }
     default:
       return defaultState

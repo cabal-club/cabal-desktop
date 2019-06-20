@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
 
-import { viewChannel, joinChannel, changeUsername, changeScreen } from '../actions'
+import { viewChannel, joinChannel, changeUsername, changeScreen, hideCabalSettings, showCabalSettings } from '../actions'
 import Avatar from './avatar'
 
 const mapStateToProps = state => {
@@ -11,6 +11,7 @@ const mapStateToProps = state => {
     addr: state.currentCabal,
     cabals: state.cabals,
     cabal,
+    cabalSettingsVisible: state.cabalSettingsVisible,
     channelMessagesUnread: cabal.channelMessagesUnread,
     username: cabal.username
   }
@@ -20,7 +21,9 @@ const mapDispatchToProps = dispatch => ({
   changeScreen: ({ screen }) => dispatch(changeScreen({ screen })),
   joinChannel: ({ addr, channel }) => dispatch(joinChannel({ addr, channel })),
   viewChannel: ({ addr, channel }) => dispatch(viewChannel({ addr, channel })),
-  changeUsername: ({ addr, username }) => dispatch(changeUsername({ addr, username }))
+  changeUsername: ({ addr, username }) => dispatch(changeUsername({ addr, username })),
+  showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),
+  hideCabalSettings: () => dispatch(hideCabalSettings())
 })
 
 class SidebarScreen extends React.Component {
@@ -54,6 +57,14 @@ class SidebarScreen extends React.Component {
     })
   }
 
+  onClickCabalSettings (addr) {
+    if (this.props.cabalSettingsVisible) {
+      this.props.hideCabalSettings()
+    } else {
+      this.props.showCabalSettings({ addr })
+    }
+  }
+
   joinChannel (channel) {
     var addr = this.props.addr
     this.props.joinChannel({ addr, channel })
@@ -85,7 +96,7 @@ class SidebarScreen extends React.Component {
     return (
       <div className='client__sidebar' onClick={(e) => this.props.toggleEmojis(false)}>
         <div className='sidebar'>
-          <div className='session'>
+          <div className='session' onClick={self.onClickCabalSettings.bind(self, cabal.addr)}>
             <div className='session__avatar'>
               <div className='session__avatar__img'>
                 <Avatar name={username} />

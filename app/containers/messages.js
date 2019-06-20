@@ -27,10 +27,8 @@ export default function MessagesContainer (props) {
         This is a new channel. Send a message to start things off!
       </div>
     )
-  }
-  let lastAuthor = null
-
-  if (messages.length > 0) {
+  } else {
+    let lastAuthor = null
     return (
       <div className='messages' onScroll={onscroll} onClick={(e) => toggleEmojis(false)}>
         {messages.map((message, index) => {
@@ -38,10 +36,16 @@ export default function MessagesContainer (props) {
           const me = message.author === cabal.username
           lastAuthor = message.author
           if (message.type === 'local/system') {
+            var defaultSystemName = 'Cabalbot'
             return (
               <div key={index} className='messages__item messages__item--system'>
+                <div className='messages__item__avatar'>
+                  <div className='messages__item__avatar__img'>
+                    <Avatar name={message.author || defaultSystemName} />
+                  </div>
+                </div>
                 <div className='messages__item__metadata'>
-                  <div className='messages__item__metadata__name'>System{renderDate(message.time)}</div>
+                  <div className='messages__item__metadata__name'>{message.author || defaultSystemName}{renderDate(message.time)}</div>
                   <div className='text'>{enrichText(message.content)}</div>
                 </div>
               </div>
