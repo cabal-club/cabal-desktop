@@ -175,7 +175,7 @@ form {
     flex-basis: 2rem;
   }
 
-  .session .session__avatar__img {}
+  // .session .session__avatar__img {}
 
   .session .session__avatar__img .identicon {
     width: 2rem;
@@ -336,7 +336,8 @@ form {
   }
 
   /* States */
-  .collection .collection__item.active .collection__item__content {
+  .collection .collection__item.active .collection__item__content,
+  .collection .collection__item .collection__item__content.active {
     font-weight: 700;
     color: white;
   }
@@ -458,8 +459,8 @@ form {
     margin-left: 0.125rem;
   }
 
-  .messages__item--emote {
-  }
+  // .messages__item--emote {
+  // }
 
   .messages__item--system {
     background: #f8f8f8;
@@ -609,7 +610,6 @@ form {
       border: 0;
       display: block;
       width: 100%;
-      vertical-align: middle;
       font-size: 0.875rem;
       outline: none;
       max-height: 200px; // this is a guess!?
@@ -619,7 +619,6 @@ form {
       border: 0;
       display: block;
       width: 100%;
-      vertical-align: middle;
       font-size: 0.875rem;
       outline: none;
     }

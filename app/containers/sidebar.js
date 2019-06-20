@@ -87,11 +87,22 @@ class SidebarScreen extends React.Component {
     })
   }
 
+  sortUsers (users) {
+    return users.sort((a, b) => {
+      if (a.online && !b.online) return -1
+      if (b.online && !a.online) return 1
+      if (a.name && !b.name) return -1
+      if (b.name && !a.name) return 1
+      if (a.name && b.name) return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
+      return a.key < b.key ? -1 : 1
+    })
+  }
+
   render () {
     var self = this
     const { addr, cabal } = this.props
     let channels = cabal.channels
-    let users = Object.values(cabal.users) || []
+    let users = this.sortUsers(Object.values(cabal.users) || [])
     let username = cabal.username || 'conspirator'
     return (
       <div className='client__sidebar' onClick={(e) => this.props.toggleEmojis(false)}>
@@ -136,17 +147,22 @@ class SidebarScreen extends React.Component {
                 <div className='collection__heading__title'>Peers</div>
                 <div className='collection__heading__handle' />
               </div>
-              {this.sortByProperty(users).map((user) =>
+              {users.map((user) =>
                 <div key={user.key} className='collection__item'>
                   <div className='collection__item__icon'>
                     {!!user.online &&
-                      <img src='static/images/icon-status-online.svg' />
+                      <img alt='Online' src='static/images/icon-status-online.svg' />
                     }
                     {!user.online &&
-                      <img src='static/images/icon-status-offline.svg' />
+                      <img alt='Offline' src='static/images/icon-status-offline.svg' />
                     }
                   </div>
-                  <div className='collection__item__content'>{user.name || user.key.substring(0, 6)}</div>
+                  {!!user.online &&
+                    <div className='collection__item__content active'>{user.name || user.key.substring(0, 6)}</div>
+                  }
+                  {!user.online &&
+                    <div className='collection__item__content'>{user.name || user.key.substring(0, 6)}</div>
+                  }
                   <div className='collection__item__handle' />
                 </div>
               )}
