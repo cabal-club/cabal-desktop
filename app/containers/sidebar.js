@@ -87,11 +87,22 @@ class SidebarScreen extends React.Component {
     })
   }
 
+  sortUsers (users) {
+    return users.sort((a, b) => {
+      if (a.online && !b.online) return -1
+      if (b.online && !a.online) return 1
+      if (a.name && !b.name) return -1
+      if (b.name && !a.name) return 1
+      if (a.name && b.name) return a.name < b.name ? -1 : 1
+      return a.key < b.key ? -1 : 1
+    })
+  }
+
   render () {
     var self = this
     const { addr, cabal } = this.props
     let channels = cabal.channels
-    let users = Object.values(cabal.users) || []
+    let users = this.sortUsers(Object.values(cabal.users) || [])
     let username = cabal.username || 'conspirator'
     return (
       <div className='client__sidebar' onClick={(e) => this.props.toggleEmojis(false)}>
@@ -136,14 +147,14 @@ class SidebarScreen extends React.Component {
                 <div className='collection__heading__title'>Peers</div>
                 <div className='collection__heading__handle' />
               </div>
-              {this.sortByProperty(users).map((user) =>
+              {users.map((user) =>
                 <div key={user.key} className='collection__item'>
                   <div className='collection__item__icon'>
                     {!!user.online &&
-                      <img alt="Online" src='static/images/icon-status-online.svg' />
+                      <img alt='Online' src='static/images/icon-status-online.svg' />
                     }
                     {!user.online &&
-                      <img alt="Offline" src='static/images/icon-status-offline.svg' />
+                      <img alt='Offline' src='static/images/icon-status-offline.svg' />
                     }
                   </div>
                   {!!user.online &&
