@@ -146,7 +146,12 @@ class SidebarScreen extends React.Component {
                       <img alt="Offline" src='static/images/icon-status-offline.svg' />
                     }
                   </div>
-                  <div className='collection__item__content'>{user.name || user.key.substring(0, 6)}</div>
+                  {!!user.online &&
+                    <div className='collection__item__content active'>{user.name || user.key.substring(0, 6)}</div>
+                  }
+                  {!user.online &&
+                    <div className='collection__item__content'>{user.name || user.key.substring(0, 6)}</div>
+                  }
                   <div className='collection__item__handle' />
                 </div>
               )}

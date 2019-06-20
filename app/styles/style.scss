@@ -336,7 +336,8 @@ form {
   }
 
   /* States */
-  .collection .collection__item.active .collection__item__content {
+  .collection .collection__item.active .collection__item__content,
+  .collection .collection__item .collection__item__content.active {
     font-weight: 700;
     color: white;
   }
