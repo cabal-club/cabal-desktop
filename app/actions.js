@@ -46,7 +46,7 @@ export const removeCabal = ({ addr }) => dispatch => {
   dialog.showMessageBox({
     type: 'question',
     buttons: ['Cancel', 'Remove'],
-    message: 'Are you sure you want to remove this Cabal?'
+    message: `Are you sure you want to remove this cabal (${addr.substr(0, 8)}...) from the Cabal Desktop?`
   }, (response) => {
     if (response) {
       dispatch(confirmRemoveCabal({ addr }))

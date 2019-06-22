@@ -84,6 +84,7 @@ const commander = (cabal, message) => (dispatch) => {
     remove: {
       help: () => 'remove cabal from Cabal Desktop',
       call: (addr) => {
+        addr = addr || cabal.key
         dispatch(removeCabal({ addr }))
       }
     }
