@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 
 import AddCabalContainer from './containers/addCabal'
-import AppSettingsContainer from './containers/settings'
+import AppSettingsContainer from './containers/appSettings'
 import Layout from './containers/layout'
 import { loadFromDisk } from './actions'
 
