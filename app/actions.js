@@ -25,7 +25,11 @@ const cabals = {}
 export const viewCabal = ({ addr }) => dispatch => {
   const cabal = cabals[addr]
   if (cabal) {
-    dispatch({ type: 'VIEW_CABAL', addr })
+    dispatch({
+      addr,
+      channel: cabal.client.channel,
+      type: 'VIEW_CABAL'
+    })
     storeOnDisk()
   }
 }
@@ -63,7 +67,11 @@ export const confirmRemoveCabal = ({ addr }) => dispatch => {
 
   var cabalKeys = Object.keys(cabals)
   if (cabalKeys.length) {
-    dispatch({ type: 'VIEW_CABAL', addr: cabalKeys[0] })
+    dispatch({
+      addr: cabalKeys[0],
+      channel: cabals[0].client.channel,
+      type: 'VIEW_CABAL'
+    })
   } else {
     dispatch({ type: 'CHANGE_SCREEN', screen: 'addCabal' })
   }

@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [2.0.4] - 2019-06-?
 ### Fixed
 - Tab completion of usernames and slash commands.
-- 
+- After switching cabals, posting a message will now send to the correct channel.
 
 ## [2.0.3] - 2019-06-18
 ### Added
