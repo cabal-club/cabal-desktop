@@ -484,7 +484,7 @@ form {
     line-height: 1.5;
   }
 
-  .messages__item__metadata .text.indent{
+  .messages__item__metadata .text.indent {
     margin-left: 32px;
     margin-top: -12px; // HACK!!
   }
@@ -513,20 +513,49 @@ form {
   }
 
   .messages__item__metadata div.text {
-    margin-bottom: 0.33rem;
+    margin-bottom: 0.6rem;
     word-break: break-word;
     word-wrap: break-word;
     white-space: pre-wrap;
+
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: 1.6rem; margin-top: 1rem;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+    }
+
+    h3 {
+      font-size: 1.1rem;
+    }
+
+    h4, h5, h6 {
+      font-size: 1.1rem;
+    }
 
     pre {
       border-radius: 0.5em;
       background-color: #f7f7f7;
       padding: 1em;
-      font-weight: 700;
+      font-weight: 500;
     }
 
     code {
-      font-family: monospace;
+      font-family: Monaco, monospace;
+      font-size: 0.8rem;
+      border-radius: 0.5em;
+      font-weight: 500;
+    }
+
+    p code {
+      background-color: #f7f7f7;
+      margin: .2rem;
+      padding: .8em;
     }
 
     em {
@@ -537,8 +566,20 @@ form {
       font-weight: 700;
     }
 
+    hr {
+      width: 100%;
+    }
+
     ul {
       margin-left: 1rem;
+      margin: 1rem 0 1rem 1rem;
+      line-height: 1.2rem;
+    }
+
+    blockquote {
+      border-radius: 0.5em;
+      padding: 0 1.5rem;
+      background: #f7f7f7;
     }
   }
 
