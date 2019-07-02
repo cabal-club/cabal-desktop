@@ -2,6 +2,7 @@ import { homedir } from 'os'
 import { decode, encode } from 'dat-encoding'
 import { ipcRenderer } from 'electron'
 import Cabal from 'cabal-core'
+import CabalFiles from '../../cabal-desktop-mini/src/main/cabal-files'
 import collect from 'collect-stream'
 import crypto from 'hypercore-crypto'
 import del from 'del'
@@ -10,11 +11,13 @@ import mkdirp from 'mkdirp'
 import path from 'path'
 import Swarm from 'cabal-core/swarm'
 import commander from './commander'
+import { getAppUpdatePublishConfiguration } from 'app-builder-lib/out/publish/PublishManager';
 const { dialog } = require('electron').remote
 
 const DEFAULT_CHANNEL = 'default'
 const HOME_DIR = homedir()
 const DATA_DIR = path.join(HOME_DIR, '.cabal-desktop', `v${Cabal.databaseVersion}`)
+const FILES_DIR = path.join(DATA_DIR, 'files')
 const TEMP_DIR = path.join(DATA_DIR, '.tmp')
 const STATE_FILE = path.join(DATA_DIR, 'cabals.json')
 const DEFAULT_USERNAME = 'conspirator'
@@ -162,17 +165,35 @@ export const getMessages = ({ addr, channel, count }) => dispatch => {
   collect(rs, (err, msgs) => {
     if (err) return
     msgs.reverse()
+
+    // console.warn('getMessages', {addr, channel})
+
     cabal.client.channelMessages[channel] = []
     msgs.forEach((msg) => {
       const author = cabal.client.users[msg.key] ? cabal.client.users[msg.key].name : DEFAULT_USERNAME
       const { type, timestamp, content } = msg.value
       cabal.client.channelMessages[channel].push({
+        ...msg.value,
         author,
-        content: content.text,
         key: msg.key + timestamp,
         time: timestamp,
         type
       })
+
+      // Handle syncing files
+      if (type === 'chat/file') {
+        // if (automaticallyFetchFiles)
+        dispatch(fetchFile({
+          addr,
+          datKey: content.file.key,
+          fileName: content.file.name,
+          userKey: msg.key,
+          callback: (data) => {
+            msg.value.content.file.localPath = 'file://' + data.localPath
+            dispatch(updateMessage({ addr, channel, messageKey: msg.key, msg }))
+          }
+        }))
+      }
     })
 
     let channelTopic = ''
@@ -186,6 +207,16 @@ export const getMessages = ({ addr, channel, count }) => dispatch => {
 
     dispatch({ type: 'UPDATE_CABAL', addr, messages: cabal.client.channelMessages[channel] })
   })
+}
+
+export const updateMessage = ({ addr, channel, messageKey, msg }) => dispatch => {
+  const cabal = cabals[addr]
+  let messages = cabal.client.channelMessages[channel]
+  let message = messages.find((message) => {
+    return message.key === messageKey
+  })
+  message = msg
+  dispatch({ type: 'UPDATE_MESSAGES', addr, messages })
 }
 
 export const viewChannel = ({ addr, channel }) => dispatch => {
@@ -383,6 +414,10 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => {
     cabal.client.channelMessagesUnread = {}
     cabal.client.channelListeners = {}
 
+    cabal.client.cabalFiles = CabalFiles({
+      storagePath: FILES_DIR + '/' + cabal.key + '/'
+    })
+
     cabal.channels.events.on('add', (channel) => {
       dispatch(addChannel({ addr, channel }))
     })
@@ -420,6 +455,19 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => {
               cabal.publishNick(cabal.username)
             }
           })
+
+          // TODO: start auto seeding for peers you've allowed, including yourself
+          cabal.client.cabalFiles.getDatKeyFromStoragePath(cabal.client.user.key, function (datKey) {
+            if (datKey) {
+              var dats = []
+              dats.push({
+                datKey: datKey,
+                userKey: cabal.client.user.key
+              })
+              cabal.client.cabalFiles.seedAll(dats)
+            }
+          })
+
           dispatch({ type: 'UPDATE_CABAL', addr, users: cabal.client.users, username: cabal.username })
           dispatch(joinChannel({ addr, channel: DEFAULT_CHANNEL }))
         })
@@ -464,6 +512,44 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => {
     })
   })
   cabals[addr] = cabal
+}
+
+export const publishFile = ({ addr, channel, name, path, size, text, type, userKey }) => dispatch => {
+  let cabal = cabals[addr]
+  userKey = userKey || cabal.client.user.key
+
+  const publish = (datKey) => {
+    cabal.client.cabalFiles.currentUserFilesDatKey = datKey
+    cabal.client.cabalFiles.publish({ datKey, name, path, userKey: cabal.client.user.key }, (data) => {
+      cabal.client.cabalFiles.currentUserFilesDatKey = data.datKey
+
+      console.warn("PUBLISH", data)
+
+      console.warn(cabal.client.cabalFiles)
+      dispatch(addMessage({
+        addr,
+        message: {
+          type: 'chat/file',
+          content: {
+            channel,
+            text: text || 'dat://' + data.datKey + '/' + data.datFileName,
+            file: { key: data.datKey, name: data.datFileName, size, type }
+          }
+        }
+      }))
+    })
+  }
+
+  if (cabal.client.cabalFiles.currentUserFilesDatKey) {
+    publish(cabal.client.cabalFiles.currentUserFilesDatKey)
+  } else {
+    cabal.client.cabalFiles.getDatKeyFromStoragePath(userKey, publish)
+  }
+}
+
+export const fetchFile = ({ addr, fileName, userKey, callback }) => dispatch => {
+  let cabal = cabals[addr]
+  cabal.client.cabalFiles.fetch({ fileName, userKey }, callback)
 }
 
 async function lskeys () {

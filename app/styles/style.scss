@@ -630,6 +630,16 @@ form {
     }
   }
 
+  .messages__item__fileContainer {
+    .messages__item__fileContainer__imagePreview {
+      max-width: 20rem;
+      max-height: 20rem;
+      object-fit: cover;
+      border: 1px solid #ddd;
+      cursor: pointer;
+    }
+  }
+
   .cabal-settings__close {
     transform: rotate(45deg);
     cursor: pointer;

@@ -3,7 +3,15 @@ import { clipboard, ipcRenderer } from 'electron'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
 
-import { changeScreen, getMessages, hideEmojiPicker, setChannelTopic, showCabalSettings, viewCabal } from '../actions'
+import {
+  changeScreen,
+  getMessages,
+  hideEmojiPicker,
+  publishFile,
+  setChannelTopic,
+  showCabalSettings,
+  viewCabal
+} from '../actions'
 import CabalSettings from './cabalSettings'
 import WriteContainer from './write'
 import MessagesContainer from './messages'
@@ -20,9 +28,10 @@ const mapDispatchToProps = dispatch => ({
   changeScreen: ({ screen, addr }) => dispatch(changeScreen({ screen, addr })),
   getMessages: ({ addr, channel, count }) => dispatch(getMessages({ addr, channel, count })),
   hideEmojiPicker: () => dispatch(hideEmojiPicker()),
+  publishFile: ({ addr, channel, name, path, size, type }) => dispatch(publishFile({ addr, channel, name, path, size, type })),
   setChannelTopic: ({ addr, channel, topic }) => dispatch(setChannelTopic({ addr, channel, topic })),
   showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),
-  viewCabal: ({ addr }) => dispatch(viewCabal({ addr }))
+  viewCabal: ({ addr }) => dispatch(viewCabal({ addr })),
 })
 
 class MainPanel extends Component {
@@ -80,6 +89,26 @@ class MainPanel extends Component {
     }).catch(() => {
       console.log('cancelled new topic')
     })
+  }
+
+  onDrop (event) {
+    event.preventDefault()
+    if (event.dataTransfer && event.dataTransfer.files[0]) {
+      var file = event.dataTransfer.files[0]
+      this.props.publishFile({
+        addr: this.props.cabal.addr,
+        channel: this.props.cabal.channel,
+        name: file.name,
+        path: file.path,
+        size: file.size,
+        type: file.type
+      })
+    }
+  }
+
+  onDragover (event) {
+    event.preventDefault()
+    event.dataTransfer.dropEffect = 'copy'
   }
 
   handleOpenCabalUrl ({ url = '' }) {
@@ -140,7 +169,7 @@ class MainPanel extends Component {
 
     var onlineUsers = Object.values(cabal.users).filter((user) => user.online)
     return (
-      <div className='client__main' onClick={this.hideModals.bind(this)}>
+      <div className='client__main' onClick={this.hideModals.bind(this)} onDrop={this.onDrop.bind(this)} onDragOver={this.onDragover.bind(this)}>
         <div className='window'>
           <div className='window__header'>
             <div className='channel-meta'>

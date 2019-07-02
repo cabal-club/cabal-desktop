@@ -1,3 +1,4 @@
+import filesize from 'filesize'
 import React from 'react'
 import moment from 'moment'
 import remark from 'remark'
@@ -45,7 +46,7 @@ export default function MessagesContainer (props) {
                 </div>
                 <div className='messages__item__metadata'>
                   <div className='messages__item__metadata__name'>{message.author || defaultSystemName}{renderDate(message.time)}</div>
-                  <div className='text'>{enrichText(message.content)}</div>
+                  <div className='text'>{enrichText(message.content.text)}</div>
                 </div>
               </div>
             )
@@ -59,7 +60,7 @@ export default function MessagesContainer (props) {
                 <div className='messages__item__metadata'>
                   {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author || 'conspirator'}{renderDate(message.time)}</div>}
                   <div className={repeatedAuthor ? 'text indent' : 'text'}>
-                    {enrichText(message.content)}
+                    {enrichText(message.content.text)}
                   </div>
                 </div>
               </div>
@@ -75,7 +76,49 @@ export default function MessagesContainer (props) {
                 </div>
                 <div className='messages__item__metadata'>
                   {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author}{renderDate(message.time)}</div>}
-                  <div className={repeatedAuthor ? 'text indent' : 'text'}>{enrichText(message.content)}</div>
+                  <div className={repeatedAuthor ? 'text indent' : 'text'}>{enrichText(message.content.text)}</div>
+                </div>
+              </div>
+            )
+          }
+          if (message.type === 'chat/file') {
+            if (!message.content || !message.content.file) {
+              return
+            }
+            let fileName = message.content.file.name.split('/')[1]
+            let datUrl = 'dat://' + message.content.file.key + '/' + message.content.file.name
+            let localPath = message.content.file.localPath
+            let fileSize = filesize(message.content.file.size)
+            let fileType = message.content.file.type
+            message.content.text = message.content.text.replace(datUrl, '')
+            return (
+              <div key={index} className='messages__item'>
+                <div className='messages__item__avatar'>
+                  {repeatedAuthor ? null : <Avatar name={message.author || 'conspirator'} />}
+                </div>
+                <div className='messages__item__metadata'>
+                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author || 'conspirator'}{renderDate(message.time)}</div>}
+                  <div className={repeatedAuthor ? 'text indent' : 'text'}>
+                    {enrichText(message.content.text)}
+                  </div>
+                  {!localPath &&
+                    <div className='messages__item__fileContainer__filename'>
+                      <a href={datUrl}>Dat File: {fileName}</a> | {fileSize} | {fileType}
+                    </div>
+                  }
+                  {!!localPath &&
+                    <div className='messages__item__fileContainer'>
+                      {message.content.file.type.includes('image') &&
+                        <img className='messages__item__fileContainer__imagePreview' title={fileName} alt={fileName} src={localPath} />
+                      }
+                      <div className='messages__item__fileContainer__filename'>
+                        <a href={datUrl}>{fileName}</a>
+                      </div>
+                      <div className='messages__item__fileContainer__actions'>
+                        <a href={datUrl}>Dat Link</a> | <a href={localPath}>Local File</a> | {fileSize} | {fileType}
+                      </div>
+                    </div>
+                  }
                 </div>
               </div>
             )
