@@ -513,7 +513,7 @@ form {
   }
 
   .messages__item__metadata div.text {
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.4rem;
     word-break: break-word;
     word-wrap: break-word;
     white-space: pre-wrap;
@@ -543,6 +543,7 @@ form {
       background-color: #f7f7f7;
       padding: 1em;
       font-weight: 500;
+      z-index: -999;
     }
 
     code {
@@ -553,9 +554,9 @@ form {
     }
 
     p code {
+      display: inline-block;
       background-color: #f7f7f7;
-      margin: .2rem;
-      padding: .8em;
+      padding: .4em;
     }
 
     em {
