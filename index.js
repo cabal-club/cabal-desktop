@@ -112,7 +112,10 @@ app.on('ready', () => {
     minWidth: 640,
     minHeight: 395,
     frame: true,
-    titleBarStyle: 'hidden'
+    titleBarStyle: 'hidden',
+    webPreferences: {
+      nodeIntegration: true
+    }
   })
   win.maximize()
   win.loadURL('file://' + path.join(__dirname, 'index.html'))
