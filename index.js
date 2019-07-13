@@ -1,6 +1,7 @@
 'use strict'
 
 const { app, BrowserWindow, shell, Menu } = require('electron')
+const windowStateKeeper = require('electron-window-state')
 const path = require('path')
 require('electron-reload')(__dirname)
 
@@ -47,10 +48,10 @@ const template = [
         label: 'Learn More',
         click () { require('electron').shell.openExternal('http://cabal.chat/') }
       },
-			{
-				label: 'Report Issue',
-				click () { require('electron').shell.openExternal('https://github.com/cabal-club/cabal-desktop/issues/new')}
-			}
+      {
+        label: 'Report Issue',
+        click () { require('electron').shell.openExternal('https://github.com/cabal-club/cabal-desktop/issues/new') }
+      }
     ]
   }
 ]
@@ -106,18 +107,23 @@ app.on('second-instance', (event, argv, cwd) => {
 app.setAsDefaultProtocolClient('cabal')
 
 app.on('ready', () => {
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: 800,
+    defaultHeight: 600
+  })
+
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    minWidth: 640,
-    minHeight: 395,
-    frame: true,
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height,
     titleBarStyle: 'hidden',
     webPreferences: {
       nodeIntegration: true
     }
   })
-  win.maximize()
+  mainWindowState.manage(win)
+
   win.loadURL('file://' + path.join(__dirname, 'index.html'))
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 
