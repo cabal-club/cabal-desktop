@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 const mapStateToProps = state => state
 
 const mapDispatchToProps = dispatch => ({
-  hide: () => dispatch({type: 'CHANGE_SCREEN', screen: 'main'})
+  hide: () => dispatch({ type: 'CHANGE_SCREEN', screen: 'main' })
 })
 
 class AppSettingsScreen extends Component {
@@ -22,7 +22,7 @@ class AppSettingsScreen extends Component {
         </div>
 
         <div className='modalScreen__body'>
-          
+          Nothing to set at the moment. 🤷‍♀️
         </div>
       </div>
     )

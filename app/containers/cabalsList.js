@@ -57,7 +57,7 @@ class CabalsListScreen extends React.Component {
         </div>
         <div className='client__cabals__footer'>
           <div className='switcher__item settingsButton' onClick={self.openSettings.bind(self)}>
-            ⚙ ️
+            <img src='static/images/icon-gear.svg' />
           </div>
         </div>
       </div>

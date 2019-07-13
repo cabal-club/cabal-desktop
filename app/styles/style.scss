@@ -91,14 +91,18 @@ form {
 
 /* Layout: Switch */
 .client__cabals {
-  flex: 0 0 4.4rem;
-  background-color: rgba(22, 22, 29, 0.7);
+  align-items: center;
   background-color: #16161d;
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   color: #fff;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 4.4rem;
+  height: 100%;
+  justify-content: space-between;
+  overflow-y: auto;
   padding: 1rem;
   padding-top: 36px;
-  overflow-y: auto;
 }
 
 .client__cabals.hidden {
@@ -144,10 +148,6 @@ form {
   cursor: pointer;
 }
 
-.client__cabals .switcher__item:hover img {
-  opacity: 0.5;
-}
-
 .client__cabals .switcher__item--active {
   background-color: rgba(255, 255, 255, 0.25);
   background-color: #693AFA;
@@ -161,9 +161,6 @@ form {
   justify-content: center;
 
   .settingsButton {
-    padding-top: 1.5rem;
-    text-align: center;
-    font-size: 1.5rem;
   }
 }
 
