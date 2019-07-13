@@ -23,6 +23,10 @@ class CabalsListScreen extends React.Component {
     this.props.changeScreen({ screen: 'addCabal' })
   }
 
+  openSettings () {
+    this.props.changeScreen({screen: 'appSettings'})
+  }
+
   selectCabal (addr) {
     this.props.viewCabal({ addr })
   }
@@ -49,6 +53,11 @@ class CabalsListScreen extends React.Component {
           })}
           <div className='switcher__item --addnew' onClick={self.joinCabal.bind(self)}>
             <img src='static/images/icon-newchannel.svg' />
+          </div>
+        </div>
+        <div className='client__cabals__footer'>
+          <div className='switcher__item settingsButton' onClick={self.openSettings.bind(self)}>
+            <img src='static/images/icon-gear.svg' />
           </div>
         </div>
       </div>

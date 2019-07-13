@@ -11,7 +11,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class addCabalScreen extends Component {
-  onClickCancel () {
+  onClickClose () {
     this.props.hide()
   }
 
@@ -36,7 +36,10 @@ class addCabalScreen extends Component {
 
   render () {
     return (
-      <div className='heading add-cabal'>
+      <div className='modalScreen add-cabal'>
+        {this.props.cabals && !!Object.keys(this.props.cabals).length &&
+          <button className={'modalScreen__close'} onClick={this.onClickClose.bind(this)}>✖️</button>
+        }
         <h1>Cabal</h1>
         <p className='starterMessage'>
           open-source decentralized private chat
@@ -56,11 +59,10 @@ class addCabalScreen extends Component {
           placeholder='Pick a nickname' />
         <h2>
           Don't have a swarm to join yet?<br /><br />
-          <a href='#' onClick={this.newCabalPress.bind(this)}>
+          <a className='button' href='#' onClick={this.newCabalPress.bind(this)}>
             Create a Cabal
           </a>
         </h2>
-        <button onClick={this.onClickCancel.bind(this)}>Cancel</button>
       </div>
     )
   }
