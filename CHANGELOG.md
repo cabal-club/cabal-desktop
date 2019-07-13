@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.1] - 2019-07-11
+### Added
+- Upgraded to Electron 5
+
 ## [3.0.0] - 2019-07-03
 ### Fixed
 - Tab completion of usernames and slash commands.

@@ -98,6 +98,11 @@ Menu.setApplicationMenu(menu)
 
 let win
 
+app.requestSingleInstanceLock()
+app.on('second-instance', (event, argv, cwd) => {
+  app.quit()
+})
+
 app.setAsDefaultProtocolClient('cabal')
 
 app.on('ready', () => {
@@ -107,7 +112,10 @@ app.on('ready', () => {
     minWidth: 640,
     minHeight: 395,
     frame: true,
-    titleBarStyle: 'hidden'
+    titleBarStyle: 'hidden',
+    webPreferences: {
+      nodeIntegration: true
+    }
   })
   win.maximize()
   win.loadURL('file://' + path.join(__dirname, 'index.html'))
@@ -126,11 +134,3 @@ app.on('ready', () => {
 })
 
 app.on('window-all-closed', () => app.quit())
-
-const quit = app.makeSingleInstance(() => {
-  if (!win) return
-  if (win.isMinimized()) win.restore()
-  win.focus()
-})
-
-if (quit) app.quit()
