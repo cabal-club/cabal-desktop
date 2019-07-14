@@ -9,19 +9,22 @@
     "watch": "webpack --watch",
     "start": "cross-env NODE_ENV=development npm-run-all --parallel start:*",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder",
+    "dist": "npm run build && electron-builder",
     "dist:multi": "electron-builder -mlw",
     "postinstall": "electron-builder install-app-deps"
   },
   "productName": "Cabal",
   "repository": "cabal-club/cabal-desktop",
-  "author": "Cabal Club",
+  "author": {
+    "name": "Cabal Club",
+    "email": "github-noreply@cabal.club"
+  },
   "license": "GPL-3.0",
   "devDependencies": {
     "cross-env": "^5.2.0",
     "css-loader": "^1.0.0",
     "electron": "^5.0.0",
-    "electron-builder": "^20.44.4",
+    "electron-builder": "^21.0.15",
     "node-sass": "^4.11.0",
     "npm-run-all": "^4.1.5",
     "prettier-standard": "^8.0.0",
@@ -95,7 +98,8 @@
     "linux": {
       "target": [
         "AppImage",
-        "snap"
+        "snap",
+        "deb"
       ],
       "category": "Network"
     },

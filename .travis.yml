@@ -9,15 +9,14 @@ os:
   - windows
 
 script:
-  - npm rebuild
-  - npm run dist:multi
-
-install:
   - npm install
+  - npm rebuild
+  - npm run build
+  - npm run dist
 
 deploy:
   provider: script
-  script: npm run dist:multi
+  script: npm run dist
   on:
     all_branches: true
   skip_cleanup: true
