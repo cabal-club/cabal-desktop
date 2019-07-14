@@ -609,6 +609,40 @@ form {
     cursor: pointer;
   }
 
+  .cabal-settings__item {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  .cabal-settings__item-row {
+    display: flex;
+    align-items: center;
+  }
+
+  .cabal-settings__item-checkbox input[type=checkbox] {
+    width: 2rem;
+    height: 2rem;
+    cursor: pointer;
+  }
+
+  .cabal-settings__item-label-title {
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  .cabal-settings__item-label-description {
+    color: #303030;
+  }
+
+  .cabal-settings__item-input {
+    margin-top: 1rem;
+  }
+
+  .cabal-settings__item-input input {
+    width: 100%;
+  }
+
   .composerContainer {
     margin: 0 1rem 1rem 1rem;
     cursor: text;

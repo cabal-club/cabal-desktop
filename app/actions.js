@@ -42,11 +42,15 @@ export const hideCabalSettings = () => dispatch => {
   dispatch({ type: 'HIDE_CABAL_SETTINGS' })
 }
 
+export const saveCabalSettings = ({ addr, settings }) => dispatch => {
+  dispatch(updateCabal({ addr, settings }))
+}
+
 export const removeCabal = ({ addr }) => dispatch => {
   dialog.showMessageBox({
     type: 'question',
     buttons: ['Cancel', 'Remove'],
-    message: `Are you sure you want to remove this cabal (${addr.substr(0, 8)}...) from the Cabal Desktop?`
+    message: `Are you sure you want to remove this cabal (${addr.substr(0, 8)}...) from Cabal Desktop?`
   }, (response) => {
     if (response) {
       dispatch(confirmRemoveCabal({ addr }))
@@ -169,7 +173,8 @@ export const viewChannel = ({ addr, channel }) => dispatch => {
     username: cabal.username,
     users: cabal.client.users,
     channel: cabal.client.channel,
-    channels: cabal.client.channels
+    channels: cabal.client.channels,
+    settings: cabal.settings
   })
   dispatch({ type: 'VIEW_CABAL',
     addr,
@@ -180,7 +185,7 @@ export const viewChannel = ({ addr, channel }) => dispatch => {
 
 export const changeScreen = ({ screen, addr }) => ({ type: 'CHANGE_SCREEN', screen, addr })
 
-export const addCabal = ({ addr, input, username }) => dispatch => {
+export const addCabal = ({ addr, input, username, settings }) => dispatch => {
   if (!addr) {
     try {
       const key = decode(input)
@@ -189,14 +194,21 @@ export const addCabal = ({ addr, input, username }) => dispatch => {
     }
   }
   if (cabals[addr]) return console.error('cabal already exists')
+  if (!settings) {
+    // Default per cabal user settings
+    settings = {
+      enableNotifications: false
+    }
+  }
   if (addr) {
     // Load existing Cabal
-    initializeCabal({ addr, username, dispatch })
+    initializeCabal({ addr, username, dispatch, settings })
   } else {
     // Create new Cabal
     const newCabal = Cabal(TEMP_DIR, null, { maxFeeds: MAX_FEEDS, username })
     newCabal.getLocalKey((err, key) => {
-      initializeCabal({ addr: key, username, dispatch })
+      if (err) console.error(err)
+      initializeCabal({ addr: key, username, dispatch, settings })
       del(TEMP_DIR, { force: true })
     })
   }
@@ -219,7 +231,7 @@ export const addChannel = ({ addr, channel }) => dispatch => {
         time: timestamp,
         type
       })
-      if (!document.hasFocus()) {
+      if (!!cabal.settings.enableNotifications && !document.hasFocus()) {
         window.Notification.requestPermission()
         new window.Notification(author, {
           body: content.text
@@ -269,7 +281,7 @@ export const setChannelTopic = ({ topic, channel, addr }) => dispatch => {
   dispatch({ type: 'UPDATE_TOPIC', addr, topic })
 }
 
-const initializeCabal = ({ addr, username, dispatch }) => {
+const initializeCabal = ({ addr, username, dispatch, settings }) => {
   username = username || DEFAULT_USERNAME
   const dir = path.join(DATA_DIR, addr)
   const cabal = Cabal(dir, addr ? 'cabal://' + addr : null, { maxFeeds: MAX_FEEDS, username })
@@ -278,6 +290,9 @@ const initializeCabal = ({ addr, username, dispatch }) => {
   // Cabal instance to keep the client somewhat organized
   // and distinct from the class funcationality.
   cabal.client = {}
+
+  // Add an object to store Desktop's per cabal client settings
+  cabal.settings = settings || {}
 
   cabal.ready(function (err) {
     if (err) return console.error(err)
@@ -391,7 +406,8 @@ async function lskeys () {
 
 function encodeStateForKey (key) {
   const username = (cabals[key] && cabals[key].username) || DEFAULT_USERNAME
-  return JSON.stringify({ 'username': username, 'addr': key })
+  const settings = (cabals[key] && cabals[key].settings) || {}
+  return JSON.stringify({ username, addr: key, settings })
 }
 
 async function readstate () {
