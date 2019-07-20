@@ -133,10 +133,9 @@ class writeScreen extends Component {
       e.preventDefault()
       e.stopPropagation()
     } else if ((e.keyCode === 78 && (e.ctrlKey || e.metaKey))) {
-      console.warn('next')
-      this.props.viewNextChannel({ addr: this.props.addr })
+      this.viewNextChannel()
     } else if ((e.keyCode === 80 && (e.ctrlKey || e.metaKey))) {
-      this.props.viewPreviousChannel({ addr: this.props.addr })
+      this.viewPreviousChannel()
     }
   }
 
