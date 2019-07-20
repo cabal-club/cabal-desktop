@@ -2,9 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
-## [3.0.1] - 2019-07-11
+## [3.0.1] - 2019-07-?
 ### Added
 - Upgraded to Electron 5
+- Toggle previous and next channels with cmd/ctr-n and cmd/ctr-p key combo.
+- Added setting screen for each cabal
+- Added toggle for enabling desktop notifications (they're off by default now)
+- Added join button to create cabal ui.
+- Window position and size are remembered between sessions.
+### Fixed
+- Travis CI integration. it builds automatically now!
+- /remove command works again
 
 ## [3.0.0] - 2019-07-03
 ### Fixed
