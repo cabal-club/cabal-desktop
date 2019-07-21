@@ -35,11 +35,24 @@ class MainPanel extends Component {
   }
 
   componentDidMount () {
+    let self = this
     var messagesDiv = document.querySelector('.messages')
     if (messagesDiv) messagesDiv.scrollTop = this.scrollTop
+    var messagesContainerDiv = document.querySelector('.window__main')
+    if (messagesContainerDiv) {
+      messagesContainerDiv.addEventListener('scroll', self.onScrollMessages.bind(this))
+    }
     ipcRenderer.on('open-cabal-url', (event, arg) => {
       this.handleOpenCabalUrl(arg)
     })
+  }
+
+  componentWillUnmount () {
+    let self = this
+    var messagesContainerDiv = document.querySelector('.window__main')
+    if (messagesContainerDiv) {
+      messagesContainerDiv.removeEventListener('scroll', self.onScrollMessages.bind(this))
+    }
   }
 
   componentDidUpdate (prevProps) {
@@ -78,6 +91,15 @@ class MainPanel extends Component {
     }
   }
 
+  onScrollMessages (event) {
+    var element = event.target
+    if (element.scrollHeight - element.scrollTop === element.clientHeight) {
+      this.shouldAutoScroll = true
+    } else {
+      this.shouldAutoScroll = false
+    }
+  }
+
   scrollToBottom (force) {
     if (!force && !this.shouldAutoScroll) return
     var messagesDiv = document.querySelector('.window__main')
@@ -110,16 +132,6 @@ class MainPanel extends Component {
         </Fragment>
       )
     }
-
-    var onscroll = (event) => {
-      var node = event.target
-      if (node.scrollHeight <= node.clientHeight + node.scrollTop) {
-        self.shouldAutoScroll = true
-      } else {
-        self.shouldAutoScroll = false
-      }
-    }
-
     if (this.props.cabalSettingsVisible) {
       return <CabalSettings />
     }
@@ -149,7 +161,6 @@ class MainPanel extends Component {
             <MessagesContainer
               cabal={cabal}
               composerHeight={self.composerHeight}
-              onscroll={onscroll.bind(self)}
               toggleEmojis={this.toggleEmoji}
             />
           </div>
