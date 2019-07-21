@@ -115,6 +115,32 @@ export const leaveChannel = ({ addr, channel }) => dispatch => {
   }
 }
 
+export const viewNextChannel = ({ addr }) => dispatch => {
+  let cabal = cabals[addr]
+  let currentChannel = cabal.client.channel
+  let channels = cabal.client.channels
+  if (channels.length) {
+    let index = channels.findIndex((channel) => channel === currentChannel) + 1
+    if (index > channels.length - 1) {
+      index = 0
+    }
+    dispatch(viewChannel({ addr, channel: channels[index] }))
+  }
+}
+
+export const viewPreviousChannel = ({ addr }) => dispatch => {
+  let cabal = cabals[addr]
+  let currentChannel = cabal.client.channel
+  let channels = cabal.client.channels
+  if (channels.length) {
+    let index = channels.findIndex((channel) => channel === currentChannel) - 1
+    if (index < 0) {
+      index = channels.length - 1
+    }
+    dispatch(viewChannel({ addr, channel: channels[index] }))
+  }
+}
+
 export const changeUsername = ({ addr, username }) => dispatch => {
   const currentCabal = cabals[addr]
   currentCabal.username = username

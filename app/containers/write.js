@@ -1,8 +1,15 @@
 import form from 'get-form-data'
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
+import Mousetrap from 'mousetrap'
 
-import { addMessage, listCommands, onCommand } from '../actions'
+import {
+  addMessage,
+  listCommands,
+  onCommand,
+  viewNextChannel,
+  viewPreviousChannel
+} from '../actions'
 
 import '../../node_modules/emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
@@ -20,7 +27,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   addMessage: ({ addr, message }) => dispatch(addMessage({ addr, message })),
   listCommands: () => dispatch(listCommands()),
-  onCommand: ({ addr, message }) => dispatch(onCommand({ addr, message }))
+  onCommand: ({ addr, message }) => dispatch(onCommand({ addr, message })),
+  viewNextChannel: ({ addr }) => dispatch(viewNextChannel({ addr })),
+  viewPreviousChannel: ({ addr }) => dispatch(viewPreviousChannel({ addr }))
 })
 
 class writeScreen extends Component {
@@ -33,6 +42,8 @@ class writeScreen extends Component {
     this.resizeTextInput = this.resizeTextInput.bind(this)
     this.addEmoji = this.addEmoji.bind(this)
     this.showEmojis = this.showEmojis.bind(this)
+    Mousetrap.bind(['command+n', 'ctrl+n'], this.viewNextChannel.bind(this))
+    Mousetrap.bind(['command+p', 'ctrl+p'], this.viewPreviousChannel.bind(this))
   }
 
   componentDidMount () {
@@ -53,6 +64,14 @@ class writeScreen extends Component {
       this.focusInput()
       this.props.toggleEmojis(false)
     }
+  }
+
+  viewNextChannel () {
+    this.props.viewNextChannel({ addr: this.props.addr })
+  }
+
+  viewPreviousChannel () {
+    this.props.viewPreviousChannel({ addr: this.props.addr })
   }
 
   onKeyDown (e) {
@@ -113,6 +132,10 @@ class writeScreen extends Component {
       }
       e.preventDefault()
       e.stopPropagation()
+    } else if ((e.keyCode === 78 && (e.ctrlKey || e.metaKey))) {
+      this.viewNextChannel()
+    } else if ((e.keyCode === 80 && (e.ctrlKey || e.metaKey))) {
+      this.viewPreviousChannel()
     }
   }
 
