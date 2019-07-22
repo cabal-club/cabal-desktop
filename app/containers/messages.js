@@ -19,7 +19,7 @@ export default function MessagesContainer (props) {
       </span>
     )
   }
-  const { cabal, onscroll, toggleEmojis, composerHeight } = props
+  const { cabal, toggleEmojis } = props
   const messages = cabal.messages
   if (messages.length === 0) {
     return (
@@ -30,7 +30,7 @@ export default function MessagesContainer (props) {
   } else {
     let lastAuthor = null
     return (
-      <div className='messages' onScroll={onscroll} onClick={(e) => toggleEmojis(false)}>
+      <div className='messages' onClick={(e) => toggleEmojis(false)}>
         {messages.map((message, index) => {
           const repeatedAuthor = message.author === lastAuthor
           const me = message.author === cabal.username

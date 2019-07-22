@@ -200,6 +200,7 @@ export const viewChannel = ({ addr, channel }) => dispatch => {
     users: cabal.client.users,
     channel: cabal.client.channel,
     channels: cabal.client.channels,
+    channelMessagesUnread: cabal.client.channelMessagesUnread,
     settings: cabal.settings
   })
   dispatch({ type: 'VIEW_CABAL',
