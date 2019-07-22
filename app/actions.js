@@ -220,7 +220,14 @@ export const addCabal = ({ addr, input, username, settings }) => dispatch => {
     } catch (err) {
     }
   }
-  if (cabals[addr]) return console.error('cabal already exists')
+  if (cabals[addr]) {
+    // Show cabal if already added to client
+    dispatch(viewCabal({ addr }))
+    if (username) {
+      dispatch(changeUsername({ addr, username }))
+    }
+    return
+  }
   if (!settings) {
     // Default per cabal user settings
     settings = {
