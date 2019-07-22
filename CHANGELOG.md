@@ -10,9 +10,13 @@ All notable changes to this project will be documented in this file.
 - Added toggle for enabling desktop notifications (they're off by default now)
 - Added join button to create cabal ui.
 - Window position and size are remembered between sessions.
+- Fix navigation to other cabal after deleting a cabal
 ### Fixed
 - Travis CI integration. it builds automatically now!
 - /remove command works again
+- Navigate to cabal when adding a cabal address that already exists in the client
+- Fixed jumpy message list scrolling when new messages arrive
+- Fixed broken unread message indicators on channels
 
 ## [3.0.0] - 2019-07-03
 ### Fixed
