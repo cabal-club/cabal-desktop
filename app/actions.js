@@ -73,7 +73,7 @@ export const confirmRemoveCabal = ({ addr }) => dispatch => {
   if (cabalKeys.length) {
     dispatch({
       addr: cabalKeys[0],
-      channel: cabals[0].client.channel,
+      channel: cabals[cabalKeys[0]].client.channel,
       type: 'VIEW_CABAL'
     })
   } else {
