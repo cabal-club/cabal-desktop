@@ -1,5 +1,6 @@
 import { homedir } from 'os'
 import { decode, encode } from 'dat-encoding'
+import { ipcRenderer } from 'electron'
 import Cabal from 'cabal-core'
 import catnames from 'cat-names'
 import collect from 'collect-stream'
@@ -21,10 +22,12 @@ const MAX_FEEDS = 1000
 const NOOP = function () {}
 
 const cabals = {}
+let currentCabalKey
 
 export const viewCabal = ({ addr }) => dispatch => {
   const cabal = cabals[addr]
   if (cabal) {
+    currentCabalKey = addr
     dispatch({
       addr,
       channel: cabal.client.channel,
@@ -272,16 +275,29 @@ export const addChannel = ({ addr, channel }) => dispatch => {
         })
       }
     }
-    if (cabal.client.channel === channel) {
-      dispatch({ type: 'UPDATE_CABAL', addr, messages: cabal.client.channelMessages[channel] })
-    } else {
+    if ((cabal.client.channel !== channel && cabal.key === currentCabalKey) || (cabal.key !== currentCabalKey)) {
       if (!cabal.client.channelMessagesUnread[channel]) {
         cabal.client.channelMessagesUnread[channel] = 1
       } else {
         cabal.client.channelMessagesUnread[channel] = cabal.client.channelMessagesUnread[channel] + 1
       }
-      dispatch({ type: 'UPDATE_CABAL', addr, channelMessagesUnread: cabal.client.channelMessagesUnread })
     }
+    let totalMessagesUnread = Object.values(cabal.client.channelMessagesUnread).reduce((total, value) => {
+      return total + (value || 0)
+    }, 0)
+    cabal.client.messagesUnread = totalMessagesUnread
+    dispatch({
+      type: 'UPDATE_CABAL',
+      addr,
+      channelMessagesUnread: cabal.client.channelMessagesUnread,
+      messagesUnread: totalMessagesUnread,
+      messages: cabal.client.channelMessages[channel]
+    })
+    // TODO: if (!!app.settings.enableBadgeCount) {
+    let totalMessagesUnreadInApp = Object.values(cabals).reduce((total, cabal) => {
+      return total + (cabal.client.messagesUnread || 0)
+    }, 0)
+    dispatch(setWindowBadge({ badgeCount: totalMessagesUnreadInApp, showCount: false })) // TODO: app.settings.showBadgeCountNumber
   }
   if (!cabal.client.channels.includes(channel)) {
     cabal.client.channels.push(channel)
@@ -315,10 +331,17 @@ export const setChannelTopic = ({ topic, channel, addr }) => dispatch => {
   dispatch({ type: 'UPDATE_TOPIC', addr, topic })
 }
 
+export const setWindowBadge = ({ badgeCount, showCount }) => dispatch => {
+  ipcRenderer.send('update-badge', { badgeCount, showCount })
+  dispatch({ type: 'UPDATE_WINDOW_BADGE', badgeCount })
+}
+
 const initializeCabal = ({ addr, username, dispatch, settings }) => {
   username = username || DEFAULT_USERNAME
   const dir = path.join(DATA_DIR, addr)
   const cabal = Cabal(dir, addr ? 'cabal://' + addr : null, { maxFeeds: MAX_FEEDS, username })
+
+  currentCabalKey = addr
 
   // Add an object to place client data onto the
   // Cabal instance to keep the client somewhat organized

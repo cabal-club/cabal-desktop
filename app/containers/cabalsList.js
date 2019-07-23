@@ -47,6 +47,7 @@ class CabalsListScreen extends React.Component {
                   <span>
                     {key.slice(0, 2)}
                   </span>
+                  {cabal.messagesUnread > 0 && <div className='unreadIndicator' />}
                 </div>
               )
             }

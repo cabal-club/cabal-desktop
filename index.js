@@ -1,6 +1,6 @@
 'use strict'
 
-const { app, BrowserWindow, shell, Menu } = require('electron')
+const { app, BrowserWindow, shell, Menu, ipcMain } = require('electron')
 const windowStateKeeper = require('electron-window-state')
 const path = require('path')
 require('electron-reload')(__dirname)
@@ -136,6 +136,11 @@ app.on('ready', () => {
   app.on('open-url', (event, url) => {
     event.preventDefault()
     win.webContents.send('open-cabal-url', { url })
+  })
+
+  ipcMain.on('update-badge', (event, { badgeCount, showCount }) => {
+    let badge = showCount ? badgeCount : '•'
+    app.dock.setBadge(badgeCount > 0 ? ('' + badge) : '')
   })
 })
 

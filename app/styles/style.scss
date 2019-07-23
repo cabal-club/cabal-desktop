@@ -123,6 +123,7 @@ form {
 }
 
 .client__cabals .switcher__item {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -137,13 +138,35 @@ form {
   color: rgba(255, 255, 255, 0.25);
 }
 
+.client__cabals .unreadIndicator {
+  position: absolute;
+  top: 10px;
+  left: -14px;
+  border-radius: 1rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: #693AFA;
+  animation-duration: 2s;
+  animation-name: pulse;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .client__cabals .switcher__item.--addnew img{
   opacity: 0.25;
 }
 
 .client__cabals .switcher__item:hover {
-  transform: scale(1.15);
-  border: 3px solid rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.5);
   color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
 }
@@ -151,7 +174,7 @@ form {
 .client__cabals .switcher__item--active {
   background-color: rgba(255, 255, 255, 0.25);
   background-color: #693AFA;
-  border: none;
+  border: 2px solid #693AFA;
   color: white !important;
 }
 

@@ -11,6 +11,8 @@ All notable changes to this project will be documented in this file.
 - Added join button to create cabal ui.
 - Window position and size are remembered between sessions.
 - Fix navigation to other cabal after deleting a cabal
+- Added new message indicator to cabals list
+- Added new message indicator badge to application icon (MacOS only)
 ### Fixed
 - Travis CI integration. it builds automatically now!
 - /remove command works again
