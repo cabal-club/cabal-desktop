@@ -582,15 +582,18 @@ form {
     }
 
     ul {
-      margin-left: 1rem;
-      margin: 1rem 0 1rem 1rem;
-      line-height: 1.2rem;
+      margin: -1rem 0 0 1rem;
+      line-height: 1rem;
     }
 
     blockquote {
       border-radius: 0.5em;
       padding: 0 1.5rem;
       background: #f7f7f7;
+    }
+
+    img {
+      max-width: 100%;
     }
   }
 
