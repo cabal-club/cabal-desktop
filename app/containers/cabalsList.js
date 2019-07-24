@@ -24,7 +24,7 @@ class CabalsListScreen extends React.Component {
   }
 
   openSettings () {
-    this.props.changeScreen({screen: 'appSettings'})
+    this.props.changeScreen({ screen: 'appSettings' })
   }
 
   selectCabal (addr) {
@@ -45,7 +45,7 @@ class CabalsListScreen extends React.Component {
               return (
                 <div title={key} key={key} onClick={self.selectCabal.bind(self, key)} className={addr === cabal.addr ? 'switcher__item switcher__item--active' : 'switcher__item'}>
                   <span>
-                    {key.slice(0, 2)}
+                    {(cabal.settings && cabal.settings.alias || key).slice(0, 2)}
                   </span>
                   {cabal.messagesUnread > 0 && <div className='unreadIndicator' />}
                 </div>
