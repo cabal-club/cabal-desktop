@@ -33,3 +33,9 @@ build for [multiple platforms](https://www.electron.build/multi-platform-build#d
 ```
 $ ./bin/build-multi
 ```
+
+## How to Contribute
+
+### Formatting Rules
+
+This repository is formatted with [StandardJS](https://standardjs.com/) (there is a [vscode](https://marketplace.visualstudio.com/items?itemName=chenxsan.vscode-standardjs) plugin).
