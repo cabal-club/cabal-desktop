@@ -101,6 +101,7 @@ class SidebarScreen extends React.Component {
   render () {
     var self = this
     const { addr, cabal } = this.props
+    const cabalLabel = cabal.settings && cabal.settings.alias || addr
     let channels = cabal.channels
     let users = this.sortUsers(Object.values(cabal.users) || [])
     let username = cabal.username || 'conspirator'
@@ -114,7 +115,7 @@ class SidebarScreen extends React.Component {
               </div>
             </div>
             <div className='session__meta'>
-              <h1>{addr}</h1>
+              <h1>{cabalLabel}</h1>
               <h2 onClick={self.onClickUsername.bind(self)}>
                 {username}
               </h2>

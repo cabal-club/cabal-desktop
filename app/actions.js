@@ -18,7 +18,7 @@ const TEMP_DIR = path.join(DATA_DIR, '.tmp')
 const STATE_FILE = path.join(DATA_DIR, 'cabals.json')
 const DEFAULT_USERNAME = 'conspirator'
 const MAX_FEEDS = 1000
-const NOOP = function () {}
+const NOOP = function () { }
 
 const cabals = {}
 
@@ -90,11 +90,7 @@ export const listCommands = () => dispatch => {
 }
 
 export const updateCabal = (opts) => dispatch => {
-  const cabal = cabals[opts.addr]
-  cabal[opts.addr] = {
-    ...cabal,
-    ...opts
-  }
+  Object.assign(cabals[opts.addr], opts)
   storeOnDisk()
   dispatch({ type: 'UPDATE_CABAL', ...opts })
 }
@@ -193,7 +189,8 @@ export const viewChannel = ({ addr, channel }) => dispatch => {
   storeOnDisk()
 
   // dont pass around swarm and watcher, only the things that matter.
-  dispatch({ type: 'ADD_CABAL',
+  dispatch({
+    type: 'ADD_CABAL',
     addr,
     messages: cabal.client.channelMessages[channel],
     username: cabal.username,
@@ -203,7 +200,8 @@ export const viewChannel = ({ addr, channel }) => dispatch => {
     channelMessagesUnread: cabal.client.channelMessagesUnread,
     settings: cabal.settings
   })
-  dispatch({ type: 'VIEW_CABAL',
+  dispatch({
+    type: 'VIEW_CABAL',
     addr,
     channel: cabal.client.channel
   })
@@ -231,7 +229,8 @@ export const addCabal = ({ addr, input, username, settings }) => dispatch => {
   if (!settings) {
     // Default per cabal user settings
     settings = {
-      enableNotifications: false
+      enableNotifications: false,
+      alias: ''
     }
   }
   if (addr) {
@@ -487,7 +486,7 @@ const storeOnDisk = async () => {
     },
     {}
   )
-  fs.writeFileSync(STATE_FILE, JSON.stringify(cabalsState))
+  fs.writeFileSync(STATE_FILE, JSON.stringify(cabalsState, null, 2))
 }
 
 // removes non-key items via unordered insertion & length clamping
