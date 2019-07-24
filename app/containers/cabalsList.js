@@ -19,19 +19,19 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class CabalsListScreen extends React.Component {
-  joinCabal () {
+  joinCabal() {
     this.props.changeScreen({ screen: 'addCabal' })
   }
 
-  openSettings () {
-    this.props.changeScreen({screen: 'appSettings'})
+  openSettings() {
+    this.props.changeScreen({ screen: 'appSettings' })
   }
 
-  selectCabal (addr) {
+  selectCabal(addr) {
     this.props.viewCabal({ addr })
   }
 
-  render () {
+  render() {
     var self = this
     var { addr, cabals } = this.props
     cabals = cabals || {}
@@ -45,7 +45,7 @@ class CabalsListScreen extends React.Component {
               return (
                 <div title={key} key={key} onClick={self.selectCabal.bind(self, key)} className={addr === cabal.addr ? 'switcher__item switcher__item--active' : 'switcher__item'}>
                   <span>
-                    {key.slice(0, 2)}
+                    {(cabal.settings && cabal.settings.alias || key).slice(0, 2)}
                   </span>
                 </div>
               )

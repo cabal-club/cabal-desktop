@@ -27,7 +27,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class SidebarScreen extends React.Component {
-  onClickNewChannel () {
+  onClickNewChannel() {
     prompt({
       title: 'Create a channel',
       label: 'New channel name',
@@ -42,7 +42,7 @@ class SidebarScreen extends React.Component {
     })
   }
 
-  onClickUsername () {
+  onClickUsername() {
     prompt({
       title: 'Set nickname',
       label: 'What would you like to call yourself?',
@@ -57,7 +57,7 @@ class SidebarScreen extends React.Component {
     })
   }
 
-  onClickCabalSettings (addr) {
+  onClickCabalSettings(addr) {
     if (this.props.cabalSettingsVisible) {
       this.props.hideCabalSettings()
     } else {
@@ -65,17 +65,17 @@ class SidebarScreen extends React.Component {
     }
   }
 
-  joinChannel (channel) {
+  joinChannel(channel) {
     var addr = this.props.addr
     this.props.joinChannel({ addr, channel })
   }
 
-  selectChannel (channel) {
+  selectChannel(channel) {
     var addr = this.props.addr
     this.props.viewChannel({ addr, channel })
   }
 
-  sortByProperty (items = [], property = 'name', direction = 1) {
+  sortByProperty(items = [], property = 'name', direction = 1) {
     return items.sort((a, b) => {
       if (a[property]) {
         return (a[property] || '').toLowerCase() < (b[property] || '').toLowerCase() ? -direction : direction
@@ -87,7 +87,7 @@ class SidebarScreen extends React.Component {
     })
   }
 
-  sortUsers (users) {
+  sortUsers(users) {
     return users.sort((a, b) => {
       if (a.online && !b.online) return -1
       if (b.online && !a.online) return 1
@@ -98,9 +98,10 @@ class SidebarScreen extends React.Component {
     })
   }
 
-  render () {
+  render() {
     var self = this
     const { addr, cabal } = this.props
+    const cabalLabel = cabal.settings && cabal.settings.alias || addr;
     let channels = cabal.channels
     let users = this.sortUsers(Object.values(cabal.users) || [])
     let username = cabal.username || 'conspirator'
@@ -114,7 +115,7 @@ class SidebarScreen extends React.Component {
               </div>
             </div>
             <div className='session__meta'>
-              <h1>{addr}</h1>
+              <h1>{cabalLabel}</h1>
               <h2 onClick={self.onClickUsername.bind(self)}>
                 {username}
               </h2>

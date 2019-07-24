@@ -18,7 +18,7 @@ const TEMP_DIR = path.join(DATA_DIR, '.tmp')
 const STATE_FILE = path.join(DATA_DIR, 'cabals.json')
 const DEFAULT_USERNAME = 'conspirator'
 const MAX_FEEDS = 1000
-const NOOP = function () {}
+const NOOP = function () { }
 
 const cabals = {}
 
@@ -90,11 +90,7 @@ export const listCommands = () => dispatch => {
 }
 
 export const updateCabal = (opts) => dispatch => {
-  const cabal = cabals[opts.addr]
-  cabal[opts.addr] = {
-    ...cabal,
-    ...opts
-  }
+  Object.assign(cabals[opts.addr], opts);
   storeOnDisk()
   dispatch({ type: 'UPDATE_CABAL', ...opts })
 }
@@ -193,7 +189,8 @@ export const viewChannel = ({ addr, channel }) => dispatch => {
   storeOnDisk()
 
   // dont pass around swarm and watcher, only the things that matter.
-  dispatch({ type: 'ADD_CABAL',
+  dispatch({
+    type: 'ADD_CABAL',
     addr,
     messages: cabal.client.channelMessages[channel],
     username: cabal.username,
@@ -203,7 +200,8 @@ export const viewChannel = ({ addr, channel }) => dispatch => {
     channelMessagesUnread: cabal.client.channelMessagesUnread,
     settings: cabal.settings
   })
-  dispatch({ type: 'VIEW_CABAL',
+  dispatch({
+    type: 'VIEW_CABAL',
     addr,
     channel: cabal.client.channel
   })
@@ -231,7 +229,8 @@ export const addCabal = ({ addr, input, username, settings }) => dispatch => {
   if (!settings) {
     // Default per cabal user settings
     settings = {
-      enableNotifications: false
+      enableNotifications: false,
+      alias: ''
     }
   }
   if (addr) {
@@ -427,7 +426,7 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => {
   cabals[addr] = cabal
 }
 
-async function lskeys () {
+async function lskeys() {
   let list
   try {
     list = filterForKeys(fs.readdirSync(DATA_DIR))
@@ -438,13 +437,13 @@ async function lskeys () {
   return list
 }
 
-function encodeStateForKey (key) {
+function encodeStateForKey(key) {
   const username = (cabals[key] && cabals[key].username) || DEFAULT_USERNAME
   const settings = (cabals[key] && cabals[key].settings) || {}
   return JSON.stringify({ username, addr: key, settings })
 }
 
-async function readstate () {
+async function readstate() {
   let state
   try {
     state = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'))
@@ -454,7 +453,7 @@ async function readstate () {
   return state
 }
 
-function iterateCabals (state, fn) {
+function iterateCabals(state, fn) {
   const statekeys = Object.keys(state)
   for (const key of statekeys) {
     fn(JSON.parse(state[key]))
@@ -464,7 +463,7 @@ function iterateCabals (state, fn) {
 
 // TODO: consolidate closure pattern
 let _dispatch = NOOP
-function _dispatch_add_cabal (opts) {
+function _dispatch_add_cabal(opts) {
   _dispatch(addCabal(opts))
 }
 
@@ -487,13 +486,13 @@ const storeOnDisk = async () => {
     },
     {}
   )
-  fs.writeFileSync(STATE_FILE, JSON.stringify(cabalsState))
+  fs.writeFileSync(STATE_FILE, JSON.stringify(cabalsState, null, 2))
 }
 
 // removes non-key items via unordered insertion & length clamping
 // monomorphic, zero closure & arr allocs
 // hoisting var declarations to respect v8 deopt edgecases with let & unary ops
-function filterForKeys (arr) {
+function filterForKeys(arr) {
   var l = arr.length
   var last = --l
   while (l > -1) {
