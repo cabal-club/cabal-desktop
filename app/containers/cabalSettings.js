@@ -18,22 +18,21 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class CabalSettingsContainer extends React.Component {
-
-  onClickCloseSettings() {
+  onClickCloseSettings () {
     this.props.hideCabalSettings()
   }
 
-  onToggleOption(option) {
+  onToggleOption (option) {
     let settings = this.props.settings
     settings[option] = !this.props.settings[option]
     this.props.saveCabalSettings({ addr: this.props.cabal.addr, settings })
   }
 
-  removeCabal(addr) {
+  removeCabal (addr) {
     this.props.removeCabal({ addr })
   }
 
-  render() {
+  render () {
     return (
       <div className='client__main'>
         <div className='window'>
@@ -77,7 +76,7 @@ class CabalSettingsContainer extends React.Component {
                   <div className='cabal-settings__item-label-description'>Set a local alias for this cabal.</div>
                 </div>
                 <div className='cabal-settings__item-input'>
-                  <input type='text' value={this.props.settings.alias} onChange={(e) => this.props.saveCabalSettings({ addr: this.props.cabal.addr, settings: { ...this.props.cabal.settings, alias: e.target.value } })} />
+                  <input type='text' placeholder='My Favorite Cabal' value={this.props.settings.alias} onChange={(e) => this.props.saveCabalSettings({ addr: this.props.cabal.addr, settings: { ...this.props.cabal.settings, alias: e.target.value } })} />
                 </div>
               </div>
               <div className='cabal-settings__item'>
