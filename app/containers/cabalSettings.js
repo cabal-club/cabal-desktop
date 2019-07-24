@@ -18,21 +18,21 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class CabalSettingsContainer extends React.Component {
-  onClickCloseSettings () {
+  onClickCloseSettings() {
     this.props.hideCabalSettings()
   }
 
-  onToggleOption (option) {
+  onToggleOption(option) {
     let settings = this.props.settings
     settings[option] = !this.props.settings[option]
     this.props.saveCabalSettings({ addr: this.props.cabal.addr, settings })
   }
 
-  removeCabal (addr) {
+  removeCabal(addr) {
     this.props.removeCabal({ addr })
   }
 
-  render () {
+  render() {
     return (
       <div className='client__main'>
         <div className='window'>

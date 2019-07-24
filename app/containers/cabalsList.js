@@ -19,19 +19,19 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class CabalsListScreen extends React.Component {
-  joinCabal() {
+  joinCabal () {
     this.props.changeScreen({ screen: 'addCabal' })
   }
 
-  openSettings() {
+  openSettings () {
     this.props.changeScreen({ screen: 'appSettings' })
   }
 
-  selectCabal(addr) {
+  selectCabal (addr) {
     this.props.viewCabal({ addr })
   }
 
-  render() {
+  render () {
     var self = this
     var { addr, cabals } = this.props
     cabals = cabals || {}
