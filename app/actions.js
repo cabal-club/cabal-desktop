@@ -2,7 +2,6 @@ import { homedir } from 'os'
 import { decode, encode } from 'dat-encoding'
 import { ipcRenderer } from 'electron'
 import Cabal from 'cabal-core'
-import catnames from 'cat-names'
 import collect from 'collect-stream'
 import del from 'del'
 import fs from 'fs'
@@ -193,15 +192,16 @@ export const viewChannel = ({ addr, channel }) => dispatch => {
 
   // dont pass around swarm and watcher, only the things that matter.
   dispatch({
-    type: 'ADD_CABAL',
     addr,
-    messages: cabal.client.channelMessages[channel],
-    username: cabal.username,
-    users: cabal.client.users,
+    allChannelsUnreadCount: cabal.client.allChannelsUnreadCount,
     channel: cabal.client.channel,
-    channels: cabal.client.channels,
     channelMessagesUnread: cabal.client.channelMessagesUnread,
-    settings: cabal.settings
+    channels: cabal.client.channels,
+    messages: cabal.client.channelMessages[channel],
+    settings: cabal.settings,
+    type: 'ADD_CABAL',
+    username: cabal.username,
+    users: cabal.client.users
   })
   dispatch({
     type: 'VIEW_CABAL',
@@ -209,6 +209,7 @@ export const viewChannel = ({ addr, channel }) => dispatch => {
     channel: cabal.client.channel
   })
   dispatch(getMessages({ addr, channel, count: 100 }))
+  dispatch(updateChannelMessagesUnread({ addr, channel, unreadCount: 0 }))
 }
 
 export const changeScreen = ({ screen, addr }) => ({ type: 'CHANGE_SCREEN', screen, addr })
@@ -274,29 +275,13 @@ export const addChannel = ({ addr, channel }) => dispatch => {
         })
       }
     }
-    if ((cabal.client.channel !== channel && cabal.key === currentCabalKey) || (cabal.key !== currentCabalKey)) {
-      if (!cabal.client.channelMessagesUnread[channel]) {
-        cabal.client.channelMessagesUnread[channel] = 1
-      } else {
-        cabal.client.channelMessagesUnread[channel] = cabal.client.channelMessagesUnread[channel] + 1
-      }
+    if (cabal.client.channel === channel) {
+      dispatch({ type: 'UPDATE_CABAL', addr, messages: cabal.client.channelMessages[channel] })
     }
-    let totalMessagesUnread = Object.values(cabal.client.channelMessagesUnread).reduce((total, value) => {
-      return total + (value || 0)
-    }, 0)
-    cabal.client.messagesUnread = totalMessagesUnread
-    dispatch({
-      type: 'UPDATE_CABAL',
-      addr,
-      channelMessagesUnread: cabal.client.channelMessagesUnread,
-      messagesUnread: totalMessagesUnread,
-      messages: cabal.client.channelMessages[channel]
-    })
-    // TODO: if (!!app.settings.enableBadgeCount) {
-    let totalMessagesUnreadInApp = Object.values(cabals).reduce((total, cabal) => {
-      return total + (cabal.client.messagesUnread || 0)
-    }, 0)
-    dispatch(setWindowBadge({ badgeCount: totalMessagesUnreadInApp, showCount: false })) // TODO: app.settings.showBadgeCountNumber
+    const isCurrentCabalAndChannel = (cabal.client.channel === channel) && (cabal.key === currentCabalKey)
+    if (!isCurrentCabalAndChannel) {
+      dispatch(updateChannelMessagesUnread({ addr, channel }))
+    }
   }
   if (!cabal.client.channels.includes(channel)) {
     cabal.client.channels.push(channel)
@@ -330,8 +315,31 @@ export const setChannelTopic = ({ topic, channel, addr }) => dispatch => {
   dispatch({ type: 'UPDATE_TOPIC', addr, topic })
 }
 
-export const setWindowBadge = ({ badgeCount, showCount }) => dispatch => {
-  ipcRenderer.send('update-badge', { badgeCount, showCount })
+export const updateChannelMessagesUnread = ({ addr, channel, unreadCount }) => dispatch => {
+  const cabal = cabals[addr]
+  if (unreadCount !== undefined) {
+    cabal.client.channelMessagesUnread[channel] = unreadCount
+  } else {
+    if (!cabal.client.channelMessagesUnread[channel]) {
+      cabal.client.channelMessagesUnread[channel] = 1
+    } else {
+      cabal.client.channelMessagesUnread[channel] = cabal.client.channelMessagesUnread[channel] + 1
+    }
+  }
+  let allChannelsUnreadCount = Object.values(cabal.client.channelMessagesUnread).reduce((total, value) => {
+    return total + (value || 0)
+  }, 0)
+  cabal.client.allChannelsUnreadCount = allChannelsUnreadCount
+  dispatch({ type: 'UPDATE_CABAL', addr, channelMessagesUnread: cabal.client.channelMessagesUnread, allChannelsUnreadCount })
+  dispatch(updateAppIconBadge())
+}
+
+export const updateAppIconBadge = (badgeCount) => dispatch => {
+  // TODO: if (!!app.settings.enableBadgeCount) {
+  badgeCount = badgeCount || Object.values(cabals).reduce((total, cabal) => {
+    return total + (cabal.client.allChannelsUnreadCount || 0)
+  }, 0)
+  ipcRenderer.send('update-badge', { badgeCount, showCount: false }) // TODO: app.settings.showBadgeCountNumber
   dispatch({ type: 'UPDATE_WINDOW_BADGE', badgeCount })
 }
 

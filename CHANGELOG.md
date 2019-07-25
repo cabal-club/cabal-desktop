@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [3.0.1] - 2019-07-?
+## [3.1.0] - 2019-07-?
 ### Added
 - Upgraded to Electron 5
 - Toggle previous and next channels with cmd/ctr-n and cmd/ctr-p key combo.
@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 - Fix navigation to other cabal after deleting a cabal.
 - Added new message indicator to cabals list.
 - Added new message indicator badge to application icon (MacOS/Linux only).
+- Added feature to set an alias locally to give cabals friendly names in the UI.
 ### Fixed
 - Travis CI integration. it builds automatically now!
 - `/remove` command works again.

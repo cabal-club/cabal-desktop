@@ -2,6 +2,7 @@
 
 const { app, BrowserWindow, shell, Menu, ipcMain } = require('electron')
 const windowStateKeeper = require('electron-window-state')
+const os = require('os')
 const path = require('path')
 require('electron-reload')(__dirname)
 
@@ -139,8 +140,12 @@ app.on('ready', () => {
   })
 
   ipcMain.on('update-badge', (event, { badgeCount, showCount }) => {
-    let badge = showCount ? badgeCount : '•'
-    app.dock.setBadge(badgeCount > 0 ? ('' + badge) : '')
+    if (os.platform() === 'darwin') {
+      let badge = showCount ? badgeCount : '•'
+      app.dock.setBadge(badgeCount > 0 ? ('' + badge) : '')
+    } else {
+      app.setBadgeCount(badgeCount)
+    }
   })
 })
 
