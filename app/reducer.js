@@ -87,6 +87,11 @@ const reducer = (state = defaultState, action) => {
         ...state,
         cabalSettingsVisible: false
       }
+    case 'UPDATE_WINDOW_BADGE':
+      return {
+        ...state,
+        badgeCount: action.badgeCount
+      }
     default:
       return defaultState
   }
