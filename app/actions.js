@@ -23,10 +23,14 @@ const NOOP = function () { }
 const cabals = {}
 let currentCabalKey
 
-export const viewCabal = ({ addr }) => dispatch => {
+export const viewCabal = ({ addr, channel }) => dispatch => {
   const cabal = cabals[addr]
   if (cabal) {
     currentCabalKey = addr
+    if (channel) {
+      cabal.client.channel = channel
+      dispatch(viewChannel({ addr, channel }))
+    }
     dispatch({
       addr,
       channel: cabal.client.channel,
@@ -270,9 +274,12 @@ export const addChannel = ({ addr, channel }) => dispatch => {
       })
       if (!!cabal.settings.enableNotifications && !document.hasFocus()) {
         window.Notification.requestPermission()
-        new window.Notification(author, {
+        let notification = new window.Notification(author, {
           body: content.text
         })
+        notification.onclick = () => {
+          dispatch(viewCabal({ addr, channel }))
+        }
       }
     }
     if (cabal.client.channel === channel) {
