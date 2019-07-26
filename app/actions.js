@@ -2,7 +2,7 @@ import { homedir } from 'os'
 import { decode, encode } from 'dat-encoding'
 import { ipcRenderer } from 'electron'
 import Cabal from 'cabal-core'
-import CabalFiles from '../../cabal-desktop-mini/src/main/cabal-files'
+import CabalFiles from 'cabal-client-files'
 import collect from 'collect-stream'
 import crypto from 'hypercore-crypto'
 import del from 'del'
@@ -11,7 +11,6 @@ import mkdirp from 'mkdirp'
 import path from 'path'
 import Swarm from 'cabal-core/swarm'
 import commander from './commander'
-import { getAppUpdatePublishConfiguration } from 'app-builder-lib/out/publish/PublishManager';
 const { dialog } = require('electron').remote
 
 const DEFAULT_CHANNEL = 'default'
@@ -165,13 +164,11 @@ export const getMessages = ({ addr, channel, count }) => dispatch => {
   collect(rs, (err, msgs) => {
     if (err) return
     msgs.reverse()
-
-    // console.warn('getMessages', {addr, channel})
-
     cabal.client.channelMessages[channel] = []
     msgs.forEach((msg) => {
       const author = cabal.client.users[msg.key] ? cabal.client.users[msg.key].name : DEFAULT_USERNAME
       const { type, timestamp, content } = msg.value
+      console.warn('msg.value', msg.value)
       cabal.client.channelMessages[channel].push({
         ...msg.value,
         author,
@@ -291,11 +288,9 @@ export const addChannel = ({ addr, channel }) => dispatch => {
         cabal.client.channelMessages[channel] = []
       }
       cabal.client.channelMessages[channel].push({
+        ...message.value,
         author,
-        content: content.text,
-        key: message.key + timestamp,
-        time: timestamp,
-        type
+        key: message.key + timestamp
       })
       if (!!cabal.settings.enableNotifications && !document.hasFocus()) {
         window.Notification.requestPermission()
@@ -457,7 +452,7 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => {
           })
 
           // TODO: start auto seeding for peers you've allowed, including yourself
-          cabal.client.cabalFiles.getDatKeyFromStoragePath(cabal.client.user.key, function (datKey) {
+          cabal.client.cabalFiles.getDatKeyFromStoragePath(cabal.client.user.key).then((datKey) => {
             if (datKey) {
               var dats = []
               dats.push({
@@ -514,42 +509,34 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => {
   cabals[addr] = cabal
 }
 
-export const publishFile = ({ addr, channel, name, path, size, text, type, userKey }) => dispatch => {
+export const publishFile = ({ addr, channel, name, path, size, text, type, userKey }) => async dispatch => {
   let cabal = cabals[addr]
   userKey = userKey || cabal.client.user.key
-
-  const publish = (datKey) => {
+  let datKey = cabal.client.cabalFiles.currentUserFilesDatKey
+  if (!datKey) {
+    await cabal.client.cabalFiles.getDatKeyFromStoragePath(userKey)
     cabal.client.cabalFiles.currentUserFilesDatKey = datKey
-    cabal.client.cabalFiles.publish({ datKey, name, path, userKey: cabal.client.user.key }, (data) => {
-      cabal.client.cabalFiles.currentUserFilesDatKey = data.datKey
-
-      console.warn("PUBLISH", data)
-
-      console.warn(cabal.client.cabalFiles)
-      dispatch(addMessage({
-        addr,
-        message: {
-          type: 'chat/file',
-          content: {
-            channel,
-            text: text || 'dat://' + data.datKey + '/' + data.datFileName,
-            file: { key: data.datKey, name: data.datFileName, size, type }
-          }
-        }
-      }))
-    })
   }
-
-  if (cabal.client.cabalFiles.currentUserFilesDatKey) {
-    publish(cabal.client.cabalFiles.currentUserFilesDatKey)
-  } else {
-    cabal.client.cabalFiles.getDatKeyFromStoragePath(userKey, publish)
-  }
+  let publishData = await cabal.client.cabalFiles.publish({ datKey, name, path, userKey: cabal.client.user.key })
+  cabal.client.cabalFiles.currentUserFilesDatKey = publishData.datKey
+  console.warn('PUBLISH', publishData)
+  console.warn(cabal.client.cabalFiles)
+  dispatch(addMessage({
+    addr,
+    message: {
+      type: 'chat/file',
+      content: {
+        channel,
+        text: text || 'dat://' + publishData.datKey + '/' + publishData.datFileName,
+        file: { key: publishData.datKey, name: publishData.datFileName, size, type }
+      }
+    }
+  }))
 }
 
 export const fetchFile = ({ addr, fileName, userKey, callback }) => dispatch => {
   let cabal = cabals[addr]
-  cabal.client.cabalFiles.fetch({ fileName, userKey }, callback)
+  cabal.client.cabalFiles.fetch({ fileName, userKey }).then(callback)
 }
 
 async function lskeys () {
