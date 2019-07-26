@@ -22,6 +22,7 @@ All notable changes to this project will be documented in this file.
 - Fixed broken unread message indicators on channels.
 - Fixed large image embeds from taking up too much space.
 - Adjusted unordered lists margin to be more reasonable.
+- Emoji picker works again
 
 ## [3.0.0] - 2019-07-03
 ### Fixed
