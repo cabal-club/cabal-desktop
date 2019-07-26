@@ -106,7 +106,7 @@ class SidebarScreen extends React.Component {
     let users = this.sortUsers(Object.values(cabal.users) || [])
     let username = cabal.username || 'conspirator'
     return (
-      <div className='client__sidebar' onClick={(e) => this.props.toggleEmojis(false)}>
+      <div className='client__sidebar'>
         <div className='sidebar'>
           <div className='session' onClick={self.onClickCabalSettings.bind(self, cabal.addr)}>
             <div className='session__avatar'>

@@ -6,7 +6,9 @@ import Mousetrap from 'mousetrap'
 import {
   addMessage,
   listCommands,
+  hideEmojiPicker,
   onCommand,
+  showEmojiPicker,
   viewNextChannel,
   viewPreviousChannel
 } from '../actions'
@@ -19,15 +21,18 @@ const mapStateToProps = state => {
   return {
     addr: state.currentCabal,
     cabal,
-    users: cabal.users,
-    currentChannel: state.currentChannel
+    currentChannel: state.currentChannel,
+    emojiPickerVisible: state.emojiPickerVisible,
+    users: cabal.users
   }
 }
 
 const mapDispatchToProps = dispatch => ({
   addMessage: ({ addr, message }) => dispatch(addMessage({ addr, message })),
   listCommands: () => dispatch(listCommands()),
+  hideEmojiPicker: () => dispatch(hideEmojiPicker()),
   onCommand: ({ addr, message }) => dispatch(onCommand({ addr, message })),
+  showEmojiPicker: () => dispatch(showEmojiPicker()),
   viewNextChannel: ({ addr }) => dispatch(viewNextChannel({ addr })),
   viewPreviousChannel: ({ addr }) => dispatch(viewPreviousChannel({ addr }))
 })
@@ -41,7 +46,6 @@ class writeScreen extends Component {
     this.clearInput = this.clearInput.bind(this)
     this.resizeTextInput = this.resizeTextInput.bind(this)
     this.addEmoji = this.addEmoji.bind(this)
-    this.showEmojis = this.showEmojis.bind(this)
     Mousetrap.bind(['command+n', 'ctrl+n'], this.viewNextChannel.bind(this))
     Mousetrap.bind(['command+p', 'ctrl+p'], this.viewPreviousChannel.bind(this))
   }
@@ -57,12 +61,8 @@ class writeScreen extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    if (this.props.showEmojiPicker !== prevProps.showEmojiPicker) {
-      this.showEmojis()
-    }
     if (this.props.currentChannel !== prevProps.currentChannel) {
       this.focusInput()
-      this.props.toggleEmojis(false)
     }
   }
 
@@ -139,22 +139,25 @@ class writeScreen extends Component {
     }
   }
 
+  onClickEmojiPickerContainer (e) {
+    let element = e.target
+    // allow click event on emoji buttons but not other emoji picker ui
+    if (!element.classList.contains('emoji-mart-emoji') && !element.parentElement.classList.contains('emoji-mart-emoji')) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+  }
+
   onsubmit (e) {
     // only prevent default keydown now handles logic to better support shift commands
     e.preventDefault()
     e.stopPropagation()
   }
 
-  showEmojis () {
-    this.emojiPicker.style.display = this.emojiPicker.style.display === 'none' ? 'block' : 'none'
-    this.resizeTextInput()
-  }
-
   addEmoji (emoji) {
     this.textInput.value = this.textInput.value + emoji.native
     this.resizeTextInput()
     this.focusInput()
-    this.props.toggleEmojis(false)
   }
 
   resizeTextInput () {
@@ -165,6 +168,10 @@ class writeScreen extends Component {
     } else {
       this.emojiPicker.style.bottom = (this.textInput.scrollHeight + 40) + 'px'
     }
+  }
+
+  toggleEmojiPicker () {
+    this.props.emojiPickerVisible ? this.props.hideEmojiPicker() : this.props.showEmojiPicker()
   }
 
   focusInput () {
@@ -207,18 +214,22 @@ class writeScreen extends Component {
               />
             </form>
           </div>
-          <div className={'emoji__container'} ref={(el) => { this.emojiPicker = el }} style={{ position: 'absolute', bottom: '100px', right: '16px', display: 'none' }}>
+          <div
+            className={'emoji__container'}
+            ref={(el) => { this.emojiPicker = el }}
+            style={{ position: 'absolute', bottom: '100px', right: '16px', display: this.props.emojiPickerVisible ? 'block' : 'none' }}
+            onClick={this.onClickEmojiPickerContainer.bind(this)}
+          >
             <Picker
               onSelect={(e) => this.addEmoji(e)}
               native
               sheetSize={64}
-              // showPreview={false}
               autoFocus
               emoji={'point_up'}
               title={'Pick an emoji...'}
             />
           </div>
-          <div className={'composer__other'} onClick={(e) => this.props.toggleEmojis()}><img src='static/images/icon-composerother.svg' /></div>
+          <div className={'composer__other'} onClick={(e) => this.toggleEmojiPicker()}><img src='static/images/icon-composerother.svg' /></div>
         </div>
       </div>
     )
