@@ -139,6 +139,15 @@ class writeScreen extends Component {
     }
   }
 
+  onClickEmojiPickerContainer (e) {
+    let element = e.target
+    // allow click event on emoji buttons but not other emoji picker ui
+    if (!element.classList.contains('emoji-mart-emoji') && !element.parentElement.classList.contains('emoji-mart-emoji')) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
+  }
+
   onsubmit (e) {
     // only prevent default keydown now handles logic to better support shift commands
     e.preventDefault()
@@ -205,7 +214,12 @@ class writeScreen extends Component {
               />
             </form>
           </div>
-          <div className={'emoji__container'} ref={(el) => { this.emojiPicker = el }} style={{ position: 'absolute', bottom: '100px', right: '16px', display: this.props.emojiPickerVisible ? 'block' : 'none' }}>
+          <div
+            className={'emoji__container'}
+            ref={(el) => { this.emojiPicker = el }}
+            style={{ position: 'absolute', bottom: '100px', right: '16px', display: this.props.emojiPickerVisible ? 'block' : 'none' }}
+            onClick={this.onClickEmojiPickerContainer.bind(this)}
+          >
             <Picker
               onSelect={(e) => this.addEmoji(e)}
               native
