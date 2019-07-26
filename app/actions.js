@@ -350,6 +350,14 @@ export const updateAppIconBadge = (badgeCount) => dispatch => {
   dispatch({ type: 'UPDATE_WINDOW_BADGE', badgeCount })
 }
 
+export const showEmojiPicker = () => dispatch => {
+  dispatch({ type: 'SHOW_EMOJI_PICKER' })
+}
+
+export const hideEmojiPicker = () => dispatch => {
+  dispatch({ type: 'HIDE_EMOJI_PICKER' })
+}
+
 const initializeCabal = ({ addr, username, dispatch, settings }) => {
   username = username || DEFAULT_USERNAME
   const dir = path.join(DATA_DIR, addr)

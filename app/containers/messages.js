@@ -19,8 +19,7 @@ export default function MessagesContainer (props) {
       </span>
     )
   }
-  const { cabal, toggleEmojis } = props
-  const messages = cabal.messages
+  const messages = props.cabal.messages
   if (messages.length === 0) {
     return (
       <div className='messages starterMessage'>
@@ -30,10 +29,10 @@ export default function MessagesContainer (props) {
   } else {
     let lastAuthor = null
     return (
-      <div className='messages' onClick={(e) => toggleEmojis(false)}>
+      <div className='messages'>
         {messages.map((message, index) => {
           const repeatedAuthor = message.author === lastAuthor
-          const me = message.author === cabal.username
+          const me = message.author === props.cabal.username
           lastAuthor = message.author
           if (message.type === 'local/system') {
             var defaultSystemName = 'Cabalbot'

@@ -3,7 +3,8 @@ const defaultState = {
   cabalSettingsVisible: false,
   currentCabal: null,
   currentChannel: 'default',
-  cabals: {}
+  cabals: {},
+  emojiPickerVisible: false
 }
 
 const reducer = (state = defaultState, action) => {
@@ -19,7 +20,8 @@ const reducer = (state = defaultState, action) => {
         ...state,
         cabalSettingsVisible: false,
         currentCabal: action.addr,
-        currentChannel: action.channel || 'default'
+        currentChannel: action.channel || 'default',
+        emojiPickerVisible: false
       }
     case 'ADD_CABAL':
       return {
@@ -80,7 +82,8 @@ const reducer = (state = defaultState, action) => {
     case 'SHOW_CABAL_SETTINGS':
       return {
         ...state,
-        cabalSettingsVisible: true
+        cabalSettingsVisible: true,
+        emojiPickerVisible: false
       }
     case 'HIDE_CABAL_SETTINGS':
       return {
@@ -91,6 +94,16 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         badgeCount: action.badgeCount
+      }
+    case 'SHOW_EMOJI_PICKER':
+      return {
+        ...state,
+        emojiPickerVisible: true
+      }
+    case 'HIDE_EMOJI_PICKER':
+      return {
+        ...state,
+        emojiPickerVisible: false
       }
     default:
       return defaultState

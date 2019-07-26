@@ -18,20 +18,8 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class LayoutScreen extends Component {
-  constructor (props) {
-    super(props)
-    this.state = { showEmojiPicker: false }
-    this.toggleEmoji = this.toggleEmoji.bind(this)
-  }
-
-  toggleEmoji (bool) {
-    this.setState({ showEmojiPicker: bool === false ? false : !this.state.showEmojiPicker })
-  }
-
   render () {
     const { cabal } = this.props
-    var self = this
-
     if (!cabal) {
       return (
         <Fragment>
@@ -39,21 +27,11 @@ class LayoutScreen extends Component {
         </Fragment>
       )
     }
-
-    var onscroll = (event) => {
-      var node = event.target
-      if (node.scrollHeight <= node.clientHeight + node.scrollTop) {
-        self.shouldAutoScroll = true
-      } else {
-        self.shouldAutoScroll = false
-      }
-    }
-
     return (
       <div className='client'>
-        <CabalsList toggleEmojis={this.toggleEmoji} />
-        <Sidebar toggleEmojis={this.toggleEmoji} />
-        <MainPanel toggleEmojis={this.toggleEmoji} />
+        <CabalsList />
+        <Sidebar />
+        <MainPanel />
       </div>
     )
   }

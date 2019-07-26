@@ -3,7 +3,7 @@ import { clipboard, ipcRenderer } from 'electron'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
 
-import { changeScreen, getMessages, setChannelTopic, showCabalSettings, viewCabal } from '../actions'
+import { changeScreen, getMessages, hideEmojiPicker, setChannelTopic, showCabalSettings, viewCabal } from '../actions'
 import CabalSettings from './cabalSettings'
 import WriteContainer from './write'
 import MessagesContainer from './messages'
@@ -12,25 +12,25 @@ const mapStateToProps = state => ({
   addr: state.currentCabal,
   cabal: state.cabals[state.currentCabal],
   cabals: state.cabals,
-  cabalSettingsVisible: state.cabalSettingsVisible
+  cabalSettingsVisible: state.cabalSettingsVisible,
+  emojiPickerVisible: state.emojiPickerVisible
 })
 
 const mapDispatchToProps = dispatch => ({
-  getMessages: ({ addr, channel, count }) => dispatch(getMessages({ addr, channel, count })),
   changeScreen: ({ screen, addr }) => dispatch(changeScreen({ screen, addr })),
-  viewCabal: ({ addr }) => dispatch(viewCabal({ addr })),
+  getMessages: ({ addr, channel, count }) => dispatch(getMessages({ addr, channel, count })),
+  hideEmojiPicker: () => dispatch(hideEmojiPicker()),
   setChannelTopic: ({ addr, channel, topic }) => dispatch(setChannelTopic({ addr, channel, topic })),
-  showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr }))
+  showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),
+  viewCabal: ({ addr }) => dispatch(viewCabal({ addr }))
 })
 
 class MainPanel extends Component {
   constructor (props) {
     super(props)
-    this.state = { showEmojiPicker: false }
     this.shouldAutoScroll = true
     this.scrollTop = 0
     this.composerHeight = 55
-    this.toggleEmoji = this.toggleEmoji.bind(this)
     this.handleOpenCabalUrl = this.handleOpenCabalUrl.bind(this)
   }
 
@@ -100,6 +100,12 @@ class MainPanel extends Component {
     }
   }
 
+  hideModals () {
+    if (this.props.emojiPickerVisible) {
+      this.props.hideEmojiPicker()
+    }
+  }
+
   scrollToBottom (force) {
     if (!force && !this.shouldAutoScroll) return
     var messagesDiv = document.querySelector('.window__main')
@@ -115,10 +121,6 @@ class MainPanel extends Component {
   copyClick () {
     clipboard.writeText('cabal://' + this.props.addr)
     alert('Copied cabal:// link to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.')
-  }
-
-  toggleEmoji (bool) {
-    this.setState({ showEmojiPicker: bool === false ? false : !this.state.showEmojiPicker })
   }
 
   render () {
@@ -138,7 +140,7 @@ class MainPanel extends Component {
 
     var onlineUsers = Object.values(cabal.users).filter((user) => user.online)
     return (
-      <div className='client__main'>
+      <div className='client__main' onClick={this.hideModals.bind(this)}>
         <div className='window'>
           <div className='window__header'>
             <div className='channel-meta'>
@@ -161,10 +163,9 @@ class MainPanel extends Component {
             <MessagesContainer
               cabal={cabal}
               composerHeight={self.composerHeight}
-              toggleEmojis={this.toggleEmoji}
             />
           </div>
-          <WriteContainer toggleEmojis={this.toggleEmoji} />
+          <WriteContainer />
         </div>
       </div>
     )
