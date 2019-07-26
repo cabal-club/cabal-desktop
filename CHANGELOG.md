@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [3.1.0] - 2019-07-?
+## [3.1.0] - 2019-07-26
 ### Added
 - Upgraded to Electron 5
 - Toggle previous and next channels with cmd/ctr-n and cmd/ctr-p key combo.
