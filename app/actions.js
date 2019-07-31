@@ -179,17 +179,9 @@ export const getMessages = ({ addr, channel, count }) => dispatch => {
 
       // Handle syncing files
       if (type === 'chat/file') {
-        // if (automaticallyFetchFiles)
-        dispatch(fetchFile({
-          addr,
-          datKey: content.file.key,
-          fileName: content.file.name,
-          userKey: msg.key,
-          callback: (data) => {
-            msg.value.content.file.localPath = 'file://' + data.localPath
-            dispatch(updateMessage({ addr, channel, messageKey: msg.key, msg }))
-          }
-        }))
+        // TODO: if (automaticallyFetchFiles)
+        console.warn('*****FILE MESSAGE****** getMessages', msg)
+        dispatch(updateMessageWithFileData({ addr, msg }))
       }
     })
 
@@ -206,14 +198,26 @@ export const getMessages = ({ addr, channel, count }) => dispatch => {
   })
 }
 
-export const updateMessage = ({ addr, channel, messageKey, msg }) => dispatch => {
+export const updateMessage = ({ addr, channel, message }) => dispatch => {
   const cabal = cabals[addr]
   let messages = cabal.client.channelMessages[channel]
-  let message = messages.find((message) => {
-    return message.key === messageKey
+  messages = messages.map((msg) => {
+    if (msg.key === message.key) {
+      return message
+    }
+    return msg
   })
-  message = msg
   dispatch({ type: 'UPDATE_MESSAGES', addr, messages })
+}
+
+export const updateMessageWithFileData = ({ addr, message }) => async dispatch => {
+  let cabal = cabals[addr]
+  let userKey = message.key
+  let fileName = message.value.content.file.name
+  // let datData = await cabal.client.cabalFiles.fetch({ fileName, userKey })
+  let datData = cabal.client.cabalFiles.fetch({ fileName, userKey })
+  message.value.content.file.localPath = 'file://' + datData.localPath
+  dispatch(updateMessage({ addr, channel: message.value.content.channel, message }))
 }
 
 export const viewChannel = ({ addr, channel }) => dispatch => {
@@ -308,6 +312,12 @@ export const addChannel = ({ addr, channel }) => dispatch => {
     const isCurrentCabalAndChannel = (cabal.client.channel === channel) && (cabal.key === currentCabalKey)
     if (!isCurrentCabalAndChannel) {
       dispatch(updateChannelMessagesUnread({ addr, channel }))
+    }
+
+    // Handle syncing files
+    if (type === 'chat/file') {
+      // TODO if (automaticallyFetchFiles)
+      dispatch(updateMessageWithFileData({ addr, message }))
     }
   }
   if (!cabal.client.channels.includes(channel)) {
@@ -513,10 +523,13 @@ export const publishFile = ({ addr, channel, name, path, size, text, type, userK
   let cabal = cabals[addr]
   userKey = userKey || cabal.client.user.key
   let datKey = cabal.client.cabalFiles.currentUserFilesDatKey
+  console.warn('publishFile', { userKey, datKey })
   if (!datKey) {
-    await cabal.client.cabalFiles.getDatKeyFromStoragePath(userKey)
+    console.warn('publishFile 1')
+    datKey = await cabal.client.cabalFiles.getDatKeyFromStoragePath(userKey)
     cabal.client.cabalFiles.currentUserFilesDatKey = datKey
   }
+  console.warn('publishFile 2')
   let publishData = await cabal.client.cabalFiles.publish({ datKey, name, path, userKey: cabal.client.user.key })
   cabal.client.cabalFiles.currentUserFilesDatKey = publishData.datKey
   console.warn('PUBLISH', publishData)
@@ -532,11 +545,6 @@ export const publishFile = ({ addr, channel, name, path, size, text, type, userK
       }
     }
   }))
-}
-
-export const fetchFile = ({ addr, fileName, userKey, callback }) => dispatch => {
-  let cabal = cabals[addr]
-  cabal.client.cabalFiles.fetch({ fileName, userKey }).then(callback)
 }
 
 async function lskeys () {
