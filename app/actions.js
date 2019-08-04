@@ -168,7 +168,6 @@ export const getMessages = ({ addr, channel, count }) => dispatch => {
     msgs.forEach((msg) => {
       const author = cabal.client.users[msg.key] ? cabal.client.users[msg.key].name : DEFAULT_USERNAME
       const { type, timestamp, content } = msg.value
-      console.warn('msg.value', msg.value)
       cabal.client.channelMessages[channel].push({
         ...msg.value,
         author,
@@ -180,8 +179,7 @@ export const getMessages = ({ addr, channel, count }) => dispatch => {
       // Handle syncing files
       if (type === 'chat/file') {
         // TODO: if (automaticallyFetchFiles)
-        console.warn('*****FILE MESSAGE****** getMessages', msg)
-        dispatch(updateMessageWithFileData({ addr, msg }))
+        dispatch(updateMessageWithFileData({ addr, message: msg }))
       }
     })
 
@@ -212,10 +210,11 @@ export const updateMessage = ({ addr, channel, message }) => dispatch => {
 
 export const updateMessageWithFileData = ({ addr, message }) => async dispatch => {
   let cabal = cabals[addr]
-  let userKey = message.key
-  let fileName = message.value.content.file.name
-  // let datData = await cabal.client.cabalFiles.fetch({ fileName, userKey })
-  let datData = cabal.client.cabalFiles.fetch({ fileName, userKey })
+  let datData = await cabal.client.cabalFiles.fetch({
+    datKey: message.value.content.file.key,
+    fileName: message.value.content.file.name,
+    userKey: message.key
+  })
   message.value.content.file.localPath = 'file://' + datData.localPath
   dispatch(updateMessage({ addr, channel: message.value.content.channel, message }))
 }
@@ -464,6 +463,7 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => {
           // TODO: start auto seeding for peers you've allowed, including yourself
           cabal.client.cabalFiles.getDatKeyFromStoragePath(cabal.client.user.key).then((datKey) => {
             if (datKey) {
+              cabal.client.cabalFiles.currentUserFilesDatKey = datKey
               var dats = []
               dats.push({
                 datKey: datKey,
@@ -523,17 +523,12 @@ export const publishFile = ({ addr, channel, name, path, size, text, type, userK
   let cabal = cabals[addr]
   userKey = userKey || cabal.client.user.key
   let datKey = cabal.client.cabalFiles.currentUserFilesDatKey
-  console.warn('publishFile', { userKey, datKey })
   if (!datKey) {
-    console.warn('publishFile 1')
     datKey = await cabal.client.cabalFiles.getDatKeyFromStoragePath(userKey)
     cabal.client.cabalFiles.currentUserFilesDatKey = datKey
   }
-  console.warn('publishFile 2')
   let publishData = await cabal.client.cabalFiles.publish({ datKey, name, path, userKey: cabal.client.user.key })
   cabal.client.cabalFiles.currentUserFilesDatKey = publishData.datKey
-  console.warn('PUBLISH', publishData)
-  console.warn(cabal.client.cabalFiles)
   dispatch(addMessage({
     addr,
     message: {
