@@ -3,6 +3,7 @@ import { decode, encode } from 'dat-encoding'
 import { ipcRenderer } from 'electron'
 import Cabal from 'cabal-core'
 import collect from 'collect-stream'
+import crypto from 'hypercore-crypto'
 import del from 'del'
 import fs from 'fs'
 import mkdirp from 'mkdirp'
@@ -241,18 +242,11 @@ export const addCabal = ({ addr, input, username, settings }) => dispatch => {
       alias: ''
     }
   }
-  if (addr) {
-    // Load existing Cabal
-    initializeCabal({ addr, username, dispatch, settings })
-  } else {
+  if (!addr) {
     // Create new Cabal
-    const newCabal = Cabal(TEMP_DIR, null, { maxFeeds: MAX_FEEDS, username })
-    newCabal.getLocalKey((err, key) => {
-      if (err) console.error(err)
-      initializeCabal({ addr: key, username, dispatch, settings })
-      del(TEMP_DIR, { force: true })
-    })
+    addr = crypto.keyPair().publicKey.toString('hex')
   }
+  initializeCabal({ addr, username, dispatch, settings })
 }
 
 export const addChannel = ({ addr, channel }) => dispatch => {
@@ -361,7 +355,7 @@ export const hideEmojiPicker = () => dispatch => {
 const initializeCabal = ({ addr, username, dispatch, settings }) => {
   username = username || DEFAULT_USERNAME
   const dir = path.join(DATA_DIR, addr)
-  const cabal = Cabal(dir, addr ? 'cabal://' + addr : null, { maxFeeds: MAX_FEEDS, username })
+  const cabal = Cabal(dir, addr, { maxFeeds: MAX_FEEDS, username })
 
   currentCabalKey = addr
 
