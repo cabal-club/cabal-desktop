@@ -693,6 +693,12 @@ form {
     overflow-x: hidden;
   }
 
+  .file-picker-button {
+    input {
+      display: none;
+    }
+  }
+
   .composer {
     display: flex;
     justify-content: space-between;

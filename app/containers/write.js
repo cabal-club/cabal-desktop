@@ -148,6 +148,15 @@ class writeScreen extends Component {
     }
   }
 
+  onClickFilePickerButton (e) {
+    const element = e.target
+    const input = element.querySelector('input')
+    console.warn(input)
+    if (input) {
+      input.click()
+    }
+  }
+
   onsubmit (e) {
     // only prevent default keydown now handles logic to better support shift commands
     e.preventDefault()
@@ -214,6 +223,14 @@ class writeScreen extends Component {
               />
             </form>
           </div>
+          <button
+            className={'file-picker-button'}
+            ref={(el) => { this.filePickerButton = el }}
+            onClick={this.onClickFilePickerButton}
+          >
+            📎
+            <input type='file' />
+          </button>
           <div
             className={'emoji__container'}
             ref={(el) => { this.emojiPicker = el }}
