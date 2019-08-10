@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.1] - 2019-08-09
+### Fixed
+- Upgraded to latest cabal-core / multifeed
+
 ## [3.1.0] - 2019-07-26
 ### Added
 - Upgraded to Electron 5
