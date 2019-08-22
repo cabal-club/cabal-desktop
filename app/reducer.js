@@ -47,19 +47,6 @@ const reducer = (state = defaultState, action) => {
           }
         }
       }
-    case 'UPDATE_MESSAGES':
-      var cabal = state.cabals[action.addr]
-      if (!cabal.messages) cabal.messages = []
-      return {
-        ...state,
-        cabals: {
-          ...state.cabals,
-          [action.addr]: {
-            ...cabal,
-            messages: action.messages
-          }
-        }
-      }
     case 'UPDATE_TOPIC':
       var cabal = state.cabals[action.addr]
       return {
