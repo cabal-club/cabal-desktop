@@ -9,6 +9,10 @@ import fs from 'fs'
 import mkdirp from 'mkdirp'
 import path from 'path'
 import Swarm from 'cabal-core/swarm'
+import moment from 'moment'
+import remark from 'remark'
+import remarkEmoji from 'remark-emoji'
+import remarkReact from 'remark-react'
 import commander from './commander'
 const { dialog } = require('electron').remote
 
@@ -155,6 +159,19 @@ export const changeUsername = ({ addr, username }) => dispatch => {
   }))
 }
 
+const enrichMessage = (message) => {
+  const t = moment(message.time)
+  return Object.assign({}, message, {
+    enriched: {
+      time: {
+        short: t.format('h:mm A'),
+        full: t.format('LL'),
+      },
+      content: remark().use(remarkReact).use(remarkEmoji).processSync(message.content).contents,
+    },
+  })
+}
+
 export const getMessages = ({ addr, channel, count }) => dispatch => {
   if (channel.length === 0) return
   const cabal = cabals[addr]
@@ -166,13 +183,13 @@ export const getMessages = ({ addr, channel, count }) => dispatch => {
     msgs.forEach((msg) => {
       const author = cabal.client.users[msg.key] ? cabal.client.users[msg.key].name : DEFAULT_USERNAME
       const { type, timestamp, content } = msg.value
-      cabal.client.channelMessages[channel].push({
+      cabal.client.channelMessages[channel].push(enrichMessage({
         author,
         content: content.text,
         key: msg.key + timestamp,
         time: timestamp,
-        type
-      })
+        type,
+      }))
     })
 
     let channelTopic = ''
@@ -259,13 +276,13 @@ export const addChannel = ({ addr, channel }) => dispatch => {
       if (!cabal.client.channelMessages[channel]) {
         cabal.client.channelMessages[channel] = []
       }
-      cabal.client.channelMessages[channel].push({
+      cabal.client.channelMessages[channel].push(enrichMessage({
         author,
         content: content.text,
         key: message.key + timestamp,
         time: timestamp,
         type
-      })
+      }))
       if (!!cabal.settings.enableNotifications && !document.hasFocus()) {
         window.Notification.requestPermission()
         let notification = new window.Notification(author, {
