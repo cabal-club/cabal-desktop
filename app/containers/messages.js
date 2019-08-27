@@ -1,21 +1,13 @@
 import React from 'react'
-import moment from 'moment'
-import remark from 'remark'
-import remarkEmoji from 'remark-emoji'
-import remarkReact from 'remark-react'
 
 import Avatar from './avatar'
 
 export default function MessagesContainer (props) {
-  const enrichText = (content) => {
-    return remark().use(remarkReact).use(remarkEmoji).processSync(content).contents
-  }
   const renderDate = (time) => {
-    const t = moment(time)
     return (
       <span>
-        {t.format('h:mm A')}
-        <span className='messages__item__metadata__date'>{t.format('LL')}</span>
+        {time.short}
+        <span className='messages__item__metadata__date'>{time.full}</span>
       </span>
     )
   }
@@ -31,6 +23,7 @@ export default function MessagesContainer (props) {
     return (
       <div className='messages'>
         {messages.map((message, index) => {
+          const enriched = message.enriched
           const repeatedAuthor = message.author === lastAuthor
           const me = message.author === props.cabal.username
           lastAuthor = message.author
@@ -44,8 +37,8 @@ export default function MessagesContainer (props) {
                   </div>
                 </div>
                 <div className='messages__item__metadata'>
-                  <div className='messages__item__metadata__name'>{message.author || defaultSystemName}{renderDate(message.time)}</div>
-                  <div className='text'>{enrichText(message.content)}</div>
+                  <div className='messages__item__metadata__name'>{message.author || defaultSystemName}{renderDate(enriched.time)}</div>
+                  <div className='text'>{enriched.content}</div>
                 </div>
               </div>
             )
@@ -57,9 +50,9 @@ export default function MessagesContainer (props) {
                   {repeatedAuthor ? null : <Avatar name={message.author || 'conspirator'} />}
                 </div>
                 <div className='messages__item__metadata'>
-                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author || 'conspirator'}{renderDate(message.time)}</div>}
+                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author || 'conspirator'}{renderDate(enriched.time)}</div>}
                   <div className={repeatedAuthor ? 'text indent' : 'text'}>
-                    {enrichText(message.content)}
+                    {enriched.content}
                   </div>
                 </div>
               </div>
@@ -74,8 +67,8 @@ export default function MessagesContainer (props) {
                   </div>
                 </div>
                 <div className='messages__item__metadata'>
-                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author}{renderDate(message.time)}</div>}
-                  <div className={repeatedAuthor ? 'text indent' : 'text'}>{enrichText(message.content)}</div>
+                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author}{renderDate(enriched.time)}</div>}
+                  <div className={repeatedAuthor ? 'text indent' : 'text'}>enriched.content</div>
                 </div>
               </div>
             )
