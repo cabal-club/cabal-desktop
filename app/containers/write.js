@@ -22,7 +22,7 @@ const mapStateToProps = state => {
   return {
     addr: state.currentCabal,
     cabal,
-    cabals: state.cabals,
+    cabalIdList: Object.keys(state.cabals).sort() || [],
     currentChannel: state.currentChannel,
     emojiPickerVisible: state.emojiPickerVisible,
     users: cabal.users
@@ -65,27 +65,25 @@ class writeScreen extends Component {
   }
 
   gotoCabal (index) {
-    const cabalsList = Object.keys(this.props.cabals).sort()
-    if (cabalsList[index]) {
-      this.props.viewCabal({ addr: cabalsList[index] })
+    const { cabalIdList, viewCabal } = this.props
+    if (cabalIdList[index]) {
+      viewCabal({ addr: cabalIdList[index] })
     }
   }
 
   goToPreviousCabal () {
-    const cabalsList = Object.keys(this.props.cabals).sort()
-    const currentCabal = this.props.addr
-    const currentIndex = cabalsList.findIndex(i => i === currentCabal)
+    const { cabalIdList, addr: currentCabal, viewCabal } = this.props
+    const currentIndex = cabalIdList.findIndex(i => i === currentCabal)
     if (currentIndex > 0) {
-      this.props.viewCabal({ addr: cabalsList[currentIndex - 1] })
+      viewCabal({ addr: cabalIdList[currentIndex - 1] })
     }
   }
   // go to the next cabal
   goToNextCabal () {
-    const cabalsList = Object.keys(this.props.cabals).sort()
-    const currentCabal = this.props.addr
-    const currentIndex = cabalsList.findIndex(i => i === currentCabal)
-    if (currentIndex < cabalsList.length - 1) {
-      this.props.viewCabal({ addr: cabalsList[currentIndex + 1] })
+    const { cabalIdList, addr: currentCabal, viewCabal } = this.props
+    const currentIndex = cabalIdList.findIndex(i => i === currentCabal)
+    if (currentIndex < cabalIdList.length - 1) {
+      viewCabal({ addr: cabalIdList[currentIndex + 1] })
     }
   }
 
