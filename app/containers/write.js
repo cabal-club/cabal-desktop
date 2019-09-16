@@ -10,7 +10,8 @@ import {
   onCommand,
   showEmojiPicker,
   viewNextChannel,
-  viewPreviousChannel
+  viewPreviousChannel,
+  viewCabal
 } from '../actions'
 
 import '../../node_modules/emoji-mart/css/emoji-mart.css'
@@ -21,6 +22,7 @@ const mapStateToProps = state => {
   return {
     addr: state.currentCabal,
     cabal,
+    cabals: state.cabals,
     currentChannel: state.currentChannel,
     emojiPickerVisible: state.emojiPickerVisible,
     users: cabal.users
@@ -34,7 +36,8 @@ const mapDispatchToProps = dispatch => ({
   onCommand: ({ addr, message }) => dispatch(onCommand({ addr, message })),
   showEmojiPicker: () => dispatch(showEmojiPicker()),
   viewNextChannel: ({ addr }) => dispatch(viewNextChannel({ addr })),
-  viewPreviousChannel: ({ addr }) => dispatch(viewPreviousChannel({ addr }))
+  viewPreviousChannel: ({ addr }) => dispatch(viewPreviousChannel({ addr })),
+  viewCabal: ({ addr }) => dispatch(viewCabal({ addr }))
 })
 
 class writeScreen extends Component {
@@ -48,12 +51,42 @@ class writeScreen extends Component {
     this.addEmoji = this.addEmoji.bind(this)
     Mousetrap.bind(['command+n', 'ctrl+n'], this.viewNextChannel.bind(this))
     Mousetrap.bind(['command+p', 'ctrl+p'], this.viewPreviousChannel.bind(this))
+    Mousetrap.bind(['command+shift+]', 'ctrl+shift+]'], this.goToNextCabal.bind(this))
+    Mousetrap.bind(['command+shift+[', 'ctrl+shift+['], this.goToPreviousCabal.bind(this))
+    for (let i = 0; i < 10; i++) {
+      Mousetrap.bind([`command+shift+${i}`, `ctrl+shift+${i}`], this.gotoCabal.bind(this, i))
+    }
   }
 
   componentDidMount () {
     this.focusInput()
     this.resizeTextInput()
     window.addEventListener('focus', (e) => this.focusInput())
+  }
+
+  gotoCabal (index) {
+    const cabalsList = Object.keys(this.props.cabals).sort()
+    if (cabalsList[index]) {
+      this.props.viewCabal({ addr: cabalsList[index] })
+    }
+  }
+
+  goToPreviousCabal () {
+    const cabalsList = Object.keys(this.props.cabals).sort()
+    const currentCabal = this.props.addr
+    const currentIndex = cabalsList.findIndex(i => i === currentCabal)
+    if (currentIndex > 0) {
+      this.props.viewCabal({ addr: cabalsList[currentIndex - 1] })
+    }
+  }
+  // go to the next cabal
+  goToNextCabal () {
+    const cabalsList = Object.keys(this.props.cabals).sort()
+    const currentCabal = this.props.addr
+    const currentIndex = cabalsList.findIndex(i => i === currentCabal)
+    if (currentIndex < cabalsList.length - 1) {
+      this.props.viewCabal({ addr: cabalsList[currentIndex + 1] })
+    }
   }
 
   componentWillUnmount () {
@@ -136,6 +169,12 @@ class writeScreen extends Component {
       this.viewNextChannel()
     } else if ((e.keyCode === 80 && (e.ctrlKey || e.metaKey))) {
       this.viewPreviousChannel()
+    } else if ((e.keyCode === 221 && (e.ctrlKey || e.metaKey)) && e.shiftKey) {
+      this.goToNextCabal()
+    } else if ((e.keyCode === 219 && (e.ctrlKey || e.metaKey)) && e.shiftKey) {
+      this.goToPreviousCabal()
+    } else if (e.keyCode > 47 && e.keyCode < 58 && (e.ctrlKey || e.metaKey) && e.shiftKey) {
+      this.gotoCabal(e.keyCode - 48)
     }
   }
 
