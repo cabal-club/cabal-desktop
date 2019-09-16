@@ -53,7 +53,7 @@ class writeScreen extends Component {
     Mousetrap.bind(['command+p', 'ctrl+p'], this.viewPreviousChannel.bind(this))
     Mousetrap.bind(['command+shift+n', 'ctrl+shift+n'], this.goToNextCabal.bind(this))
     Mousetrap.bind(['command+shift+p', 'ctrl+shift+p'], this.goToPreviousCabal.bind(this))
-    for (let i = 0; i < 10; i++) {
+    for (let i = 1; i < 10; i++) {
       Mousetrap.bind([`command+${i}`, `ctrl+${i}`], this.gotoCabal.bind(this, i))
     }
   }
@@ -67,24 +67,23 @@ class writeScreen extends Component {
   gotoCabal (index) {
     const { cabalIdList, viewCabal } = this.props
     if (cabalIdList[index]) {
-      viewCabal({ addr: cabalIdList[index] })
+      viewCabal({ addr: cabalIdList[index ] })
     }
   }
 
   goToPreviousCabal () {
     const { cabalIdList, addr: currentCabal, viewCabal } = this.props
     const currentIndex = cabalIdList.findIndex(i => i === currentCabal)
-    if (currentIndex > 0) {
-      viewCabal({ addr: cabalIdList[currentIndex - 1] })
-    }
+    const gotoIndex = currentIndex > 0 ? currentIndex - 1 : cabalIdList.length - 1
+    viewCabal({ addr: cabalIdList[gotoIndex] })
   }
+
   // go to the next cabal
   goToNextCabal () {
     const { cabalIdList, addr: currentCabal, viewCabal } = this.props
     const currentIndex = cabalIdList.findIndex(i => i === currentCabal)
-    if (currentIndex < cabalIdList.length - 1) {
-      viewCabal({ addr: cabalIdList[currentIndex + 1] })
-    }
+    const gotoIndex = currentIndex < cabalIdList.length - 1 ? currentIndex + 1 : 0
+    viewCabal({ addr: cabalIdList[gotoIndex] })
   }
 
   componentWillUnmount () {
@@ -167,8 +166,8 @@ class writeScreen extends Component {
       this.goToNextCabal()
     } else if ((e.keyCode === 80 && (e.ctrlKey || e.metaKey)) && e.shiftKey) {
       this.goToPreviousCabal()
-    } else if (e.keyCode > 47 && e.keyCode < 58 && (e.ctrlKey || e.metaKey)) {
-      this.gotoCabal(e.keyCode - 48)
+    } else if (e.keyCode > 48 && e.keyCode < 58 && (e.ctrlKey || e.metaKey)) {
+      this.gotoCabal(e.keyCode - 49)
     } else if ((e.keyCode === 78 && (e.ctrlKey || e.metaKey))) {
       this.viewNextChannel()
     } else if ((e.keyCode === 80 && (e.ctrlKey || e.metaKey))) {
