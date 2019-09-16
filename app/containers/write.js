@@ -51,10 +51,10 @@ class writeScreen extends Component {
     this.addEmoji = this.addEmoji.bind(this)
     Mousetrap.bind(['command+n', 'ctrl+n'], this.viewNextChannel.bind(this))
     Mousetrap.bind(['command+p', 'ctrl+p'], this.viewPreviousChannel.bind(this))
-    Mousetrap.bind(['command+shift+]', 'ctrl+shift+]'], this.goToNextCabal.bind(this))
-    Mousetrap.bind(['command+shift+[', 'ctrl+shift+['], this.goToPreviousCabal.bind(this))
+    Mousetrap.bind(['command+shift+n', 'ctrl+shift+n'], this.goToNextCabal.bind(this))
+    Mousetrap.bind(['command+shift+p', 'ctrl+shift+p'], this.goToPreviousCabal.bind(this))
     for (let i = 0; i < 10; i++) {
-      Mousetrap.bind([`command+shift+${i}`, `ctrl+shift+${i}`], this.gotoCabal.bind(this, i))
+      Mousetrap.bind([`command+${i}`, `ctrl+${i}`], this.gotoCabal.bind(this, i))
     }
   }
 
@@ -165,16 +165,16 @@ class writeScreen extends Component {
       }
       e.preventDefault()
       e.stopPropagation()
+    } else if ((e.keyCode === 78 && (e.ctrlKey || e.metaKey)) && e.shiftKey) {
+      this.goToNextCabal()
+    } else if ((e.keyCode === 80 && (e.ctrlKey || e.metaKey)) && e.shiftKey) {
+      this.goToPreviousCabal()
+    } else if (e.keyCode > 47 && e.keyCode < 58 && (e.ctrlKey || e.metaKey)) {
+      this.gotoCabal(e.keyCode - 48)
     } else if ((e.keyCode === 78 && (e.ctrlKey || e.metaKey))) {
       this.viewNextChannel()
     } else if ((e.keyCode === 80 && (e.ctrlKey || e.metaKey))) {
       this.viewPreviousChannel()
-    } else if ((e.keyCode === 221 && (e.ctrlKey || e.metaKey)) && e.shiftKey) {
-      this.goToNextCabal()
-    } else if ((e.keyCode === 219 && (e.ctrlKey || e.metaKey)) && e.shiftKey) {
-      this.goToPreviousCabal()
-    } else if (e.keyCode > 47 && e.keyCode < 58 && (e.ctrlKey || e.metaKey) && e.shiftKey) {
-      this.gotoCabal(e.keyCode - 48)
     }
   }
 
