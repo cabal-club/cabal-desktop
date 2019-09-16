@@ -10,7 +10,8 @@ import {
   onCommand,
   showEmojiPicker,
   viewNextChannel,
-  viewPreviousChannel
+  viewPreviousChannel,
+  viewCabal
 } from '../actions'
 
 import '../../node_modules/emoji-mart/css/emoji-mart.css'
@@ -21,6 +22,7 @@ const mapStateToProps = state => {
   return {
     addr: state.currentCabal,
     cabal,
+    cabalIdList: Object.keys(state.cabals).sort() || [],
     currentChannel: state.currentChannel,
     emojiPickerVisible: state.emojiPickerVisible,
     users: cabal.users
@@ -34,7 +36,8 @@ const mapDispatchToProps = dispatch => ({
   onCommand: ({ addr, message }) => dispatch(onCommand({ addr, message })),
   showEmojiPicker: () => dispatch(showEmojiPicker()),
   viewNextChannel: ({ addr }) => dispatch(viewNextChannel({ addr })),
-  viewPreviousChannel: ({ addr }) => dispatch(viewPreviousChannel({ addr }))
+  viewPreviousChannel: ({ addr }) => dispatch(viewPreviousChannel({ addr })),
+  viewCabal: ({ addr }) => dispatch(viewCabal({ addr }))
 })
 
 class writeScreen extends Component {
@@ -48,12 +51,39 @@ class writeScreen extends Component {
     this.addEmoji = this.addEmoji.bind(this)
     Mousetrap.bind(['command+n', 'ctrl+n'], this.viewNextChannel.bind(this))
     Mousetrap.bind(['command+p', 'ctrl+p'], this.viewPreviousChannel.bind(this))
+    Mousetrap.bind(['command+shift+n', 'ctrl+shift+n'], this.goToNextCabal.bind(this))
+    Mousetrap.bind(['command+shift+p', 'ctrl+shift+p'], this.goToPreviousCabal.bind(this))
+    for (let i = 1; i < 10; i++) {
+      Mousetrap.bind([`command+${i}`, `ctrl+${i}`], this.gotoCabal.bind(this, i))
+    }
   }
 
   componentDidMount () {
     this.focusInput()
     this.resizeTextInput()
     window.addEventListener('focus', (e) => this.focusInput())
+  }
+
+  gotoCabal (index) {
+    const { cabalIdList, viewCabal } = this.props
+    if (cabalIdList[index]) {
+      viewCabal({ addr: cabalIdList[index ] })
+    }
+  }
+
+  goToPreviousCabal () {
+    const { cabalIdList, addr: currentCabal, viewCabal } = this.props
+    const currentIndex = cabalIdList.findIndex(i => i === currentCabal)
+    const gotoIndex = currentIndex > 0 ? currentIndex - 1 : cabalIdList.length - 1
+    viewCabal({ addr: cabalIdList[gotoIndex] })
+  }
+
+  // go to the next cabal
+  goToNextCabal () {
+    const { cabalIdList, addr: currentCabal, viewCabal } = this.props
+    const currentIndex = cabalIdList.findIndex(i => i === currentCabal)
+    const gotoIndex = currentIndex < cabalIdList.length - 1 ? currentIndex + 1 : 0
+    viewCabal({ addr: cabalIdList[gotoIndex] })
   }
 
   componentWillUnmount () {
@@ -132,6 +162,12 @@ class writeScreen extends Component {
       }
       e.preventDefault()
       e.stopPropagation()
+    } else if ((e.keyCode === 78 && (e.ctrlKey || e.metaKey)) && e.shiftKey) {
+      this.goToNextCabal()
+    } else if ((e.keyCode === 80 && (e.ctrlKey || e.metaKey)) && e.shiftKey) {
+      this.goToPreviousCabal()
+    } else if (e.keyCode > 48 && e.keyCode < 58 && (e.ctrlKey || e.metaKey)) {
+      this.gotoCabal(e.keyCode - 49)
     } else if ((e.keyCode === 78 && (e.ctrlKey || e.metaKey))) {
       this.viewNextChannel()
     } else if ((e.keyCode === 80 && (e.ctrlKey || e.metaKey))) {
