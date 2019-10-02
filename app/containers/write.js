@@ -43,6 +43,7 @@ const mapDispatchToProps = dispatch => ({
 class writeScreen extends Component {
   constructor (props) {
     super(props)
+    this.myArray = []
     this.minimumHeight = 48
     this.defaultHeight = 17 + this.minimumHeight
     this.focusInput = this.focusInput.bind(this)
@@ -90,10 +91,42 @@ class writeScreen extends Component {
     window.removeEventListener('focus', (e) => this.focusInput())
   }
 
-  componentDidUpdate (prevProps) {
-    if (this.props.currentChannel !== prevProps.currentChannel) {
+ componentDidUpdate (prevProps) {
+    if ((this.props.currentChannel !== prevProps.currentChannel)||this.myArray.length == 0) {
       this.focusInput()
-    }
+      var i = 0 
+      var flag = 0
+      for(i=0; i < this.myArray.length; i++){
+        if (prevProps.currentChannel == this.myArray[i].name){
+          if (this.textInput.value != this.myArray[i].text){
+            window[this.props.currentChannel] = {
+              name: prevProps.currentChannel,
+              text: this.textInput.value,
+            }
+            this.myArray.splice(i,1)
+            this.myArray.push(window[this.props.currentChannel])
+          }else{
+            flag =1
+          }
+        }
+      }
+      if(!flag){
+        window[this.props.currentChannel] = {
+          name: prevProps.currentChannel,
+          text: this.textInput.value,
+        }
+        this.myArray.push(window[this.props.currentChannel])
+      }
+        this.textInput.value = ""
+        var i =0
+        for (i = 0; i < this.myArray.length; i++){
+          if (this.props.currentChannel == this.myArray[i].name){
+            console.log("if runs")
+            this.textInput.value = this.myArray[i].text
+            break
+          }
+        }
+      }
   }
 
   viewNextChannel () {
