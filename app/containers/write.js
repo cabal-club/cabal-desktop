@@ -121,7 +121,6 @@ class writeScreen extends Component {
         var i =0
         for (i = 0; i < this.myArray.length; i++){
           if (this.props.currentChannel == this.myArray[i].name){
-            console.log("if runs")
             this.textInput.value = this.myArray[i].text
             break
           }
