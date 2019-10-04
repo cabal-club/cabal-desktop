@@ -96,7 +96,7 @@ class writeScreen extends Component {
       this.focusInput()
       var i = 0 
       var flag = 0
-      for(i=0; i < this.myArray.length; i++){
+      for(i = 0; i < this.myArray.length; i++){
         if (prevProps.currentChannel == this.myArray[i].name){
           if (this.textInput.value != this.myArray[i].text){
             window[this.props.currentChannel] = {
@@ -118,7 +118,7 @@ class writeScreen extends Component {
         this.myArray.push(window[this.props.currentChannel])
       }
         this.textInput.value = ""
-        var i =0
+        var i = 0
         for (i = 0; i < this.myArray.length; i++){
           if (this.props.currentChannel == this.myArray[i].name){
             this.textInput.value = this.myArray[i].text
