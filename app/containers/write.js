@@ -91,7 +91,7 @@ class writeScreen extends Component {
     window.removeEventListener('focus', (e) => this.focusInput())
   }
 
- componentDidUpdate (prevProps) {
+  componentDidUpdate (prevProps) {
     if (this.props.currentChannel !== prevProps.currentChannel) {
       this.focusInput()
       var i = 0 
