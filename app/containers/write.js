@@ -106,7 +106,7 @@ class writeScreen extends Component {
             this.myArray.splice(i,1)
             this.myArray.push(window[this.props.currentChannel])
           }else{
-            flag =1
+            flag = 1
           }
         }
       }
