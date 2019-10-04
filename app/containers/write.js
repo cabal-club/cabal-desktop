@@ -92,7 +92,7 @@ class writeScreen extends Component {
   }
 
  componentDidUpdate (prevProps) {
-    if ((this.props.currentChannel !== prevProps.currentChannel)||this.myArray.length == 0) {
+    if (this.props.currentChannel !== prevProps.currentChannel) {
       this.focusInput()
       var i = 0 
       var flag = 0
