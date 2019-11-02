@@ -20,6 +20,9 @@ $ npm install             # install dependencies
 $ npm start               # start the application
 ```
 
+### Download from AUR
+https://aur.archlinux.org/packages/cabal-desktop-git/
+
 ## Distribute
 
 build for current platform:
