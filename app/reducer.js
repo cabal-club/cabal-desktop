@@ -3,6 +3,7 @@ const defaultState = {
   cabalSettingsVisible: false,
   currentCabal: null,
   currentChannel: 'default',
+  channelMembers: [],
   cabals: {},
   emojiPickerVisible: false
 }
