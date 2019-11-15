@@ -118,7 +118,8 @@ app.on('ready', () => {
     y: mainWindowState.y,
     width: mainWindowState.width,
     height: mainWindowState.height,
-    titleBarStyle: 'hidden',
+    titleBarStyle: 'default',
+    title: 'Cabal Desktop ' + app.getVersion(),
     webPreferences: {
       nodeIntegration: true
     }

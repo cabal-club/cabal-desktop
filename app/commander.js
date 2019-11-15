@@ -1,6 +1,6 @@
 import { addLocalSystemMessage, changeUsername, joinChannel, removeCabal, setChannelTopic } from './actions'
 
-const commander = (cabal, message) => (dispatch) => {
+const commander = (addr, message) => (dispatch) => {
   var self = this
 
   this.commands = {
@@ -19,7 +19,6 @@ const commander = (cabal, message) => (dispatch) => {
       call: (arg) => {
         var username = arg
         if (!username.length) return
-        cabal.username = username
         if (username && username.trim().length > 0) {
           dispatch(changeUsername({ addr, username }))
         }
@@ -53,10 +52,10 @@ const commander = (cabal, message) => (dispatch) => {
       call: (arg) => {
         var topic = arg
         if (topic && topic.trim().length > 0) {
-          cabal.topic = topic
+          // TODO NICK
           dispatch(setChannelTopic({
             addr,
-            channel: cabal.client.channel,
+            // channel: cabal.client.channel,
             topic
           }))
         }
@@ -83,8 +82,8 @@ const commander = (cabal, message) => (dispatch) => {
     // },
     remove: {
       help: () => 'remove cabal from Cabal Desktop',
-      call: (addr) => {
-        addr = addr || cabal.key
+      call: (arg) => {
+        addr = arg || addr
         dispatch(removeCabal({ addr }))
       }
     }
@@ -104,11 +103,10 @@ const commander = (cabal, message) => (dispatch) => {
   this.alias('topic', 'motd')
   // this.alias('whoami', 'key')
 
-  if (!cabal) {
+  if (!addr) {
     return this.commands
   }
 
-  var addr = cabal.key
   this.history = []
   this.pattern = (/^\/(\w*)\s*(.*)/)
 
