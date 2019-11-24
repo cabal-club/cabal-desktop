@@ -1,8 +1,7 @@
 import React from 'react'
-
 import Avatar from './avatar'
 
-export default function MessagesContainer (props) {
+export default function MessagesContainer(props) {
   const renderDate = (time) => {
     return (
       <span>
@@ -11,7 +10,9 @@ export default function MessagesContainer (props) {
       </span>
     )
   }
+
   const messages = props.cabal.messages
+  let printDate, previousDate
   if (messages.length === 0) {
     return (
       <div className='messages starterMessage'>
@@ -25,12 +26,14 @@ export default function MessagesContainer (props) {
         {messages.map((message, index) => {
           const enriched = message.enriched
           const repeatedAuthor = message.author === lastAuthor
-          const me = message.author === props.cabal.username
+          previousDate = printDate
+          printDate = enriched.time.full
+          let item = (<div />)
           lastAuthor = message.author
           if (message.type === 'local/system') {
             var defaultSystemName = 'Cabalbot'
-            return (
-              <div key={index} className='messages__item messages__item--system'>
+            item = (
+              <div key={message.time + message.key} className='messages__item messages__item--system'>
                 <div className='messages__item__avatar'>
                   <div className='messages__item__avatar__img'>
                     <Avatar name={message.author || defaultSystemName} />
@@ -44,7 +47,7 @@ export default function MessagesContainer (props) {
             )
           }
           if (message.type === 'chat/text') {
-            return (
+            item = (
               <div key={index} className='messages__item'>
                 <div className='messages__item__avatar'>
                   {repeatedAuthor ? null : <Avatar name={message.author || 'conspirator'} />}
@@ -59,7 +62,7 @@ export default function MessagesContainer (props) {
             )
           }
           if (message.type === 'chat/emote') {
-            return (
+            item = (
               <div key={index} className='messages__item messages__item--emote'>
                 <div className='messages__item__avatar'>
                   <div className='messages__item__avatar__img'>
@@ -73,6 +76,15 @@ export default function MessagesContainer (props) {
               </div>
             )
           }
+          return (<div >
+            {previousDate && previousDate !== printDate && (
+              <div className='messages__date__divider'>
+                <h2> {printDate} </h2>
+              </div>
+            )}
+            {item}
+
+          </div>)
         })}
       </div>
     )
