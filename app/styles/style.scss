@@ -891,3 +891,30 @@ form {
     padding: 0.5rem;
   }
 }
+
+.messages__date__divider {
+  h2 {
+    overflow: hidden;
+    text-align: center;
+    color: #c2c5cc;
+    font-size: 14px;
+  }
+  h2:before,
+  h2:after {
+      background-color: #c2c5cc;
+      content: "";
+      display: inline-block;
+      height: 1px;
+      position: relative;
+      vertical-align: middle;
+      width: 50%;
+  }
+  h2:before {
+      right: 0.5em;
+      margin-left: -50%;
+  }
+  h2:after {
+      left: 0.5em;
+      margin-right: -50%;
+  }
+}
