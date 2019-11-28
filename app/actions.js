@@ -165,10 +165,10 @@ const enrichMessage = (message) => {
     enriched: {
       time: {
         short: t.format('h:mm A'),
-        full: t.format('LL'),
+        full: t.format('LL')
       },
-      content: remark().use(remarkReact).use(remarkEmoji).processSync(message.content).contents,
-    },
+      content: remark().use(remarkReact).use(remarkEmoji).processSync(message.content).contents
+    }
   })
 }
 
@@ -188,7 +188,7 @@ export const getMessages = ({ addr, channel, count }) => dispatch => {
         content: content.text,
         key: msg.key + timestamp,
         time: timestamp,
-        type,
+        type
       }))
     })
 
@@ -321,7 +321,7 @@ export const addLocalSystemMessage = ({ addr, channel, content }) => dispatch =>
     content,
     type: 'local/system'
   }))
-  dispatch(updateCabal({ addr, messages: cabal.client.channelMessages[cabal.client.channel] }))
+  dispatch({ type: 'UPDATE_CABAL', addr, messages: cabal.client.channelMessages[cabal.client.channel] })
 }
 
 export const setChannelTopic = ({ topic, channel, addr }) => dispatch => {
@@ -483,7 +483,7 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => {
   cabals[addr] = cabal
 }
 
-async function lskeys() {
+async function lskeys () {
   let list
   try {
     list = filterForKeys(fs.readdirSync(DATA_DIR))
@@ -494,13 +494,13 @@ async function lskeys() {
   return list
 }
 
-function encodeStateForKey(key) {
+function encodeStateForKey (key) {
   const username = (cabals[key] && cabals[key].username) || DEFAULT_USERNAME
   const settings = (cabals[key] && cabals[key].settings) || {}
   return JSON.stringify({ username, addr: key, settings })
 }
 
-async function readstate() {
+async function readstate () {
   let state
   try {
     state = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'))
@@ -510,7 +510,7 @@ async function readstate() {
   return state
 }
 
-function iterateCabals(state, fn) {
+function iterateCabals (state, fn) {
   const statekeys = Object.keys(state)
   for (const key of statekeys) {
     fn(JSON.parse(state[key]))
@@ -520,7 +520,7 @@ function iterateCabals(state, fn) {
 
 // TODO: consolidate closure pattern
 let _dispatch = NOOP
-function _dispatch_add_cabal(opts) {
+function _dispatch_add_cabal (opts) {
   _dispatch(addCabal(opts))
 }
 
@@ -549,7 +549,7 @@ const storeOnDisk = async () => {
 // removes non-key items via unordered insertion & length clamping
 // monomorphic, zero closure & arr allocs
 // hoisting var declarations to respect v8 deopt edgecases with let & unary ops
-function filterForKeys(arr) {
+function filterForKeys (arr) {
   var l = arr.length
   var last = --l
   while (l > -1) {
