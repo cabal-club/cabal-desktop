@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.0] - 2019-11-30
+### Added
+- Improved message rendering speed.
+- Added keyboard shortcuts to switch between cabals.
+- Added UI to indicate and divide date changes between messages.
+### Fixed
+- Upgraded to cabal-core @ 9.
+
 ## [3.1.1] - 2019-08-09
 ### Fixed
 - Upgraded to latest cabal-core / multifeed
