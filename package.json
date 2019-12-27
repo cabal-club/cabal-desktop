@@ -21,26 +21,27 @@
   },
   "license": "GPL-3.0",
   "devDependencies": {
+    "@babel/core": "^7.7.7",
+    "@babel/plugin-proposal-object-rest-spread": "^7.7.7",
+    "@babel/preset-env": "^7.7.7",
+    "@babel/preset-react": "^7.7.4",
+    "babel-loader": "^8.0.6",
     "cross-env": "^6.0.3",
-    "css-loader": "^3.2.0",
-    "electron": "^7.1.1",
-    "electron-builder": "^22.1.0",
+    "css-loader": "^3.4.0",
+    "electron": "^6.1.5",
+    "electron-builder": "^21.2.0",
     "node-sass": "^4.13.0",
     "npm-run-all": "^4.1.5",
-    "prettier-standard": "^15.0.1",
+    "prettier-standard": "^16.1.0",
     "sass-loader": "^8.0.0",
     "standard": "^14.3.1",
-    "style-loader": "^1.0.0",
-    "webpack": "^4.41.2",
-    "webpack-node-externals": "^1.6.0"
+    "style-loader": "^1.0.2",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^8.0.6",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "cabal-client": "1.0.5",
+    "cabal-client": "2.0.0",
     "collect-stream": "^1.2.1",
     "dat-encoding": "^5.0.1",
     "del": "^5.1.0",
@@ -50,14 +51,13 @@
     "electron-window-state": "^5.0.3",
     "emoji-mart": "^2.11.1",
     "get-form-data": "^2.0.0",
-    "hypercore-crypto": "^1.0.0",
     "mkdirp": "^0.5.1",
     "moment": "^2.24.0",
     "mousetrap": "^1.6.3",
     "ms": "^2.1.2",
-    "react": "^16.11.0",
+    "react": "^16.12.0",
     "react-blockies": "^1.4.1",
-    "react-dom": "^16.11.0",
+    "react-dom": "^16.12.0",
     "react-redux": "^7.1.3",
     "redux": "^4.0.4",
     "redux-logger": "^3.0.6",
@@ -67,6 +67,12 @@
     "remark-react": "^6.0.0",
     "strftime": "^0.10.0",
     "to2": "^1.0.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/env",
+      "@babel/react"
+    ]
   },
   "build": {
     "appId": "club.cabal.desktop",
@@ -113,5 +119,9 @@
     "nsis": {
       "artifactName": "cabal-desktop-${version}-windows.${ext}"
     }
+  },
+  "np": {
+    "yarn": false,
+    "private": true
   }
 }

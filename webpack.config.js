@@ -3,7 +3,8 @@ const path = require('path')
 
 module.exports = {
   entry: './app/index.js',
-  target: 'electron',
+  mode: 'production',
+  target: 'electron-main',
   watch: process.env.NODE_ENV === 'development',
   externals: [nodeExternals()],
   output: {
@@ -21,36 +22,19 @@ module.exports = {
         include: path.resolve(__dirname, 'app'),
         loader: 'babel-loader',
         query: {
-          presets: ['react'],
+          presets: ['@babel/react'],
           plugins: [
-            'transform-object-rest-spread'
+            '@babel/plugin-proposal-object-rest-spread'
           ]
         }
       },
       {
         test: /\.scss$/,
-        use: [
-          {
-            loader: 'style-loader',
-            options: {
-              hmr: true
-            }
-          },
-          'css-loader',
-          'sass-loader'
-        ]
+        use: ['style-loader', 'css-loader', 'sass-loader']
       },
       {
         test: /\.css$/,
-        use: [
-          {
-            loader: 'style-loader',
-            options: {
-              hmr: true
-            }
-          },
-          { loader: 'css-loader' }
-        ]
+        use: ['style-loader', 'css-loader']
       }
     ]
   }
