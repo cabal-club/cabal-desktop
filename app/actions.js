@@ -179,7 +179,7 @@ export const getMessages = ({ addr, channel, amount }, callback) => dispatch => 
 }
 
 export const viewChannel = ({ addr, channel }) => dispatch => {
-  if (channel.length === 0) return
+  if (!channel || channel.length === 0) return
   client.focusChannel(channel)
   storeOnDisk()
 

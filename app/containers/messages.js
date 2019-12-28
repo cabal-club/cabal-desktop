@@ -33,7 +33,7 @@ export default function MessagesContainer(props) {
           if (message.type === 'local/system') {
             var defaultSystemName = 'Cabalbot'
             item = (
-              <div key={message.time + message.key} className='messages__item messages__item--system'>
+              <div className='messages__item messages__item--system'>
                 <div className='messages__item__avatar'>
                   <div className='messages__item__avatar__img'>
                     <Avatar name={message.author || defaultSystemName} />
@@ -48,7 +48,7 @@ export default function MessagesContainer(props) {
           }
           if (message.type === 'chat/text') {
             item = (
-              <div key={index} className='messages__item'>
+              <div className='messages__item'>
                 <div className='messages__item__avatar'>
                   {repeatedAuthor ? null : <Avatar name={message.author || 'conspirator'} />}
                 </div>
@@ -63,7 +63,7 @@ export default function MessagesContainer(props) {
           }
           if (message.type === 'chat/emote') {
             item = (
-              <div key={index} className='messages__item messages__item--emote'>
+              <div className='messages__item messages__item--emote'>
                 <div className='messages__item__avatar'>
                   <div className='messages__item__avatar__img'>
                     {repeatedAuthor ? null : <Avatar name={message.author || 'conspirator'} />}
@@ -71,20 +71,21 @@ export default function MessagesContainer(props) {
                 </div>
                 <div className='messages__item__metadata'>
                   {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author}{renderDate(enriched.time)}</div>}
-                  <div className={repeatedAuthor ? 'text indent' : 'text'}>enriched.content</div>
+                  <div className={repeatedAuthor ? 'text indent' : 'text'}>{enriched.content}</div>
                 </div>
               </div>
             )
           }
-          return (<div >
-            {previousDate && previousDate !== printDate && (
-              <div className='messages__date__divider'>
-                <h2> {printDate} </h2>
-              </div>
-            )}
-            {item}
-
-          </div>)
+          return (
+            <div key={message.time + message.key}>
+              {previousDate && previousDate !== printDate && (
+                <div className='messages__date__divider'>
+                  <h2> {printDate} </h2>
+                </div>
+              )}
+              {item}
+            </div>
+          )
         })}
       </div>
     )

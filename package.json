@@ -23,6 +23,7 @@
   "devDependencies": {
     "@babel/core": "^7.7.7",
     "@babel/plugin-proposal-object-rest-spread": "^7.7.7",
+    "@babel/plugin-transform-runtime": "^7.7.6",
     "@babel/preset-env": "^7.7.7",
     "@babel/preset-react": "^7.7.4",
     "babel-loader": "^8.0.6",
@@ -41,6 +42,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
+    "@babel/runtime": "^7.7.7",
     "cabal-client": "2.0.0",
     "collect-stream": "^1.2.1",
     "dat-encoding": "^5.0.1",
@@ -67,12 +69,6 @@
     "remark-react": "^6.0.0",
     "strftime": "^0.10.0",
     "to2": "^1.0.0"
-  },
-  "babel": {
-    "presets": [
-      "@babel/env",
-      "@babel/react"
-    ]
   },
   "build": {
     "appId": "club.cabal.desktop",

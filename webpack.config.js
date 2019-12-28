@@ -4,7 +4,7 @@ const path = require('path')
 module.exports = {
   entry: './app/index.js',
   mode: 'production',
-  target: 'electron-main',
+  target: 'electron-renderer',
   watch: process.env.NODE_ENV === 'development',
   externals: [nodeExternals()],
   output: {

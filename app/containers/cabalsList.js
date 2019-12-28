@@ -52,12 +52,12 @@ class CabalsListScreen extends React.Component {
               )
             }
           })}
-          <div className='switcher__item --addnew' onClick={self.joinCabal.bind(self)}>
+          <div className='switcher__item --addnew' title="Join or Create A Cabal" onClick={self.joinCabal.bind(self)}>
             <img src='static/images/icon-newchannel.svg' />
           </div>
         </div>
         <div className='client__cabals__footer'>
-          <div className='switcher__item settingsButton' onClick={self.openSettings.bind(self)}>
+          <div className='switcher__item settingsButton' title="Application Settings" onClick={self.openSettings.bind(self)}>
             <img src='static/images/icon-gear.svg' />
           </div>
         </div>
