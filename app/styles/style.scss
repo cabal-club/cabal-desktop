@@ -102,7 +102,6 @@ form {
   justify-content: space-between;
   overflow-y: auto;
   padding: 1rem;
-  padding-top: 36px;
 }
 
 .client__cabals.hidden {
@@ -184,6 +183,12 @@ form {
   justify-content: center;
 
   .settingsButton {
+    border: 0;
+
+    &:hover {
+      border: 0;
+      color: white;
+    }
   }
 }
 

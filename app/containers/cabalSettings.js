@@ -67,7 +67,7 @@ class CabalSettingsContainer extends React.Component {
                   <div className='cabal-settings__item-label-description'>Share this key with others to let them join the cabal.</div>
                 </div>
                 <div className='cabal-settings__item-input'>
-                  <input type='text' value={`cabal://${this.props.cabal.addr}`} />
+                  <input type='text' value={`cabal://${this.props.cabal.addr}`} readOnly />
                 </div>
               </div>
               <div className='cabal-settings__item'>
