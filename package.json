@@ -70,12 +70,6 @@
     "strftime": "^0.10.0",
     "to2": "^1.0.0"
   },
-  "babel": {
-    "presets": [
-      "@babel/env",
-      "@babel/react"
-    ]
-  },
   "build": {
     "appId": "club.cabal.desktop",
     "protocols": [
