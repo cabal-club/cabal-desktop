@@ -67,6 +67,11 @@ const reducer = (state = defaultState, action) => {
         ...state,
         ...cabals
       })
+    case 'SHOW_CHANNEL_BROWSER':
+      return {
+        ...state,
+        channelBrowserVisible: true
+      }
     case 'SHOW_CABAL_SETTINGS':
       return {
         ...state,
@@ -77,6 +82,13 @@ const reducer = (state = defaultState, action) => {
       return {
         ...state,
         cabalSettingsVisible: false
+      }
+    case 'HIDE_ALL_MODALS':
+      return {
+        ...state,
+        cabalSettingsVisible: false,
+        channelBrowserVisible: false,
+        emojiPickerVisible: false
       }
     case 'UPDATE_WINDOW_BADGE':
       return {
