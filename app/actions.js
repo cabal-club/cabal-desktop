@@ -34,12 +34,22 @@ export const viewCabal = ({ addr, channel }) => dispatch => {
   dispatch({ addr, channel, type: 'VIEW_CABAL' })
 }
 
+export const showChannelBrowser = ({ addr }) => dispatch => {
+  dispatch(hideAllModals())
+  dispatch({ type: 'SHOW_CHANNEL_BROWSER', addr })
+}
+
 export const showCabalSettings = ({ addr }) => dispatch => {
+  dispatch(hideAllModals())
   dispatch({ type: 'SHOW_CABAL_SETTINGS', addr })
 }
 
 export const hideCabalSettings = () => dispatch => {
   dispatch({ type: 'HIDE_CABAL_SETTINGS' })
+}
+
+export const hideAllModals = () => dispatch => {
+  dispatch({ type: 'HIDE_ALL_MODALS' })
 }
 
 export const saveCabalSettings = ({ addr, settings }) => dispatch => {
@@ -233,6 +243,7 @@ export const addCabal = ({ addr, input, username, settings }) => dispatch => {
 }
 
 export const addChannel = ({ addr, channel }) => dispatch => {
+  dispatch(hideAllModals())
   const cabalDetails = client.getCurrentCabal()
 
   client.focusChannel(channel)
@@ -394,7 +405,7 @@ const initializeCabal = async ({ addr, username, dispatch, settings }) => {
     let currentChannel = details.getCurrentChannel()
     let channelMembers = details.getChannelMembers()
 
-    dispatch({ type: 'UPDATE_CABAL', addr, users, username, channels, currentChannel, channelMembers })
+    dispatch({ type: 'UPDATE_CABAL', addr, users, username, channels, channelsJoined, currentChannel, channelMembers })
     dispatch(getMessages({ addr, amount: 100, channel: currentChannel }, (messages) => {
       console.warn('NICK', { messages }, details)
       dispatch(viewCabal({ addr, currentChannel }))

@@ -2,7 +2,15 @@ import React from 'react'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
 
-import { viewChannel, joinChannel, changeUsername, changeScreen, hideCabalSettings, showCabalSettings } from '../actions'
+import {
+  viewChannel,
+  joinChannel,
+  changeUsername,
+  changeScreen,
+  hideCabalSettings,
+  showCabalSettings,
+  showChannelBrowser
+} from '../actions'
 import Avatar from './avatar'
 
 const mapStateToProps = state => {
@@ -23,7 +31,8 @@ const mapDispatchToProps = dispatch => ({
   viewChannel: ({ addr, channel }) => dispatch(viewChannel({ addr, channel })),
   changeUsername: ({ addr, username }) => dispatch(changeUsername({ addr, username })),
   showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),
-  hideCabalSettings: () => dispatch(hideCabalSettings())
+  hideCabalSettings: () => dispatch(hideCabalSettings()),
+  showChannelBrowser: ({ addr }) => dispatch(showChannelBrowser({ addr })),
 })
 
 class SidebarScreen extends React.Component {
@@ -65,6 +74,10 @@ class SidebarScreen extends React.Component {
     }
   }
 
+  onClickChannelBrowser (addr) {
+    this.props.showChannelBrowser({ addr })
+  }
+
   joinChannel (channel) {
     var addr = this.props.addr
     this.props.joinChannel({ addr, channel })
@@ -102,7 +115,7 @@ class SidebarScreen extends React.Component {
     var self = this
     const { addr, cabal } = this.props
     const cabalLabel = cabal.settings && cabal.settings.alias || addr
-    let channels = cabal.channels
+    let channels = cabal.channelsJoined
     let users = this.sortUsers(Object.values(cabal.users) || [])
     let username = cabal.username || 'conspirator'
     return (
@@ -127,7 +140,7 @@ class SidebarScreen extends React.Component {
           <div className='sidebar__section'>
             <div className='collection collection--push'>
               <div className='collection__heading'>
-                <div className='collection__heading__title'>Channels</div>
+                <div className='collection__heading__title' onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}>Channels</div>
                 <div className='collection__heading__handle' onClick={self.onClickNewChannel.bind(self)}>
                   <img src='static/images/icon-newchannel.svg' />
                 </div>
