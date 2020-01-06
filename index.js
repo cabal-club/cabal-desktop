@@ -147,6 +147,25 @@ app.on('ready', () => {
       app.setBadgeCount(badgeCount)
     }
   })
+
+  win.on('close', event => {
+    if (!app.quitting) {
+      event.preventDefault()
+      win.hide()
+    }
+  })
+
+  app.on('activate', () => {
+    win.show()
+  })
 })
 
-app.on('window-all-closed', () => app.quit())
+app.on('window-all-closed', () => {
+  if (os.platform() !== 'darwin') {
+    app.quit()
+  }
+})
+
+app.on('before-quit', () => {
+  app.quitting = true
+})
