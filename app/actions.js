@@ -119,7 +119,7 @@ export const leaveChannel = ({ addr, channel }) => dispatch => {
 
 export const viewNextChannel = ({ addr }) => dispatch => {
   const cabalDetails = client.getDetails(addr)
-  let channels = cabalDetails.getJoinedChannels()
+  const channels = cabalDetails.getJoinedChannels()
   if (channels.length) {
     let index = channels.findIndex((channel) => channel === client.getCurrentChannel()) + 1
     if (index > channels.length - 1) {
@@ -131,7 +131,7 @@ export const viewNextChannel = ({ addr }) => dispatch => {
 
 export const viewPreviousChannel = ({ addr }) => dispatch => {
   const cabalDetails = client.getDetails(addr)
-  let channels = cabalDetails.getJoinedChannels()
+  const channels = cabalDetails.getJoinedChannels()
   if (channels.length) {
     let index = channels.findIndex((channel) => channel === client.getCurrentChannel()) - 1
     if (index < 0) {
@@ -198,6 +198,7 @@ export const viewChannel = ({ addr, channel }) => dispatch => {
     addr,
     channel: cabalDetails.getCurrentChannel(),
     channels: cabalDetails.getChannels(),
+    channelsJoined: cabalDetails.getJoinedChannels(),
     settings: cabalDetails.settings,
     type: 'ADD_CABAL',
     username: cabalDetails.getLocalName(),
@@ -247,9 +248,9 @@ export const addChannel = ({ addr, channel }) => dispatch => {
   const cabalDetails = client.getCurrentCabal()
 
   client.focusChannel(channel)
-  let topic = cabalDetails.getTopic()
+  const topic = cabalDetails.getTopic()
 
-  let opts = {}
+  const opts = {}
   opts.newerThan = opts.newerThan || null
   opts.olderThan = opts.olderThan || Date.now()
   opts.amount = opts.amount || DEFAULT_PAGE_SIZE * 2.5
@@ -262,7 +263,7 @@ export const addChannel = ({ addr, channel }) => dispatch => {
 
       if (!!cabalDetails.settings.enableNotifications && !document.hasFocus()) {
         window.Notification.requestPermission()
-        let notification = new window.Notification(author, {
+        const notification = new window.Notification(author, {
           body: content.text
         })
         notification.onclick = () => {
@@ -391,19 +392,19 @@ export const hideEmojiPicker = () => dispatch => {
 
 // NICK CONTINUE HERE ---------
 const initializeCabal = async ({ addr, username, dispatch, settings }) => {
-  let cabal = addr ? await client.addCabal(addr) : await client.createCabal()
+  const cabal = addr ? await client.addCabal(addr) : await client.createCabal()
 
   // Add an object to store Desktop's per cabal client settings
   cabal.settings = settings || {}
 
   cabal.on('update', (details) => {
     console.warn('CABAL update', details)
-    let users = details.getUsers()
-    let username = details.getLocalName()
-    let channels = details.getChannels()
-    let channelsJoined = details.getJoinedChannels()
-    let currentChannel = details.getCurrentChannel()
-    let channelMembers = details.getChannelMembers()
+    const users = details.getUsers()
+    const username = details.getLocalName()
+    const channels = details.getChannels()
+    const channelsJoined = details.getJoinedChannels()
+    const currentChannel = details.getCurrentChannel()
+    const channelMembers = details.getChannelMembers()
 
     dispatch({ type: 'UPDATE_CABAL', addr, users, username, channels, channelsJoined, currentChannel, channelMembers })
     dispatch(getMessages({ addr, amount: 100, channel: currentChannel }, (messages) => {
