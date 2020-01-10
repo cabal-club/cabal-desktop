@@ -774,7 +774,7 @@ form {
       border: 0;
       cursor: pointer;
       transition: all 0.1s ease-in-out;
-  
+
       &:hover {
         color: rgba(0, 0, 0, 1);
       }
@@ -918,4 +918,20 @@ form {
       left: 0.5em;
       margin-right: -50%;
   }
+}
+
+.app-settings {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+
+	> .body {
+		flex-grow: 1;
+	}
+
+	> .footer {
+		color: #c2c5cc;
+    font-size: 14px;
+		margin: 2rem;
+	}
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import Avatar from './avatar'
 
-export default function MessagesContainer(props) {
+export default function MessagesContainer (props) {
   const renderDate = (time) => {
     return (
       <span>
