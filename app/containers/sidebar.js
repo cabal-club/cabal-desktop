@@ -32,7 +32,7 @@ const mapDispatchToProps = dispatch => ({
   changeUsername: ({ addr, username }) => dispatch(changeUsername({ addr, username })),
   showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),
   hideCabalSettings: () => dispatch(hideCabalSettings()),
-  showChannelBrowser: ({ addr }) => dispatch(showChannelBrowser({ addr })),
+  showChannelBrowser: ({ addr }) => dispatch(showChannelBrowser({ addr }))
 })
 
 class SidebarScreen extends React.Component {
@@ -115,9 +115,9 @@ class SidebarScreen extends React.Component {
     var self = this
     const { addr, cabal } = this.props
     const cabalLabel = cabal.settings && cabal.settings.alias || addr
-    let channels = cabal.channelsJoined
-    let users = this.sortUsers(Object.values(cabal.users) || [])
-    let username = cabal.username || 'conspirator'
+    const channels = cabal.channelsJoined.sort()
+    const users = this.sortUsers(Object.values(cabal.users) || [])
+    const username = cabal.username || 'conspirator'
     return (
       <div className='client__sidebar'>
         <div className='sidebar'>
@@ -150,8 +150,7 @@ class SidebarScreen extends React.Component {
                   <div className='collection__item__icon'><img src='static/images/icon-channel.svg' /></div>
                   <div className='collection__item__content'>{channel}</div>
                   {this.props.channelMessagesUnread && this.props.channelMessagesUnread[channel] > 0 &&
-                    <div className='collection__item__messagesUnreadCount'>{this.props.channelMessagesUnread[channel]}</div>
-                  }
+                    <div className='collection__item__messagesUnreadCount'>{this.props.channelMessagesUnread[channel]}</div>}
                   <div className='collection__item__handle' />
                 </div>
               )}
@@ -165,18 +164,14 @@ class SidebarScreen extends React.Component {
                 <div key={user.key} className='collection__item'>
                   <div className='collection__item__icon'>
                     {!!user.online &&
-                      <img alt='Online' src='static/images/icon-status-online.svg' />
-                    }
+                      <img alt='Online' src='static/images/icon-status-online.svg' />}
                     {!user.online &&
-                      <img alt='Offline' src='static/images/icon-status-offline.svg' />
-                    }
+                      <img alt='Offline' src='static/images/icon-status-offline.svg' />}
                   </div>
                   {!!user.online &&
-                    <div className='collection__item__content active'>{user.name || user.key.substring(0, 6)}</div>
-                  }
+                    <div className='collection__item__content active'>{user.name || user.key.substring(0, 6)}</div>}
                   {!user.online &&
-                    <div className='collection__item__content'>{user.name || user.key.substring(0, 6)}</div>
-                  }
+                    <div className='collection__item__content'>{user.name || user.key.substring(0, 6)}</div>}
                   <div className='collection__item__handle' />
                 </div>
               )}
