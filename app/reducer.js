@@ -21,7 +21,7 @@ const reducer = (state = defaultState, action) => {
         ...state,
         cabalSettingsVisible: false,
         currentCabal: action.addr,
-        currentChannel: action.channel || 'default',
+        currentChannel: action.channel || state.currentChannel,
         emojiPickerVisible: false
       }
     case 'ADD_CABAL':
