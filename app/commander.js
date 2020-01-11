@@ -3,13 +3,13 @@ import { addLocalSystemMessage, changeUsername, joinChannel, removeCabal, setCha
 const commander = (addr, message) => (dispatch) => {
   var self = this
 
-  this.commands = {
+  const commands = {
     help: {
       help: () => 'display this help message',
       call: (arg) => {
         var helpContent = ''
-        for (var key in this.commands) {
-          helpContent = helpContent + `/${key} - ${this.commands[key].help()} \n`
+        for (var key in commands) {
+          helpContent = helpContent + `/${key} - ${commands[key].help()} \n`
         }
         dispatch(addLocalSystemMessage({ addr, content: helpContent }))
       }
@@ -65,7 +65,7 @@ const commander = (addr, message) => (dispatch) => {
     //   help: () => 'display your local user key',
     //   call: (arg) => {
     //     // TODO
-    //     // self.view.writeLine.bind(self.view)('Local user key: ' + self.cabal.client.user.key)
+    //     // view.writeLine.bind(view)('Local user key: ' + cabal.client.user.key)
     //   }
     // },
     // alias: {
@@ -89,37 +89,37 @@ const commander = (addr, message) => (dispatch) => {
     }
   }
 
-  this.alias = (command, alias) => {
-    self.commands[alias] = {
-      help: self.commands[command].help,
-      call: self.commands[command].call
+  const alias = (command, alias) => {
+    commands[alias] = {
+      help: commands[command].help,
+      call: commands[command].call
     }
   }
 
   // add aliases to commands
-  // this.alias('emote', 'me')
-  this.alias('join', 'j')
-  this.alias('nick', 'n')
-  this.alias('topic', 'motd')
-  // this.alias('whoami', 'key')
+  // alias('emote', 'me')
+  alias('join', 'j')
+  alias('nick', 'n')
+  alias('topic', 'motd')
+  // alias('whoami', 'key')
 
   if (!addr) {
-    return this.commands
+    return commands
   }
 
-  this.history = []
-  this.pattern = (/^\/(\w*)\s*(.*)/)
+  const history = []
+  const pattern = (/^\/(\w*)\s*(.*)/)
 
   var text
   if (message && message.content && message.content.text) {
     text = message.content.text
   }
-  var m = this.pattern.exec(text) || []
+  var m = pattern.exec(text) || []
   var cmd = m[1] ? m[1].trim() : ''
   var arg = m[2] ? m[2].trim() : ''
 
-  if (cmd in this.commands) {
-    this.commands[cmd].call(arg)
+  if (cmd in commands) {
+    commands[cmd].call(arg)
   } else if (cmd) {
     var content = `/${cmd} is not yet a command. \nTry /help for a list of command descriptions`
     dispatch(addLocalSystemMessage({ addr, content }))
