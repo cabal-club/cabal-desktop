@@ -167,30 +167,34 @@ const enrichMessage = (message) => {
 }
 
 export const getMessages = ({ addr, channel, amount }, callback) => dispatch => {
+  client.focusCabal(addr)
   const cabalDetails = client.getCurrentCabal()
   const users = cabalDetails.getUsers()
-  client.getMessages({ amount, channel }, (messages) => {
-    messages = messages.map((message) => {
-      const author = users[message.key] ? users[message.key].name : DEFAULT_USERNAME
-      const { type, timestamp, content } = message.value
-      return enrichMessage({
-        author,
-        content: content && content.text,
-        key: message.key + timestamp,
-        time: timestamp,
-        type
+  if (client.getChannels().includes(channel)) {
+    client.getMessages({ amount, channel }, (messages) => {
+      messages = messages.map((message) => {
+        const author = users[message.key] ? users[message.key].name : DEFAULT_USERNAME
+        const { type, timestamp, content } = message.value
+        return enrichMessage({
+          author,
+          content: content && content.text,
+          key: message.key + timestamp,
+          time: timestamp,
+          type
+        })
       })
+      dispatch({ type: 'UPDATE_CABAL', addr, messages })
+      if (callback) {
+        callback(messages)
+      }
     })
-    dispatch({ type: 'UPDATE_CABAL', addr, messages })
-    if (callback) {
-      callback(messages)
-    }
-  })
+  }
 }
 
 export const viewChannel = ({ addr, channel }) => dispatch => {
   if (!channel || channel.length === 0) return
-  client.focusChannel(channel)
+
+  if (client.getChannels().includes(channel)) { client.focusChannel(channel) }
   storeOnDisk()
 
   const cabalDetails = client.getCurrentCabal()
@@ -257,7 +261,7 @@ export const addChannel = ({ addr, channel }) => dispatch => {
 
   client.getMessages(opts, (messages) => {
     messages = messages.map((message) => {
-      const { type, timestamp, content } = message.value
+      const { type, timestamp, content = {} } = message.value
       const channel = content.channel
       const author = 'testing'
 
@@ -399,6 +403,7 @@ const initializeCabal = async ({ addr, username, dispatch, settings }) => {
 
   cabal.on('update', (details) => {
     console.warn('CABAL update', details)
+
     const users = details.getUsers()
     const username = details.getLocalName()
     const channels = details.getChannels()
