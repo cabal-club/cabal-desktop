@@ -409,13 +409,13 @@ const initializeCabal = async ({ addr, username, dispatch, settings }) => {
     dispatch({ type: 'UPDATE_CABAL', addr, users, username, channels, channelsJoined, currentChannel, channelMembers })
     dispatch(getMessages({ addr, amount: 100, channel: currentChannel }, (messages) => {
       console.warn('NICK', { messages }, details)
-      dispatch(viewCabal({ addr, currentChannel }))
     }))
 
     // TODO NICK
     // dispatch({ type: 'UPDATE_TOPIC', addr, topic: channelTopic })
   })
 
+  dispatch(viewCabal({ addr, currentChannel: cabal.settings.currentChannel }))
   // Focus default or last channel viewed
   dispatch(viewChannel({ addr, channel: cabal.settings.currentChannel }))
 
