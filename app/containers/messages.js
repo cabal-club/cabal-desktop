@@ -11,7 +11,7 @@ export default function MessagesContainer (props) {
     )
   }
 
-  const messages = props.cabal.messages
+  const messages = props.cabal.messages || []
   let printDate, previousDate
   if (messages.length === 0) {
     return (
