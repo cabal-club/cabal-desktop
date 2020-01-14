@@ -167,8 +167,7 @@ const enrichMessage = (message) => {
 }
 
 export const getMessages = ({ addr, channel, amount }, callback) => dispatch => {
-  client.focusCabal(addr)
-  const cabalDetails = client.getCurrentCabal()
+  const cabalDetails = client.getDetails(addr)
   const users = cabalDetails.getUsers()
   if (client.getChannels().includes(channel)) {
     client.getMessages({ amount, channel }, (messages) => {
@@ -458,6 +457,7 @@ const initializeCabal = async ({ addr, username, dispatch, settings }) => {
   //             key: lkey,
   //             name: cabal.client.user.name || DEFAULT_USERNAME
   //           }
+
   //         }
   //         Object.keys(cabal.client.users).forEach((key) => {
   //           if (key === lkey) {
