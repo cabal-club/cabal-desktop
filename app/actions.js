@@ -68,28 +68,28 @@ export const removeCabal = ({ addr }) => dispatch => {
   })
 }
 
-export const confirmRemoveCabal = ({ addr }) => dispatch => {
-  // TODO
-  // const cabal = cabals[addr]
-  // if (cabal.client && cabal.client.swarm) {
-  //   for (const con of cabal.client.swarm.connections) {
-  //     con.removeAllListeners()
-  //   }
-  // }
-  // delete cabals[addr]
-  // storeOnDisk()
-  // dispatch({ type: 'DELETE_CABAL', addr })
+// remove cabal
+export const confirmRemoveCabal = ({ addr }) => async dispatch => {
+  client.removeCabal(addr)
+  dispatch({ type: 'DELETE_CABAL', addr })
+  // update the local file to reflect while restarting the app
+  storeOnDisk()
+  const allCabals = client.getCabalKeys()
 
-  // var cabalKeys = Object.keys(cabals)
-  // if (cabalKeys.length) {
-  //   dispatch({
-  //     addr: cabalKeys[0],
-  //     channel: cabals[cabalKeys[0]].client.channel,
-  //     type: 'VIEW_CABAL'
-  //   })
-  // } else {
-  //   dispatch({ type: 'CHANGE_SCREEN', screen: 'addCabal' })
-  // }
+  // switch to the first cabal, else in case of no remaning cabals
+  // show the add-cabal screen
+  if (allCabals.length) {
+    const toCabal = allCabals[0]
+    client.focusCabal(toCabal)
+    const cabalDetails = client.getDetails(toCabal)
+    dispatch({
+      addr: toCabal,
+      channel: cabalDetails.getCurrentChannel(),
+      type: 'VIEW_CABAL'
+    })
+  } else {
+    dispatch({ type: 'CHANGE_SCREEN', screen: 'addCabal' })
+  }
 }
 
 export const onCommand = ({ addr, message }) => dispatch => {
