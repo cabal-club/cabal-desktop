@@ -725,6 +725,7 @@ form {
       font-size: 0.875rem;
       outline: none;
       max-height: 200px; // this is a guess!?
+      resize: none;
     }
 
     .composer__input input {
