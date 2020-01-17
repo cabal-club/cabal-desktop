@@ -79,7 +79,7 @@ export default function MessagesContainer (props) {
           return (<div >
             {previousDate && previousDate !== printDate && (
               <div className='messages__date__divider'>
-                <h2> {printDate} </h2>
+                <h2> {printDate} <span>({enriched.time.diff})</span> </h2>
               </div>
             )}
             {item}

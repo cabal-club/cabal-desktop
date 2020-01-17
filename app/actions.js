@@ -164,6 +164,7 @@ const enrichMessage = (message) => {
   return Object.assign({}, message, {
     enriched: {
       time: {
+        diff: t.fromNow(),
         short: t.format('h:mm A'),
         full: t.format('LL')
       },
