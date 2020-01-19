@@ -115,7 +115,8 @@ class SidebarScreen extends React.Component {
     var self = this
     const { addr, cabal } = this.props
     const cabalLabel = cabal.settings && cabal.settings.alias || addr
-    const channels = cabal.channelsJoined.sort()
+
+    const channels = cabal.channelsJoined.slice().sort()
     const users = this.sortUsers(Object.values(cabal.users) || [])
     const username = cabal.username || 'conspirator'
     return (
