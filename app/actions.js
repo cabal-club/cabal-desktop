@@ -401,6 +401,8 @@ const initializeCabal = async ({ addr, username, dispatch, settings }) => {
   // Add an object to store Desktop's per cabal client settings
   cabal.settings = settings || {}
 
+  // if creating a new cabal, addr will be undefined.
+  const { key: cabalKey } = cabal
   cabal.on('update', (details) => {
     console.warn('CABAL update', details)
 
@@ -411,8 +413,8 @@ const initializeCabal = async ({ addr, username, dispatch, settings }) => {
     const currentChannel = details.getCurrentChannel()
     const channelMembers = details.getChannelMembers()
 
-    dispatch({ type: 'UPDATE_CABAL', addr, users, username, channels, channelsJoined, currentChannel, channelMembers })
-    dispatch(getMessages({ addr, amount: 100, channel: currentChannel }, (messages) => {
+    dispatch({ type: 'UPDATE_CABAL', addr: cabalKey, users, username, channels, channelsJoined, currentChannel, channelMembers })
+    dispatch(getMessages({ addr: cabalKey, amount: 100, channel: currentChannel }, (messages) => {
       console.warn('NICK', { messages }, details)
     }))
 
@@ -420,9 +422,9 @@ const initializeCabal = async ({ addr, username, dispatch, settings }) => {
     // dispatch({ type: 'UPDATE_TOPIC', addr, topic: channelTopic })
   })
 
-  dispatch(viewCabal({ addr, currentChannel: cabal.settings.currentChannel }))
+  dispatch(viewCabal({ addr: cabalKey, currentChannel: cabal.settings.currentChannel }))
   // Focus default or last channel viewed
-  dispatch(viewChannel({ addr, channel: cabal.settings.currentChannel }))
+  dispatch(viewChannel({ addr: cabalKey, channel: cabal.settings.currentChannel }))
 
   // cabal.ready((err) => {
   //   if (err) return console.error(err)
