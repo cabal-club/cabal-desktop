@@ -13,6 +13,7 @@ const defaultState = {
   currentChannel: 'default',
   channelMembers: [],
   cabals: {},
+  cabalSettings: {},
   emojiPickerVisible: false
 }
 
@@ -35,6 +36,12 @@ const reducer = createReducer(defaultState, {
     state.cabals[action.addr] = {
       ...state.cabals[action.addr],
       ...action
+    }
+  },
+  UPDATE_CABAL_SETTINGS: (state, { addr, settings }) => {
+    state.cabalSettings[addr] = {
+      ...state.cabalSettings[addr],
+      ...settings
     }
   },
   UPDATE_TOPIC: (state, { addr, topic }) => {

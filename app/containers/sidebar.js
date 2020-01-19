@@ -14,13 +14,15 @@ import {
 import Avatar from './avatar'
 
 const mapStateToProps = state => {
-  var cabal = state.cabals[state.currentCabal]
+  const cabal = state.cabals[state.currentCabal]
+  const addr = cabal.addr
   return {
-    addr: state.currentCabal,
+    addr,
     cabals: state.cabals,
     cabal,
     cabalSettingsVisible: state.cabalSettingsVisible,
     channelMessagesUnread: cabal.channelMessagesUnread,
+    settings: state.cabalSettings[addr] || {},
     username: cabal.username
   }
 }
@@ -113,8 +115,8 @@ class SidebarScreen extends React.Component {
 
   render () {
     var self = this
-    const { addr, cabal } = this.props
-    const cabalLabel = cabal.settings && cabal.settings.alias || addr
+    const { addr, cabal, settings } = this.props
+    const cabalLabel = settings.alias || addr
 
     const channels = cabal.channelsJoined.slice().sort()
     const users = this.sortUsers(Object.values(cabal.users) || [])

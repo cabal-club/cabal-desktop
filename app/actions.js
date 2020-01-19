@@ -52,8 +52,9 @@ export const hideAllModals = () => dispatch => {
   dispatch({ type: 'HIDE_ALL_MODALS' })
 }
 
-export const saveCabalSettings = ({ addr, settings }) => dispatch => {
-  storeOnDisk()
+export const updateCabalSettings = ({ addr, settings }) => dispatch => {
+  dispatch({ type: 'UPDATE_CABAL_SETTINGS', addr, settings })
+  dispatch(storeOnDisk())
 }
 
 export const removeCabal = ({ addr }) => dispatch => {
@@ -73,7 +74,7 @@ export const confirmRemoveCabal = ({ addr }) => async dispatch => {
   client.removeCabal(addr)
   dispatch({ type: 'DELETE_CABAL', addr })
   // update the local file to reflect while restarting the app
-  storeOnDisk()
+  dispatch(storeOnDisk())
   const allCabals = client.getCabalKeys()
 
   // switch to the first cabal, else in case of no remaning cabals
@@ -191,11 +192,10 @@ export const getMessages = ({ addr, channel, amount }, callback) => dispatch => 
   }
 }
 
-export const viewChannel = ({ addr, channel }) => dispatch => {
+export const viewChannel = ({ addr, channel }) => (dispatch, getState) => {
   if (!channel || channel.length === 0) return
 
   if (client.getChannels().includes(channel)) { client.focusChannel(channel) }
-  storeOnDisk()
 
   const cabalDetails = client.getCurrentCabal()
   dispatch({
@@ -203,7 +203,6 @@ export const viewChannel = ({ addr, channel }) => dispatch => {
     channel: cabalDetails.getCurrentChannel(),
     channels: cabalDetails.getChannels(),
     channelsJoined: cabalDetails.getJoinedChannels(),
-    settings: cabalDetails.settings,
     type: 'ADD_CABAL',
     username: cabalDetails.getLocalName(),
     users: cabalDetails.getUsers()
@@ -219,6 +218,8 @@ export const viewChannel = ({ addr, channel }) => dispatch => {
   dispatch({ type: 'UPDATE_TOPIC', addr, topic })
   // TODO
   // dispatch(updateChannelMessagesUnread({ addr, channel, unreadCount: 0 }))
+
+  dispatch(updateCabalSettings({ addr, settings: { currentChannel: channel } }))
 }
 
 export const changeScreen = ({ screen, addr }) => ({ type: 'CHANGE_SCREEN', screen, addr })
@@ -239,18 +240,17 @@ export const addCabal = ({ addr, input, username, settings }) => dispatch => {
     }
     return
   }
-  if (!settings) {
-    // Default per cabal user settings
-    settings = {
-      alias: '',
-      enableNotifications: false,
-      currentChannel: DEFAULT_CHANNEL
-    }
+  // Default per cabal user settings
+  settings = {
+    alias: '',
+    enableNotifications: false,
+    currentChannel: DEFAULT_CHANNEL,
+    ...settings
   }
-  initializeCabal({ addr, username, dispatch, settings })
+  dispatch(initializeCabal({ addr, username, dispatch, settings }))
 }
 
-export const addChannel = ({ addr, channel }) => dispatch => {
+export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
   dispatch(hideAllModals())
   const cabalDetails = client.getCurrentCabal()
 
@@ -268,7 +268,8 @@ export const addChannel = ({ addr, channel }) => dispatch => {
       const channel = content.channel
       const author = 'testing'
 
-      if (!!cabalDetails.settings.enableNotifications && !document.hasFocus()) {
+      const settings = getState().cabalSettings[addr]
+      if (!!settings.enableNotifications && !document.hasFocus()) {
         window.Notification.requestPermission()
         const notification = new window.Notification(author, {
           body: content.text
@@ -307,7 +308,7 @@ export const addChannel = ({ addr, channel }) => dispatch => {
   //       time: timestamp,
   //       type
   //     }))
-  //     if (!!cabal.settings.enableNotifications && !document.hasFocus()) {
+  //     if (!!settings.enableNotifications && !document.hasFocus()) {
   //       window.Notification.requestPermission()
   //       let notification = new window.Notification(author, {
   //         body: content.text
@@ -397,14 +398,11 @@ export const hideEmojiPicker = () => dispatch => {
   dispatch({ type: 'HIDE_EMOJI_PICKER' })
 }
 
-const initializeCabal = async ({ addr, username, dispatch, settings }) => {
+const initializeCabal = ({ addr, username, dispatch, settings }) => async (dispatch, getState) => {
   const cabal = addr ? await client.addCabal(addr) : await client.createCabal()
-
-  // Add an object to store Desktop's per cabal client settings
-  cabal.settings = settings || {}
-
   // if creating a new cabal, addr will be undefined.
   const { key: cabalKey } = cabal
+  let firstUpdate = true
   cabal.on('update', (details) => {
     console.warn('CABAL update', details)
     const users = details.getUsers()
@@ -415,11 +413,16 @@ const initializeCabal = async ({ addr, username, dispatch, settings }) => {
     const channelMembers = details.getChannelMembers()
     dispatch({ type: 'UPDATE_CABAL', addr: cabalKey, users, username, channels, channelsJoined, currentChannel, channelMembers })
     dispatch(getMessages({ addr: cabalKey, amount: 100, channel: currentChannel }))
+    if (firstUpdate) {
+      firstUpdate = false
+      dispatch(viewCabal({ addr: cabalKey, currentChannel: settings.currentChannel }))
+      // Focus default or last channel viewed
+      dispatch(viewChannel({ addr: cabalKey, channel: settings.currentChannel }))
+    }
   })
 
-  dispatch(viewCabal({ addr: cabalKey, currentChannel: cabal.settings.currentChannel }))
-  // Focus default or last channel viewed
-  dispatch(viewChannel({ addr: cabalKey, channel: cabal.settings.currentChannel }))
+  settings = settings || getState().cabalSettings[addr] || {}
+  dispatch(updateCabalSettings({ addr, settings }))
 }
 
 export const loadFromDisk = () => async dispatch => {
@@ -437,12 +440,11 @@ export const loadFromDisk = () => async dispatch => {
   dispatch({ type: 'CHANGE_SCREEN', screen: stateKeys.length ? 'main' : 'addCabal' })
 }
 
-const storeOnDisk = async () => {
+const storeOnDisk = () => (dispatch, getState) => {
   const cabalKeys = client.getCabalKeys()
   const state = cabalKeys.reduce(
     (acc, addr) => {
-      const cabalDetails = client.getDetails(addr)
-      const settings = (cabalDetails && cabalDetails.settings) || {}
+      const settings = getState().cabalSettings[addr] || {}
       return ({
         ...acc,
         [addr]: JSON.stringify({ addr, settings })

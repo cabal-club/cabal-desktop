@@ -1,4 +1,11 @@
-import { addLocalSystemMessage, changeUsername, joinChannel, removeCabal, setChannelTopic } from './actions'
+import {
+  addLocalSystemMessage,
+  changeUsername,
+  joinChannel,
+  removeCabal,
+  setChannelTopic,
+  updateCabalSettings
+} from './actions'
 
 const commander = (addr, message) => (dispatch) => {
   var self = this
@@ -52,10 +59,8 @@ const commander = (addr, message) => (dispatch) => {
       call: (arg) => {
         var topic = arg
         if (topic && topic.trim().length > 0) {
-          // TODO NICK
           dispatch(setChannelTopic({
             addr,
-            // channel: cabal.client.channel,
             topic
           }))
         }
@@ -68,12 +73,17 @@ const commander = (addr, message) => (dispatch) => {
     //     // view.writeLine.bind(view)('Local user key: ' + cabal.client.user.key)
     //   }
     // },
-    // alias: {
-    //   help: () => 'set alias for the cabal',
-    //   call: (arg) => {
-    //     renameCabalAlias(arg)
-    //   }
-    // },
+    alias: {
+      help: () => 'set alias for the cabal',
+      call: (arg) => {
+        dispatch(updateCabalSettings({
+          addr,
+          settings: {
+            alias: arg
+          }
+        }))
+      }
+    },
     // add: {
     //   help: () => 'add a cabal',
     //   call: (arg) => {
