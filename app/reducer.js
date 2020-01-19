@@ -3,7 +3,7 @@ import { setAutoFreeze } from 'immer'
 
 // set auto freeze to false to prevent freezing the object.
 // currently data is shared between cabal-client lib and redux.
-// so if frozen, it will cause issues since lib is mutating some code.
+// so if frozen, it will cause issues since lib is mutating some code.-
 setAutoFreeze(false)
 
 const defaultState = {
@@ -50,15 +50,15 @@ const reducer = createReducer(defaultState, {
     state.cabalSettingsVisible = true
     state.emojiPickerVisible = false
   },
-  HIDE_CABAL_SETTINGS: state => (state.cabalSettingsVisible = false),
+  HIDE_CABAL_SETTINGS: state => { state.cabalSettingsVisible = false },
   HIDE_ALL_MODALS: state => {
     state.cabalSettingsVisible = false
     state.emojiPickerVisible = false
     state.channelBrowserVisibile = false
   },
-  UPDATE_WINDOW_BADGE: (state, badgeCount) => (state.badgeCount = badgeCount),
-  SHOW_EMOJI_PICKER: (state) => (state.emojiPickerVisible = true),
-  HIDE_EMOJI_PICKER: state => (state.emojiPickerVisible = false)
+  UPDATE_WINDOW_BADGE: (state, { badgeCount }) => { state.badgeCount = badgeCount },
+  SHOW_EMOJI_PICKER: (state) => { state.emojiPickerVisible = true },
+  HIDE_EMOJI_PICKER: state => { state.emojiPickerVisible = false }
 
 })
 
