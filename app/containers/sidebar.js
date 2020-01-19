@@ -12,6 +12,7 @@ import {
   showChannelBrowser
 } from '../actions'
 import Avatar from './avatar'
+import JoinChannelModal from './joinChannelModal'
 
 const mapStateToProps = state => {
   const cabal = state.cabals[state.currentCabal]
@@ -38,18 +39,39 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class SidebarScreen extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      isModalVisible: true
+    }
+    this.closeModal = this.closeModal.bind(this)
+    this.joinChannel = this.joinChannel.bind(this)
+  }
+
+  // onClickNewChannel () {
+  //   prompt({
+  //     title: 'Create a channel',
+  //     label: 'New channel name',
+  //     value: undefined,
+  //     type: 'input'
+  //   }).then((newChannelName) => {
+  //     if (newChannelName && newChannelName.trim().length > 0) {
+  //       this.joinChannel(newChannelName)
+  //     }
+  //   }).catch(() => {
+  //     console.log('cancelled new channel')
+  //   })
+  // }
+
   onClickNewChannel () {
-    prompt({
-      title: 'Create a channel',
-      label: 'New channel name',
-      value: undefined,
-      type: 'input'
-    }).then((newChannelName) => {
-      if (newChannelName && newChannelName.trim().length > 0) {
-        this.joinChannel(newChannelName)
-      }
-    }).catch(() => {
-      console.log('cancelled new channel')
+    this.setState({
+      isModalVisible: true
+    })
+  }
+
+  closeModal () {
+    this.setState({
+      isModalVisible: false
     })
   }
 
@@ -83,6 +105,7 @@ class SidebarScreen extends React.Component {
   joinChannel (channel) {
     var addr = this.props.addr
     this.props.joinChannel({ addr, channel })
+    console.log('joining channel', channel)
   }
 
   selectChannel (channel) {
@@ -181,6 +204,7 @@ class SidebarScreen extends React.Component {
             </div>
           </div>
         </div>
+        <JoinChannelModal visible={this.state.isModalVisible} closeModal={this.closeModal} channels={cabal.channels} joinChannel={this.joinChannel} />
       </div>
     )
   }

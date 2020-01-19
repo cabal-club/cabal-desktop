@@ -15,11 +15,11 @@ const mapDispatchToProps = dispatch => ({
   hideAllModals: () => dispatch(hideAllModals()),
   joinChannel: ({ addr, channel }) => dispatch(joinChannel({ addr, channel })),
   viewChannel: ({ addr, channel }) => dispatch(viewChannel({ addr, channel })),
-  addChannel: ({ addr, channel }) => dispatch(addChannel({ addr, channel })),
+  addChannel: ({ addr, channel }) => dispatch(addChannel({ addr, channel }))
 })
 
 class ChannelBrowserContainer extends React.Component {
-  onClickClose() {
+  onClickClose () {
     this.props.hideAllModals()
   }
 
@@ -37,10 +37,10 @@ class ChannelBrowserContainer extends React.Component {
     })
   }
 
-  render() {
+  render () {
     const { addr, cabal } = this.props
-    let channels = cabal.channels
-    let channelsJoined = cabal.channelsJoined || []
+    const channels = cabal.channels
+    const channelsJoined = cabal.channelsJoined || []
     return (
       <div className='client__main'>
         <div className='window'>
