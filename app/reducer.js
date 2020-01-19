@@ -18,7 +18,7 @@ const defaultState = {
 
 const reducer = createReducer(defaultState, {
   CHANGE_SCREEN: (state, { screen, addr }) => {
-    state.scren = screen
+    state.screen = screen
     state.addr = addr
   },
   VIEW_CABAL: (state, { channel, addr }) => {

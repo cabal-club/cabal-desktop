@@ -5,7 +5,6 @@ import prompt from 'electron-prompt'
 
 import {
   changeScreen,
-  getMessages,
   hideEmojiPicker,
   leaveChannel,
   setChannelTopic,
@@ -28,7 +27,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   changeScreen: ({ screen, addr }) => dispatch(changeScreen({ screen, addr })),
-  getMessages: ({ addr, channel, count }) => dispatch(getMessages({ addr, channel, count })),
   hideEmojiPicker: () => dispatch(hideEmojiPicker()),
   setChannelTopic: ({ addr, channel, topic }) => dispatch(setChannelTopic({ addr, channel, topic })),
   showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),

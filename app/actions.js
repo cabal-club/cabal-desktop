@@ -214,7 +214,10 @@ export const viewChannel = ({ addr, channel }) => dispatch => {
     channel: cabalDetails.getCurrentChannel()
   })
   dispatch(getMessages({ addr, channel, amount: 100 }))
-  // TODO NICK
+
+  const topic = cabalDetails.getTopic()
+  dispatch({ type: 'UPDATE_TOPIC', addr, topic })
+  // TODO
   // dispatch(updateChannelMessagesUnread({ addr, channel, unreadCount: 0 }))
 }
 
@@ -337,7 +340,7 @@ export const addMessage = ({ message, addr }) => dispatch => {
 }
 
 export const addLocalSystemMessage = ({ addr, channel, content }) => dispatch => {
-  // TODO NICK
+  // TODO
   // var cabal = cabals[addr]
   // channel = channel || cabal.client.channel
   // cabal.client.channelMessages[cabal.client.channel].push(enrichMessage({
@@ -378,7 +381,7 @@ export const updateChannelMessagesUnread = ({ addr, channel, unreadCount }) => d
 
 export const updateAppIconBadge = (badgeCount) => dispatch => {
   // TODO: if (!!app.settings.enableBadgeCount) {
-  // TODO NICK
+  // TODO
   // badgeCount = badgeCount || Object.values(cabals).reduce((total, cabal) => {
   //   return total + (cabal.client.allChannelsUnreadCount || 0)
   // }, 0)
@@ -394,7 +397,6 @@ export const hideEmojiPicker = () => dispatch => {
   dispatch({ type: 'HIDE_EMOJI_PICKER' })
 }
 
-// NICK CONTINUE HERE ---------
 const initializeCabal = async ({ addr, username, dispatch, settings }) => {
   const cabal = addr ? await client.addCabal(addr) : await client.createCabal()
 
@@ -405,128 +407,20 @@ const initializeCabal = async ({ addr, username, dispatch, settings }) => {
   const { key: cabalKey } = cabal
   cabal.on('update', (details) => {
     console.warn('CABAL update', details)
-
     const users = details.getUsers()
     const username = details.getLocalName()
     const channels = details.getChannels()
     const channelsJoined = details.getJoinedChannels()
     const currentChannel = details.getCurrentChannel()
     const channelMembers = details.getChannelMembers()
-
     dispatch({ type: 'UPDATE_CABAL', addr: cabalKey, users, username, channels, channelsJoined, currentChannel, channelMembers })
-    dispatch(getMessages({ addr: cabalKey, amount: 100, channel: currentChannel }, (messages) => {
-      console.warn('NICK', { messages }, details)
-    }))
-
-    // TODO NICK
-    // dispatch({ type: 'UPDATE_TOPIC', addr, topic: channelTopic })
+    dispatch(getMessages({ addr: cabalKey, amount: 100, channel: currentChannel }))
   })
 
   dispatch(viewCabal({ addr: cabalKey, currentChannel: cabal.settings.currentChannel }))
   // Focus default or last channel viewed
   dispatch(viewChannel({ addr: cabalKey, channel: cabal.settings.currentChannel }))
-
-  // cabal.ready((err) => {
-  //   if (err) return console.error(err)
-
-  //   // cabal.client.users = {}
-  //   // cabal.client.channelMessages = {}
-  //   // cabal.client.channelMessagesUnread = {}
-  //   // cabal.client.channelListeners = {}
-
-  //   cabal.channels.events.on('add', (channel) => {
-  //     dispatch(addChannel({ addr, channel }))
-  //   })
-  //   cabal.channels.get((err, channels) => {
-  //     if (err) return console.error(err)
-  //     if (channels.length === 0) {
-  //       channels.push(DEFAULT_CHANNEL)
-  //     }
-  //     channels.forEach((channel) => {
-  //       dispatch(addChannel({ addr, channel }))
-  //     })
-  //   })
-
-  //   cabal.users.getAll((err, users) => {
-  //     if (err) return
-  //     cabal.client.users = users
-  //     const updateLocalKey = () => {
-  //       cabal.getLocalKey((err, lkey) => {
-  //         if (err) return
-  //         if (!Object.keys(cabal.client.users).includes(lkey)) {
-  //           cabal.client.users[lkey] = {
-  //             local: true,
-  //             online: true,
-  //             key: lkey,
-  //             name: cabal.client.user.name || DEFAULT_USERNAME
-  //           }
-
-  //         }
-  //         Object.keys(cabal.client.users).forEach((key) => {
-  //           if (key === lkey) {
-  //             cabal.client.user = cabal.client.users[key]
-  //             cabal.client.user.local = true
-  //             cabal.client.user.online = true
-  //             cabal.client.user.key = key
-  //             cabal.username = cabal.client.user.name
-  //             cabal.publishNick(cabal.username)
-  //           }
-  //         })
-  //         dispatch({ type: 'UPDATE_CABAL', addr, users: cabal.client.users, username: cabal.username })
-  //         dispatch(joinChannel({ addr, channel: DEFAULT_CHANNEL }))
-  //       })
-  //     }
-  //     updateLocalKey()
-
-  //     cabal.users.events.on('update', (key) => {
-  //       // TODO: rate-limit
-  //       cabal.users.get(key, (err, user) => {
-  //         if (err) return
-  //         cabal.client.users[key] = Object.assign(cabal.client.users[key] || {}, user)
-  //         cabal.client.users[key].name = cabal.client.users[key].name || DEFAULT_USERNAME
-  //         if (cabal.client.user && key === cabal.client.user.key) cabal.client.user = cabal.client.users[key]
-  //         if (!cabal.client.user) updateLocalKey()
-  //         dispatch({ type: 'UPDATE_CABAL', addr, users: cabal.client.users })
-  //       })
-  //     })
-  //     cabal.on('peer-added', (key) => {
-  //       let found = false
-  //       Object.keys(cabal.client.users).forEach((k) => {
-  //         if (k === key) {
-  //           cabal.client.users[k].online = true
-  //           found = true
-  //         }
-  //       })
-  //       if (!found) {
-  //         cabal.client.users[key] = {
-  //           key: key,
-  //           online: true
-  //         }
-  //       }
-  //       dispatch({ type: 'UPDATE_CABAL', addr, users: cabal.client.users })
-  //     })
-  //     cabal.on('peer-dropped', (key) => {
-  //       Object.keys(cabal.client.users).forEach((k) => {
-  //         if (k === key) {
-  //           cabal.client.users[k].online = false
-  //           dispatch({ type: 'UPDATE_CABAL', addr, users: cabal.client.users })
-  //         }
-  //       })
-  //     })
-  // })
-  // })
 }
-
-// async function lskeys () {
-//   let list
-//   try {
-//     list = filterForKeys(fs.readdirSync(DATA_DIR))
-//   } catch (_) {
-//     list = []
-//     await mkdirp(DATA_DIR)
-//   }
-//   return list
-// }
 
 export const loadFromDisk = () => async dispatch => {
   let state
