@@ -11,7 +11,7 @@ const JoinChannelModal = ({ visible, closeModal, channels, joinChannel }) => {
   }
 
   const add = () => {
-    if (!channel.strip()) return
+    if (!channel.trim()) return
     joinChannel(channel)
     hideModal()
   }
@@ -22,11 +22,13 @@ const JoinChannelModal = ({ visible, closeModal, channels, joinChannel }) => {
   }
 
   return (
-    <Modal visible={visible} width='50%' height='200px' effect='fadeInUp' onClickAway={closeModal}>
-      <h2 className='modal___title'> join channel</h2>
-      <Select options={channelList} onChange={onChange} />
-      <button onClick={add}> Join</button>
-      <button onClick={hideModal}> Cancel </button>
+    <Modal visible={visible} width='500px' className='joinChannelModal' onClickAway={closeModal}>
+      <h2 className='modal___title'> JOIN CHANNEL</h2>
+      <div className='modal__body'>
+        <Select options={channelList} onChange={onChange} className='modal__select' />
+        <button className='modal__button green' onClick={add}> Join</button>
+        <button className='modal__button red' onClick={hideModal}> Cancel </button>
+      </div>
     </Modal>
   )
 }

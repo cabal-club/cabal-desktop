@@ -946,6 +946,37 @@ form {
 	}
 }
 
+
 .modal___title {
-  color: black
+   
+  font-size: 20px;
+  text-align: center;
+  padding: 10px;
+  background-color:#16161d;
+}
+
+.modal__body {
+  padding-top: 25px;
+  color: rgba(22, 22, 29, 0.7);
+  position: relative;
+ 
+  .modal__select {
+    width: 80%;
+    margin: auto;
+  }
+
+  .modal__button {
+    margin-top: 25px;
+    margin-bottom: 1px;
+    width: 50%;
+    height: 50px;
+    font-weight: 600;
+    font-size: 20px;
+    color: white;
+    background-color: #474748;
+     box-shadow: none;
+ border-radius: 0px;
+    border: 1px solid white;
+  }
+ 
 }

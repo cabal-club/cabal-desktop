@@ -42,7 +42,7 @@ class SidebarScreen extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      isModalVisible: true
+      isModalVisible: false
     }
     this.closeModal = this.closeModal.bind(this)
     this.joinChannel = this.joinChannel.bind(this)
@@ -167,7 +167,7 @@ class SidebarScreen extends React.Component {
             <div className='collection collection--push'>
               <div className='collection__heading'>
                 <div className='collection__heading__title' onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}>Channels</div>
-                <div className='collection__heading__handle' onClick={self.onClickNewChannel.bind(self)}>
+                <div className='collection__heading__handle' onClick={() => { console.log('this is called'); this.setState({ isModalVisible: true }) }}>
                   <img src='static/images/icon-newchannel.svg' />
                 </div>
               </div>
