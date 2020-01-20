@@ -48,21 +48,6 @@ class SidebarScreen extends React.Component {
     this.joinChannel = this.joinChannel.bind(this)
   }
 
-  // onClickNewChannel () {
-  //   prompt({
-  //     title: 'Create a channel',
-  //     label: 'New channel name',
-  //     value: undefined,
-  //     type: 'input'
-  //   }).then((newChannelName) => {
-  //     if (newChannelName && newChannelName.trim().length > 0) {
-  //       this.joinChannel(newChannelName)
-  //     }
-  //   }).catch(() => {
-  //     console.log('cancelled new channel')
-  //   })
-  // }
-
   onClickNewChannel () {
     this.setState({
       isModalVisible: true
