@@ -143,8 +143,12 @@ class SidebarScreen extends React.Component {
           <div className='sidebar__section'>
             <div className='collection collection--push'>
               <div className='collection__heading'>
-                <div className='collection__heading__title' onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}>Channels</div>
-                <div className='collection__heading__handle' onClick={self.onClickNewChannel.bind(self)}>
+              <div
+                className='collection__heading__title collection__heading__title__channelBrowserButton'
+                onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}
+                title='Browse and join all channels'
+              >Channels</div>
+                <div className='collection__heading__handle' onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}>
                   <img src='static/images/icon-newchannel.svg' />
                 </div>
               </div>

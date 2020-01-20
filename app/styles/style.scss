@@ -67,10 +67,10 @@ form {
   display: inline-block;
   font-size: 0.875rem;
   font-weight: 600;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(105, 58, 250, 0.7);
   padding: 0.4rem 0.875rem;
   border-radius: 3px;
-  color: rgba(0, 0, 0, 0.66);
+  color: rgba(105, 58, 250, 0.7);
   background-color: #fff;
   transition: all 0.075s ease-in-out;
   cursor: pointer;
@@ -79,6 +79,8 @@ form {
 
 .button:hover {
   box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(105, 58, 250, 1);
+  color: rgba(105, 58, 250, 1);
 }
 
 /* Layout: Container */
@@ -305,6 +307,10 @@ form {
     color: rgba(255, 255, 255, 0.5);
     text-transform: uppercase;
     vertical-align: middle;
+  }
+
+  .collection .collection__heading .collection__heading__title.collection__heading__title__channelBrowserButton {
+    cursor: pointer;
   }
 
   .collection .collection__heading .collection__heading__handle {
@@ -944,4 +950,50 @@ form {
     font-size: 14px;
 		margin: 2rem;
 	}
+}
+
+.channelBrowser {
+  flex-grow: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.channelBrowser__sectionTitle {
+  border-bottom: 1px solid #ddd;
+  font-size: 1.2rem;
+  padding: 1rem 2rem;
+}
+
+.channelBrowser__list {
+  margin-bottom: 4rem;
+}
+
+.channelBrowser__row {
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  padding: 1rem 2rem;
+
+  &:hover {
+    background-color: #693afa14;
+  }
+
+  .title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+
+  .topic {
+    color: #25008ca2
+    font-size: 0.875rem;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .members {
+    color: #555;
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
 }

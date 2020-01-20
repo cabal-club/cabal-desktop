@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import prompt from 'electron-prompt'
 
 import { addChannel, hideAllModals, joinChannel, leaveChannel, viewChannel } from '../actions'
 
@@ -7,7 +8,8 @@ const mapStateToProps = state => {
   var cabal = state.cabals[state.currentCabal]
   return {
     addr: state.currentCabal,
-    cabal
+    cabal,
+    channels: state.channelBrowserChannelsData
   }
 }
 
@@ -27,20 +29,38 @@ class ChannelBrowserContainer extends React.Component {
     this.props.joinChannel({ addr: this.props.addr, channel })
   }
 
-  sortChannels (channels) {
-    // TODO: sort by joined
+  onClickNewChannel () {
+    let self = this
+    prompt({
+      title: 'Create a channel',
+      label: 'New channel name',
+      value: undefined,
+      type: 'input'
+    }).then((newChannelName) => {
+      console.warn(newChannelName, this.props.addr)
+      if (newChannelName && newChannelName.trim().length > 0) {
+        // console.warn(newChannelName, 333, {addr: this.props.addr, channel: newChannelName})
+        this.props.joinChannel({ addr: this.props.addr, channel: newChannelName })
+      }
+    }).catch(() => {
+      console.log('cancelled new channel')
+    })
+  }
+
+  sortChannelsByName (channels) {
     return channels.sort((a, b) => {
       if (a && !b) return -1
       if (b && !a) return 1
-      if (a && b) return a.toLowerCase() < b.toLowerCase() ? -1 : 1
-      return a.key < b.key ? -1 : 1
+      if (a.name && !b.name) return -1
+      if (b.name && !a.name) return 1
+      return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
     })
   }
 
   render() {
-    const { addr, cabal } = this.props
-    let channels = cabal.channels
-    let channelsJoined = cabal.channelsJoined || []
+    const { channels } = this.props
+    const channelsJoined = this.sortChannelsByName(channels.filter(c => c.joined) || [])
+    const channelsNotJoined = this.sortChannelsByName(channels.filter(c => !c.joined) || [])
     return (
       <div className='client__main'>
         <div className='window'>
@@ -54,18 +74,47 @@ class ChannelBrowserContainer extends React.Component {
                   </h1>
                 </div>
               </div>
+              <div className='channel-meta__other'>
+                <div className='button channel-meta__other__share' onClick={this.onClickNewChannel.bind(this)}>Create A New Channel</div>
+              </div>
             </div>
           </div>
-          <div className='window__main'>
-            <div className='window__main__content'>
-              {channels.map((channel) => {
-                return (
-                  <div key={channel} className='cabal-settings__item' onClick={this.onClickJoinChannel.bind(this, channel)}>
-                    {channelsJoined.includes(channel) ? '* ' : ''}
-                    {channel}
-                  </div>
-                )
-              })}
+          <div className='channelBrowser'>
+            <div className='channelBrowser__content'>
+              <h2 className='channelBrowser__sectionTitle'>Channels you can join</h2>
+              <div className='channelBrowser__list'>
+                {channelsNotJoined.map((channel) => {
+                  return (
+                    <div
+                      key={channel.name}
+                      className='channelBrowser__row'
+                      onClick={this.onClickJoinChannel.bind(this, channel.name)}
+                      title='Join channel'
+                    >
+                      <div className='title'>{channel.name}</div>
+                      <div className='topic'>{channel.topic}</div>
+                      <div className='members'>{channel.memberCount} {channel.memberCount === 1 ? 'person' : 'people' }</div>
+                    </div>
+                  )
+                })}
+              </div>
+              <h2 className='channelBrowser__sectionTitle'>Channels you belong to</h2>
+              <div className='channelBrowser__list'>
+                {channelsJoined.map((channel) => {
+                  return (
+                    <div
+                      key={channel.name}
+                      className='channelBrowser__row'
+                      onClick={this.onClickJoinChannel.bind(this, channel.name)}
+                      title='Join channel'
+                    >
+                      <div className='title'>{channel.name}</div>
+                      <div className='topic'>{channel.topic}</div>
+                      <div className='members'>{channel.memberCount} {channel.memberCount === 1 ? 'person' : 'people' }</div>
+                    </div>
+                  )
+                })}
+              </div>
             </div>
           </div>
         </div>

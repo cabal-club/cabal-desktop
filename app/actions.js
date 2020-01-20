@@ -35,6 +35,16 @@ export const viewCabal = ({ addr, channel }) => dispatch => {
 }
 
 export const showChannelBrowser = ({ addr }) => dispatch => {
+  const cabalDetails = client.getDetails(addr)
+  const channelsData = Object.values(cabalDetails.channels).map((channel) => {
+    return {
+      joined: channel.joined,
+      memberCount: channel.members.size,
+      name: channel.name,
+      topic: channel.topic
+    }
+  })
+  dispatch({ type: 'UPDATE_CHANNEL_BROWSER', addr, channelsData })
   dispatch(hideAllModals())
   dispatch({ type: 'SHOW_CHANNEL_BROWSER', addr })
 }

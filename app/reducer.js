@@ -51,7 +51,10 @@ const reducer = createReducer(defaultState, {
     delete state.cabals[addr]
   },
   SHOW_CHANNEL_BROWSER: (state) => {
-    state.channelBrowserVisibile = true
+    state.channelBrowserVisible = true
+  },
+  UPDATE_CHANNEL_BROWSER: (state, { channelsData }) => {
+    state.channelBrowserChannelsData = channelsData
   },
   SHOW_CABAL_SETTINGS: (state) => {
     state.cabalSettingsVisible = true
@@ -61,7 +64,7 @@ const reducer = createReducer(defaultState, {
   HIDE_ALL_MODALS: state => {
     state.cabalSettingsVisible = false
     state.emojiPickerVisible = false
-    state.channelBrowserVisibile = false
+    state.channelBrowserVisible = false
   },
   UPDATE_WINDOW_BADGE: (state, { badgeCount }) => { state.badgeCount = badgeCount },
   SHOW_EMOJI_PICKER: (state) => { state.emojiPickerVisible = true },
