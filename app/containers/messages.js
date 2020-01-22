@@ -28,6 +28,8 @@ export default function MessagesContainer (props) {
           const repeatedAuthor = message.author === lastAuthor
           previousDate = printDate
           printDate = enriched.time.full
+          const nextMessageTime = messages[index + 1] && messages[index + 1].enriched.time.full
+          const showDivider = previousDate && previousDate !== printDate && nextMessageTime === printDate
           let item = (<div />)
           lastAuthor = message.author
           if (message.type === 'local/system') {
@@ -76,15 +78,16 @@ export default function MessagesContainer (props) {
               </div>
             )
           }
-          return (<div >
-            {previousDate && previousDate !== printDate && (
-              <div className='messages__date__divider'>
-                <h2> {printDate} <span>({enriched.time.diff})</span> </h2>
-              </div>
-            )}
-            {item}
-
-          </div>)
+          return (
+            <div key={message.time + message.key}>
+              {showDivider && (
+                <div className='messages__date__divider'>
+                  <h2> {printDate} <span>({enriched.time.diff})</span> </h2>
+                </div>
+              )}
+              {item}
+            </div>
+          )
         })}
       </div>
     )
