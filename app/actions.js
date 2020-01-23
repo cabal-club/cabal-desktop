@@ -15,7 +15,6 @@ const DEFAULT_CHANNEL = 'default'
 const HOME_DIR = homedir()
 const DATA_DIR = path.join(HOME_DIR, '.cabal-desktop', `v${Client.getDatabaseVersion()}`)
 const STATE_FILE = path.join(DATA_DIR, 'cabals.json')
-const DEFAULT_USERNAME = 'conspirator'
 const DEFAULT_PAGE_SIZE = 100
 const MAX_FEEDS = 1000
 
@@ -156,12 +155,11 @@ export const changeUsername = ({ username }) => dispatch => {
   const cabalDetails = client.getCurrentCabal()
   cabalDetails.publishNick(username)
   dispatch({ type: 'UPDATE_CABAL', addr: cabalDetails.key, username })
-  // TODO NICK
-  client.addStatusMessage(`Nick set to: ${username}`, cabalDetails.getCurrentChannel())
-  // dispatch(addLocalSystemMessage({
-  //   addr: cabalDetails.key,
-  //   content: `Nick set to: ${username}`
-  // }))
+  dispatch(addStatusMessage({
+    addr: cabalDetails.key,
+    channel: cabalDetails.getCurrentChannel(),
+    text: `Nick set to: ${username}`
+  }))
 }
 
 const enrichMessage = (message) => {
@@ -184,7 +182,7 @@ export const getMessages = ({ addr, channel, amount }, callback) => dispatch => 
   if (client.getChannels().includes(channel)) {
     client.getMessages({ amount, channel }, (messages) => {
       messages = messages.map((message) => {
-        const author = users[message.key] ? users[message.key].name : DEFAULT_USERNAME
+        const author = users[message.key] ? users[message.key].name : message.key.substr(0, 6)
         const { type, timestamp, content } = message.value
         return enrichMessage({
           author,
@@ -266,6 +264,7 @@ export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
 
   client.focusChannel(channel)
   const topic = cabalDetails.getTopic()
+  const users = cabalDetails.getUsers()
 
   const opts = {}
   opts.newerThan = opts.newerThan || null
@@ -276,7 +275,7 @@ export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
     messages = messages.map((message) => {
       const { type, timestamp, content = {} } = message.value
       const channel = content.channel
-      const author = 'testing'
+      const author = users[message.key] ? users[message.key].name : message.key.substr(0, 6)
 
       const settings = getState().cabalSettings[addr]
       if (!!settings.enableNotifications && !document.hasFocus()) {
@@ -301,48 +300,6 @@ export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
       dispatch({ type: 'UPDATE_CABAL', addr, messages, topic })
     }
   })
-
-  // const cabal = cabals[addr]
-  // const onMessage = (message) => {
-  //   const { type, timestamp, content } = message.value
-  //   const channel = content.channel
-  //   if (cabal.client.users[message.key]) {
-  //     const author = cabal.client.users[message.key] ? cabal.client.users[message.key].name : DEFAULT_USERNAME
-  //     if (!cabal.client.channelMessages[channel]) {
-  //       cabal.client.channelMessages[channel] = []
-  //     }
-  //     cabal.client.channelMessages[channel].push(enrichMessage({
-  //       author,
-  //       content: content.text,
-  //       key: message.key + timestamp,
-  //       time: timestamp,
-  //       type
-  //     }))
-  //     if (!!settings.enableNotifications && !document.hasFocus()) {
-  //       window.Notification.requestPermission()
-  //       let notification = new window.Notification(author, {
-  //         body: content.text
-  //       })
-  //       notification.onclick = () => {
-  //         dispatch(viewCabal({ addr, channel }))
-  //       }
-  //     }
-  //   }
-  //   if (cabal.client.channel === channel) {
-  //     dispatch({ type: 'UPDATE_CABAL', addr, messages: cabal.client.channelMessages[channel], topic })
-  //   }
-  //   const isCurrentCabalAndChannel = (cabal.client.channel === channel) && (cabal.key === currentCabalKey)
-  //   if (!isCurrentCabalAndChannel) {
-  //     dispatch(updateChannelMessagesUnread({ addr, channel }))
-  //   }
-  // }
-  // if (!cabal.client.channels.includes(channel)) {
-  //   cabal.client.channels.push(channel)
-  //   if (!cabal.client.channelListeners[channel]) {
-  //     cabal.messages.events.on(channel, onMessage)
-  //     cabal.client.channelListeners[channel] = onMessage
-  //   }
-  // }
 }
 
 export const addMessage = ({ message, addr }) => dispatch => {
@@ -350,24 +307,19 @@ export const addMessage = ({ message, addr }) => dispatch => {
   cabalDetails.publishMessage(message)
 }
 
-export const addLocalSystemMessage = ({ addr, channel, content }) => dispatch => {
-  // TODO
-  // var cabal = cabals[addr]
-  // channel = channel || cabal.client.channel
-  // cabal.client.channelMessages[cabal.client.channel].push(enrichMessage({
-  //   content,
-  //   type: 'local/system'
-  // }))
-  // dispatch(updateCabal({ addr, messages: cabal.client.channelMessages[cabal.client.channel] }))
+export const addStatusMessage = ({ addr, channel, text }) => dispatch => {
+  const cabalDetails = addr ? client.getDetails(addr) : client.getCurrentCabal()
+  client.addStatusMessage({ text }, channel, cabalDetails._cabal)
 }
 
 export const setChannelTopic = ({ topic, channel, addr }) => dispatch => {
   const cabalDetails = client.getDetails(addr)
   cabalDetails.publishChannelTopic(channel, topic)
   dispatch({ type: 'UPDATE_TOPIC', addr, topic })
-  dispatch(addLocalSystemMessage({
+  dispatch(addStatusMessage({
     addr,
-    content: `Topic set to: ${topic}`
+    channel,
+    text: `Topic set to: ${topic}`
   }))
 }
 
@@ -414,7 +366,6 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => async (dispa
   const { key: cabalKey } = cabal
   let firstUpdate = true
   cabal.on('update', (details) => {
-    console.warn('CABAL update', details)
     const users = details.getUsers()
     const username = details.getLocalName()
     const channels = details.getChannels()

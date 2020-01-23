@@ -121,7 +121,7 @@ class writeScreen extends Component {
         // nick completion
         var users = Object.keys(this.props.users)
           .map(key => this.props.users[key])
-          .map(user => user.name || user.key.substring(0, 8))
+          .map(user => user.name || user.key.substring(0, 6))
           .sort()
         var pattern = (/^(\w+)$/)
         var match = pattern.exec(line)

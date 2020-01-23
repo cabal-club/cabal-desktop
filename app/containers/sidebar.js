@@ -120,7 +120,7 @@ class SidebarScreen extends React.Component {
 
     const channels = cabal.channelsJoined.slice().sort()
     const users = this.sortUsers(Object.values(cabal.users) || [])
-    const username = cabal.username || 'conspirator'
+    const username = cabal.username
     return (
       <div className='client__sidebar'>
         <div className='sidebar'>

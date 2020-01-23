@@ -1,5 +1,5 @@
 import {
-  addLocalSystemMessage,
+  addStatusMessage,
   changeUsername,
   joinChannel,
   removeCabal,
@@ -18,7 +18,7 @@ const commander = (addr, message) => (dispatch) => {
         for (var key in commands) {
           helpContent = helpContent + `/${key} - ${commands[key].help()} \n`
         }
-        dispatch(addLocalSystemMessage({ addr, content: helpContent }))
+        dispatch(addStatusMessage({ addr, text: helpContent }))
       }
     },
     nick: {
@@ -131,8 +131,8 @@ const commander = (addr, message) => (dispatch) => {
   if (cmd in commands) {
     commands[cmd].call(arg)
   } else if (cmd) {
-    var content = `/${cmd} is not yet a command. \nTry /help for a list of command descriptions`
-    dispatch(addLocalSystemMessage({ addr, content }))
+    var text = `/${cmd} is not yet a command. \nTry /help for a list of command descriptions`
+    dispatch(addStatusMessage({ addr, text }))
   }
 }
 
