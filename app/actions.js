@@ -206,6 +206,7 @@ export const viewChannel = ({ addr, channel }) => (dispatch, getState) => {
   if (client.getChannels().includes(channel)) { client.focusChannel(channel) }
 
   const cabalDetails = client.getCurrentCabal()
+
   dispatch({
     addr,
     channel: cabalDetails.getCurrentChannel(),
@@ -360,19 +361,27 @@ export const hideEmojiPicker = () => dispatch => {
   dispatch({ type: 'HIDE_EMOJI_PICKER' })
 }
 
+const getCabalUnreadMessagesCount = (cabal) => Object.keys(cabal.channels).reduce((acc, channel) => {
+  acc[channel] = cabal.channels[channel].newMessageCount
+  return acc
+}, {})
+
 const initializeCabal = ({ addr, username, dispatch, settings }) => async (dispatch, getState) => {
   const cabal = addr ? await client.addCabal(addr) : await client.createCabal()
   // if creating a new cabal, addr will be undefined.
   const { key: cabalKey } = cabal
   let firstUpdate = true
+
   cabal.on('update', (details) => {
+    const channelMessagesUnread = getCabalUnreadMessagesCount(cabal)
+
     const users = details.getUsers()
     const username = details.getLocalName()
     const channels = details.getChannels()
     const channelsJoined = details.getJoinedChannels()
     const currentChannel = details.getCurrentChannel()
     const channelMembers = details.getChannelMembers()
-    dispatch({ type: 'UPDATE_CABAL', addr: cabalKey, users, username, channels, channelsJoined, currentChannel, channelMembers })
+    dispatch({ type: 'UPDATE_CABAL', addr: cabalKey, channelMessagesUnread, users, username, channels, channelsJoined, currentChannel, channelMembers })
     dispatch(getMessages({ addr: cabalKey, amount: 100, channel: currentChannel }))
     if (firstUpdate) {
       firstUpdate = false
@@ -382,8 +391,10 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => async (dispa
     }
   })
 
+  const channelMessagesUnread = getCabalUnreadMessagesCount(cabal)
+
   settings = settings || getState().cabalSettings[addr] || {}
-  dispatch(updateCabalSettings({ addr, settings }))
+  dispatch(updateCabalSettings({ addr, settings, channelMessagesUnread }))
 }
 
 export const loadFromDisk = () => async dispatch => {
