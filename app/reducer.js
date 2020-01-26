@@ -23,14 +23,15 @@ const reducer = createReducer(defaultState, {
     state.addr = addr
   },
   VIEW_CABAL: (state, { channel, addr }) => {
-    state.cabalSettingsVisible = false
     state.currentCabal = addr
     state.currentChannel = channel || state.currentChannel
-    state.emojiPickerVisible = false
   },
   ADD_CABAL: (state, action) => {
-    state.cabals[action.addr] = action
-    state.cabals[action.addr].messages = []
+    state.cabals[action.addr] = {
+      ...state.cabals[action.addr],
+      messages: [],
+      ...action
+    }
   },
   UPDATE_CABAL: (state, action = {}) => {
     state.cabals[action.addr] = {

@@ -204,13 +204,14 @@ export const getMessages = ({ addr, channel, amount }, callback) => dispatch => 
 export const viewChannel = ({ addr, channel }) => (dispatch, getState) => {
   if (!channel || channel.length === 0) return
 
-  if (client.getChannels().includes(channel)) { 
-    client.focusChannel(channel) 
+  if (client.getChannels().includes(channel)) {
+    client.focusChannel(channel)
   }
 
   const cabalDetails = client.getCurrentCabal()
   const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
 
+  dispatch(hideAllModals())
   dispatch({
     addr,
     channel: cabalDetails.getCurrentChannel(),
@@ -341,12 +342,14 @@ export const updateChannelMessagesUnread = ({ addr, channel, unreadCount }) => (
   dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
 }
 
-export const updateAllsChannelsUnreadCount = ({ addr, channelMessagesUnread }) => dispatch => {
+export const updateAllsChannelsUnreadCount = ({ addr, channelMessagesUnread }) => (dispatch, getState) => {
   const allChannelsUnreadCount = Object.values(channelMessagesUnread).reduce((total, value) => {
     return total + (value || 0)
   }, 0)
-  dispatch({ type: 'UPDATE_CABAL', addr, allChannelsUnreadCount })
-  dispatch(updateAppIconBadge())
+  if (allChannelsUnreadCount !== getState().cabals[addr].allChannelsUnreadCount) {
+    dispatch({ type: 'UPDATE_CABAL', addr, allChannelsUnreadCount })
+    dispatch(updateAppIconBadge())
+  }
 }
 
 export const updateAppIconBadge = (badgeCount) => (dispatch, getState) => {
@@ -402,7 +405,7 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => async (dispa
       settings = settings || getState().cabalSettings[addr] || {}
       dispatch(updateCabalSettings({ addr, settings, channelMessagesUnread }))
     }
-  }, 2000))
+  }, 500))
 }
 
 export const loadFromDisk = () => async dispatch => {
