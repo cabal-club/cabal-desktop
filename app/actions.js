@@ -1,6 +1,5 @@
 import { homedir } from 'os'
 import { decode, encode } from 'dat-encoding'
-import { ipcRenderer } from 'electron'
 import Client from 'cabal-client'
 import fs from 'fs'
 import path from 'path'
