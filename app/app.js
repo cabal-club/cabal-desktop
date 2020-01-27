@@ -7,6 +7,16 @@ import Layout from './containers/layout'
 import { loadFromDisk } from './actions'
 
 import styles from './styles/style.scss'
+import darkmode from './styles/darkmode.scss'
+
+const { nativeTheme } = require('electron')
+
+systemPreferences.subscribeNotification(
+  'AppleInterfaceThemeChangedNotification',
+  function theThemeHasChanged () {
+    updateMyAppTheme(nativeTheme.shouldUseDarkColors)
+  }
+)
 
 const mapStateToProps = state => ({
   screen: state.screen

@@ -1,0 +1,217 @@
+.button {
+  border: 1px solid rgba(105, 58, 250, 0.7);
+  color: #ccc;
+}
+.button:hover {
+  border: 1px solid rgba(105, 58, 250, 1);
+  color: #fff;
+}
+
+.client__cabals {
+  background-color: #16161d;
+  border-right: 1px solid #444;
+  color: #fff;
+}
+
+.client__cabals .switcher__item {
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  color: #444;
+}
+
+.client__cabals .switcher__item:hover {
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  color: #666;
+}
+
+.client__cabals .switcher__item--active {
+  background-color: rgba(255, 255, 255, 0.25);
+  background-color: #693AFA;
+  border: 2px solid #693AFA;
+  color: white !important;
+}
+
+.client__cabals .unreadIndicator {
+  background: #693AFA;
+}
+
+.client__cabals .client__cabals__footer {
+  .settingsButton {
+    &:hover {
+      color: white;
+    }
+  }
+}
+
+.client__sidebar {
+  background-color: rgba(22, 22, 29, 0.7);
+  background-color: #16161d;
+  color: #fff;
+
+  .session .session__meta h2 {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .session .session__configuration {
+    background-color: rgba(255, 255, 255, 0);
+  }
+
+  .collection .collection__heading .collection__heading__title {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .collection .collection__item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .collection .collection__item .collection__item__content {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .collection .collection__item .collection__item__messagesUnreadCount {
+    color: #fff;
+    background-color: #693AFA;
+  }
+
+  .collection .collection__item.active .collection__item__content,
+  .collection .collection__item .collection__item__content.active {
+    color: white;
+  }
+}
+
+.client__main {
+  background-color: #fff;
+
+  .channel-meta__data .channel-meta__data__details h2 {
+    color: rgba(0, 0, 0, 0.5);
+  }
+
+  .messages__item--system {
+    background: #f8f8f8;
+  }
+
+  .messages__item__metadata span {
+    color: rgba(0, 0, 0, 0.33);
+  }
+
+  .messages__item__metadata div.text {
+    pre {
+      background-color: #f7f7f7;
+    }
+
+    p code {
+      background-color: #f7f7f7;
+    }
+
+    blockquote {
+      background: #f7f7f7;
+    }
+  }
+
+  .messages__item__metadata a.link {
+    color: #1170c7;
+
+    &:hover {
+      color: #24609e;
+    }
+  }
+
+  .cabal-settings__item {
+    border-bottom: 1px solid #eee;
+  }
+
+  .cabal-settings__item-label-description {
+    color: #303030;
+  }
+
+  .composer {
+    border: 2px solid rgba(0, 0, 0, 0.25);
+
+    &:hover {
+      border-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .composer__meta {
+      border-right: 2px solid rgba(0, 0, 0, 0.25);
+    }
+  }
+}
+
+.modalScreen {
+  background: #fff;
+
+  .modalScreen__header {
+    .modalScreen__close {
+      background-color: #fff;
+      color: rgba(0, 0, 0, 0.5);
+
+      &:hover {
+        color: rgba(0, 0, 0, 1);
+      }
+    }
+  }
+}
+
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.001);
+}
+
+.modal-overlay .modal {
+  background-color: #fff;
+  color: #1e1e1e;
+}
+
+.modal-overlay .modal li a,
+.modal-overlay .modal li button {
+  color: #1e1e1e;
+  background: none;
+}
+
+.modal-overlay .modal li a:hover,
+.modal-overlay .modal li button:hover {
+  background-color: #dcdcdc;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.175);
+}
+
+.sidebar ::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.175);
+}
+
+.messages__date__divider {
+  h2 {
+    color: #c2c5cc;
+  }
+
+  h2:before,
+  h2:after {
+    background-color: #c2c5cc;
+  }
+}
+
+.app-settings {
+  >.footer {
+    color: #c2c5cc;
+  }
+}
+
+.channelBrowser__sectionTitle {
+  border-bottom: 1px solid #ddd;
+}
+
+.channelBrowser__row {
+  border-bottom: 1px solid #ddd;
+
+  &:hover {
+    background-color: #693afa14;
+  }
+
+  .topic {
+    color: #25008ca2;
+  }
+
+  .members {
+    color: #555;
+  }
+}
