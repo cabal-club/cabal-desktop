@@ -4,7 +4,12 @@ const { app, BrowserWindow, shell, Menu, ipcMain } = require('electron')
 const windowStateKeeper = require('electron-window-state')
 const os = require('os')
 const path = require('path')
-require('electron-reload')(__dirname)
+
+if (process.env.NODE_ENV === 'development') {
+  require('electron-reload')(__dirname, {
+    electron: path.join(__dirname, 'node_modules', '.bin', 'electron')
+  })
+}
 
 const template = [
   {
@@ -118,7 +123,8 @@ app.on('ready', () => {
     y: mainWindowState.y,
     width: mainWindowState.width,
     height: mainWindowState.height,
-    titleBarStyle: 'hidden',
+    titleBarStyle: 'default',
+    title: 'Cabal Desktop ' + app.getVersion(),
     webPreferences: {
       nodeIntegration: true
     }

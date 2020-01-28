@@ -2,17 +2,27 @@ import React from 'react'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
 
-import { viewChannel, joinChannel, changeUsername, changeScreen, hideCabalSettings, showCabalSettings } from '../actions'
+import {
+  viewChannel,
+  joinChannel,
+  changeUsername,
+  changeScreen,
+  hideCabalSettings,
+  showCabalSettings,
+  showChannelBrowser
+} from '../actions'
 import Avatar from './avatar'
 
 const mapStateToProps = state => {
-  var cabal = state.cabals[state.currentCabal]
+  const cabal = state.cabals[state.currentCabal]
+  const addr = cabal.addr
   return {
-    addr: state.currentCabal,
+    addr,
     cabals: state.cabals,
     cabal,
     cabalSettingsVisible: state.cabalSettingsVisible,
     channelMessagesUnread: cabal.channelMessagesUnread,
+    settings: state.cabalSettings[addr] || {},
     username: cabal.username
   }
 }
@@ -23,7 +33,8 @@ const mapDispatchToProps = dispatch => ({
   viewChannel: ({ addr, channel }) => dispatch(viewChannel({ addr, channel })),
   changeUsername: ({ addr, username }) => dispatch(changeUsername({ addr, username })),
   showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),
-  hideCabalSettings: () => dispatch(hideCabalSettings())
+  hideCabalSettings: () => dispatch(hideCabalSettings()),
+  showChannelBrowser: ({ addr }) => dispatch(showChannelBrowser({ addr }))
 })
 
 class SidebarScreen extends React.Component {
@@ -65,6 +76,10 @@ class SidebarScreen extends React.Component {
     }
   }
 
+  onClickChannelBrowser (addr) {
+    this.props.showChannelBrowser({ addr })
+  }
+
   joinChannel (channel) {
     var addr = this.props.addr
     this.props.joinChannel({ addr, channel })
@@ -100,11 +115,12 @@ class SidebarScreen extends React.Component {
 
   render () {
     var self = this
-    const { addr, cabal } = this.props
-    const cabalLabel = cabal.settings && cabal.settings.alias || addr
-    let channels = cabal.channels
-    let users = this.sortUsers(Object.values(cabal.users) || [])
-    let username = cabal.username || 'conspirator'
+    const { addr, cabal, settings } = this.props
+    const cabalLabel = settings.alias || addr
+
+    const channels = cabal.channelsJoined.slice().sort()
+    const users = this.sortUsers(Object.values(cabal.users) || [])
+    const username = cabal.username
     return (
       <div className='client__sidebar'>
         <div className='sidebar'>
@@ -127,8 +143,12 @@ class SidebarScreen extends React.Component {
           <div className='sidebar__section'>
             <div className='collection collection--push'>
               <div className='collection__heading'>
-                <div className='collection__heading__title'>Channels</div>
-                <div className='collection__heading__handle' onClick={self.onClickNewChannel.bind(self)}>
+              <div
+                className='collection__heading__title collection__heading__title__channelBrowserButton'
+                onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}
+                title='Browse and join all channels'
+              >Channels</div>
+                <div className='collection__heading__handle' onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}>
                   <img src='static/images/icon-newchannel.svg' />
                 </div>
               </div>
@@ -137,8 +157,7 @@ class SidebarScreen extends React.Component {
                   <div className='collection__item__icon'><img src='static/images/icon-channel.svg' /></div>
                   <div className='collection__item__content'>{channel}</div>
                   {this.props.channelMessagesUnread && this.props.channelMessagesUnread[channel] > 0 &&
-                    <div className='collection__item__messagesUnreadCount'>{this.props.channelMessagesUnread[channel]}</div>
-                  }
+                    <div className='collection__item__messagesUnreadCount'>{this.props.channelMessagesUnread[channel]}</div>}
                   <div className='collection__item__handle' />
                 </div>
               )}
@@ -152,18 +171,14 @@ class SidebarScreen extends React.Component {
                 <div key={user.key} className='collection__item'>
                   <div className='collection__item__icon'>
                     {!!user.online &&
-                      <img alt='Online' src='static/images/icon-status-online.svg' />
-                    }
+                      <img alt='Online' src='static/images/icon-status-online.svg' />}
                     {!user.online &&
-                      <img alt='Offline' src='static/images/icon-status-offline.svg' />
-                    }
+                      <img alt='Offline' src='static/images/icon-status-offline.svg' />}
                   </div>
                   {!!user.online &&
-                    <div className='collection__item__content active'>{user.name || user.key.substring(0, 6)}</div>
-                  }
+                    <div className='collection__item__content active'>{user.name || user.key.substring(0, 6)}</div>}
                   {!user.online &&
-                    <div className='collection__item__content'>{user.name || user.key.substring(0, 6)}</div>
-                  }
+                    <div className='collection__item__content'>{user.name || user.key.substring(0, 6)}</div>}
                   <div className='collection__item__handle' />
                 </div>
               )}

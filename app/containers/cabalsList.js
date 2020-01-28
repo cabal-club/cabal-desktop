@@ -4,11 +4,13 @@ import { connect } from 'react-redux'
 import { viewCabal, changeScreen } from '../actions'
 
 const mapStateToProps = state => {
-  var cabal = state.cabals[state.currentCabal]
+  const cabal = state.cabals[state.currentCabal]
+  const addr = cabal.addr
   return {
-    addr: state.currentCabal,
+    addr,
     cabals: state.cabals,
     cabal,
+    settings: state.cabalSettings || {},
     username: cabal.username
   }
 }
@@ -33,7 +35,7 @@ class CabalsListScreen extends React.Component {
 
   render () {
     var self = this
-    var { addr, cabals } = this.props
+    var { addr, cabals, settings } = this.props
     cabals = cabals || {}
     var cabalKeys = (Object.keys(cabals) || []).sort()
     return (
@@ -45,19 +47,19 @@ class CabalsListScreen extends React.Component {
               return (
                 <div title={key} key={key} onClick={self.selectCabal.bind(self, key)} className={addr === cabal.addr ? 'switcher__item switcher__item--active' : 'switcher__item'}>
                   <span>
-                    {(cabal.settings && cabal.settings.alias || key).slice(0, 2)}
+                    {(settings[key] && settings[key].alias || key).slice(0, 2)}
                   </span>
                   {cabal.allChannelsUnreadCount > 0 && <div className='unreadIndicator' />}
                 </div>
               )
             }
           })}
-          <div className='switcher__item --addnew' onClick={self.joinCabal.bind(self)}>
+          <div className='switcher__item --addnew' title="Join or Create A Cabal" onClick={self.joinCabal.bind(self)}>
             <img src='static/images/icon-newchannel.svg' />
           </div>
         </div>
         <div className='client__cabals__footer'>
-          <div className='switcher__item settingsButton' onClick={self.openSettings.bind(self)}>
+          <div className='switcher__item settingsButton' title="Application Settings" onClick={self.openSettings.bind(self)}>
             <img src='static/images/icon-gear.svg' />
           </div>
         </div>

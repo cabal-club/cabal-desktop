@@ -1,17 +1,24 @@
-import { addLocalSystemMessage, changeUsername, joinChannel, removeCabal, setChannelTopic } from './actions'
+import {
+  addStatusMessage,
+  changeUsername,
+  joinChannel,
+  removeCabal,
+  setChannelTopic,
+  updateCabalSettings
+} from './actions'
 
-const commander = (cabal, message) => (dispatch) => {
+const commander = (addr, message) => (dispatch) => {
   var self = this
 
-  this.commands = {
+  const commands = {
     help: {
       help: () => 'display this help message',
       call: (arg) => {
         var helpContent = ''
-        for (var key in this.commands) {
-          helpContent = helpContent + `/${key} - ${this.commands[key].help()} \n`
+        for (var key in commands) {
+          helpContent = helpContent + `/${key} - ${commands[key].help()} \n`
         }
-        dispatch(addLocalSystemMessage({ addr, content: helpContent }))
+        dispatch(addStatusMessage({ addr, text: helpContent }))
       }
     },
     nick: {
@@ -19,7 +26,6 @@ const commander = (cabal, message) => (dispatch) => {
       call: (arg) => {
         var username = arg
         if (!username.length) return
-        cabal.username = username
         if (username && username.trim().length > 0) {
           dispatch(changeUsername({ addr, username }))
         }
@@ -53,10 +59,8 @@ const commander = (cabal, message) => (dispatch) => {
       call: (arg) => {
         var topic = arg
         if (topic && topic.trim().length > 0) {
-          cabal.topic = topic
           dispatch(setChannelTopic({
             addr,
-            channel: cabal.client.channel,
             topic
           }))
         }
@@ -66,15 +70,20 @@ const commander = (cabal, message) => (dispatch) => {
     //   help: () => 'display your local user key',
     //   call: (arg) => {
     //     // TODO
-    //     // self.view.writeLine.bind(self.view)('Local user key: ' + self.cabal.client.user.key)
+    //     // view.writeLine.bind(view)('Local user key: ' + cabal.client.user.key)
     //   }
     // },
-    // alias: {
-    //   help: () => 'set alias for the cabal',
-    //   call: (arg) => {
-    //     renameCabalAlias(arg)
-    //   }
-    // },
+    alias: {
+      help: () => 'set alias for the cabal',
+      call: (arg) => {
+        dispatch(updateCabalSettings({
+          addr,
+          settings: {
+            alias: arg
+          }
+        }))
+      }
+    },
     // add: {
     //   help: () => 'add a cabal',
     //   call: (arg) => {
@@ -83,48 +92,47 @@ const commander = (cabal, message) => (dispatch) => {
     // },
     remove: {
       help: () => 'remove cabal from Cabal Desktop',
-      call: (addr) => {
-        addr = addr || cabal.key
+      call: (arg) => {
+        addr = arg || addr
         dispatch(removeCabal({ addr }))
       }
     }
   }
 
-  this.alias = (command, alias) => {
-    self.commands[alias] = {
-      help: self.commands[command].help,
-      call: self.commands[command].call
+  const alias = (command, alias) => {
+    commands[alias] = {
+      help: commands[command].help,
+      call: commands[command].call
     }
   }
 
   // add aliases to commands
-  // this.alias('emote', 'me')
-  this.alias('join', 'j')
-  this.alias('nick', 'n')
-  this.alias('topic', 'motd')
-  // this.alias('whoami', 'key')
+  // alias('emote', 'me')
+  alias('join', 'j')
+  alias('nick', 'n')
+  alias('topic', 'motd')
+  // alias('whoami', 'key')
 
-  if (!cabal) {
-    return this.commands
+  if (!addr) {
+    return commands
   }
 
-  var addr = cabal.key
-  this.history = []
-  this.pattern = (/^\/(\w*)\s*(.*)/)
+  const history = []
+  const pattern = (/^\/(\w*)\s*(.*)/)
 
   var text
   if (message && message.content && message.content.text) {
     text = message.content.text
   }
-  var m = this.pattern.exec(text) || []
+  var m = pattern.exec(text) || []
   var cmd = m[1] ? m[1].trim() : ''
   var arg = m[2] ? m[2].trim() : ''
 
-  if (cmd in this.commands) {
-    this.commands[cmd].call(arg)
+  if (cmd in commands) {
+    commands[cmd].call(arg)
   } else if (cmd) {
-    var content = `/${cmd} is not yet a command. \nTry /help for a list of command descriptions`
-    dispatch(addLocalSystemMessage({ addr, content }))
+    var text = `/${cmd} is not yet a command. \nTry /help for a list of command descriptions`
+    dispatch(addStatusMessage({ addr, text }))
   }
 }
 

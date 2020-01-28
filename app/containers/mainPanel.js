@@ -3,8 +3,16 @@ import { clipboard, ipcRenderer } from 'electron'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
 
-import { changeScreen, getMessages, hideEmojiPicker, setChannelTopic, showCabalSettings, viewCabal } from '../actions'
+import {
+  changeScreen,
+  hideEmojiPicker,
+  leaveChannel,
+  setChannelTopic,
+  showCabalSettings,
+  viewCabal
+} from '../actions'
 import CabalSettings from './cabalSettings'
+import ChannelBrowser from './channelBrowser'
 import WriteContainer from './write'
 import MessagesContainer from './messages'
 
@@ -13,16 +21,17 @@ const mapStateToProps = state => ({
   cabal: state.cabals[state.currentCabal],
   cabals: state.cabals,
   cabalSettingsVisible: state.cabalSettingsVisible,
+  channelBrowserVisible: state.channelBrowserVisible,
   emojiPickerVisible: state.emojiPickerVisible
 })
 
 const mapDispatchToProps = dispatch => ({
   changeScreen: ({ screen, addr }) => dispatch(changeScreen({ screen, addr })),
-  getMessages: ({ addr, channel, count }) => dispatch(getMessages({ addr, channel, count })),
   hideEmojiPicker: () => dispatch(hideEmojiPicker()),
   setChannelTopic: ({ addr, channel, topic }) => dispatch(setChannelTopic({ addr, channel, topic })),
   showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),
-  viewCabal: ({ addr }) => dispatch(viewCabal({ addr }))
+  viewCabal: ({ addr }) => dispatch(viewCabal({ addr })),
+  leaveChannel: ({ addr, channel }) => dispatch(leaveChannel({ addr, channel }))
 })
 
 class MainPanel extends Component {
@@ -82,6 +91,13 @@ class MainPanel extends Component {
     })
   }
 
+  onClickLeaveChannel () {
+    this.props.leaveChannel({
+      addr: this.props.cabal.addr,
+      channel: this.props.cabal.channel,
+    })
+  }
+
   handleOpenCabalUrl ({ url = '' }) {
     let addr = url.replace('cabal://', '').trim()
     if (this.props.cabals[addr]) {
@@ -133,8 +149,9 @@ class MainPanel extends Component {
           <div />
         </Fragment>
       )
-    }
-    if (this.props.cabalSettingsVisible) {
+    } else if (this.props.channelBrowserVisible) {
+      return <ChannelBrowser />
+    } else if (this.props.cabalSettingsVisible) {
       return <CabalSettings />
     }
 
@@ -150,6 +167,7 @@ class MainPanel extends Component {
                   <h2>
                     {onlineUsers.length} {onlineUsers.length !== 1 ? 'peers' : 'peer'} connected
                     <span className='channel-meta__data__topic' onClick={this.onClickTopic.bind(this)}> | {cabal.topic || 'Add a topic'}</span>
+                    <span className='channel-meta__data__topic' onClick={this.onClickLeaveChannel.bind(this)}> | Leave Channel</span>
                   </h2>
                 </div>
               </div>
