@@ -44,7 +44,7 @@ class MainPanel extends Component {
   }
 
   componentDidMount () {
-    let self = this
+    const self = this
     var messagesDiv = document.querySelector('.messages')
     if (messagesDiv) messagesDiv.scrollTop = this.scrollTop
     var messagesContainerDiv = document.querySelector('.window__main')
@@ -57,7 +57,7 @@ class MainPanel extends Component {
   }
 
   componentWillUnmount () {
-    let self = this
+    const self = this
     var messagesContainerDiv = document.querySelector('.window__main')
     if (messagesContainerDiv) {
       messagesContainerDiv.removeEventListener('scroll', self.onScrollMessages.bind(this))
@@ -94,12 +94,12 @@ class MainPanel extends Component {
   onClickLeaveChannel () {
     this.props.leaveChannel({
       addr: this.props.cabal.addr,
-      channel: this.props.cabal.channel,
+      channel: this.props.cabal.channel
     })
   }
 
   handleOpenCabalUrl ({ url = '' }) {
-    let addr = url.replace('cabal://', '').trim()
+    const addr = url.replace('cabal://', '').trim()
     if (this.props.cabals[addr]) {
       this.props.viewCabal({ addr })
     } else {
@@ -145,9 +145,9 @@ class MainPanel extends Component {
 
     if (!cabal) {
       return (
-        <Fragment>
+        <>
           <div />
-        </Fragment>
+        </>
       )
     } else if (this.props.channelBrowserVisible) {
       return <ChannelBrowser />
@@ -155,7 +155,6 @@ class MainPanel extends Component {
       return <CabalSettings />
     }
 
-    var onlineUsers = Object.values(cabal.users).filter((user) => user.online)
     return (
       <div className='client__main' onClick={this.hideModals.bind(this)}>
         <div className='window'>
@@ -165,8 +164,7 @@ class MainPanel extends Component {
                 <div className='channel-meta__data__details'>
                   <h1>#{cabal.channel}</h1>
                   <h2>
-                    {onlineUsers.length} {onlineUsers.length !== 1 ? 'peers' : 'peer'} connected
-                    <span className='channel-meta__data__topic' onClick={this.onClickTopic.bind(this)}> | {cabal.topic || 'Add a topic'}</span>
+                    <span className='channel-meta__data__topic' onClick={this.onClickTopic.bind(this)}>  {cabal.topic || 'Add a topic'}</span>
                     <span className='channel-meta__data__topic' onClick={this.onClickLeaveChannel.bind(this)}> | Leave Channel</span>
                   </h2>
                 </div>

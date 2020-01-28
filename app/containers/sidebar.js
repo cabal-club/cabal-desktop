@@ -120,6 +120,7 @@ class SidebarScreen extends React.Component {
 
     const channels = cabal.channelsJoined.slice().sort()
     const users = this.sortUsers(Object.values(cabal.users) || [])
+    const onlineCount = users.filter(i => !!i.online).length
     const username = cabal.username
     return (
       <div className='client__sidebar'>
@@ -143,11 +144,12 @@ class SidebarScreen extends React.Component {
           <div className='sidebar__section'>
             <div className='collection collection--push'>
               <div className='collection__heading'>
-              <div
-                className='collection__heading__title collection__heading__title__channelBrowserButton'
-                onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}
-                title='Browse and join all channels'
-              >Channels</div>
+                <div
+                  className='collection__heading__title collection__heading__title__channelBrowserButton'
+                  onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}
+                  title='Browse and join all channels'
+                >Channels
+              </div>
                 <div className='collection__heading__handle' onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}>
                   <img src='static/images/icon-newchannel.svg' />
                 </div>
@@ -164,7 +166,7 @@ class SidebarScreen extends React.Component {
             </div>
             <div className='collection'>
               <div className='collection__heading'>
-                <div className='collection__heading__title'>Peers</div>
+                <div className='collection__heading__title'>Peers - {onlineCount} online</div>
                 <div className='collection__heading__handle' />
               </div>
               {users.map((user) =>
