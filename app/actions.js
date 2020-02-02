@@ -373,7 +373,8 @@ export const hideEmojiPicker = () => dispatch => {
 const getCabalUnreadMessagesCount = (cabalDetails) => {
   const cabalCore = client._keyToCabal[cabalDetails.key]
   const channelMessagesUnread = {}
-  cabalDetails.getChannels().map((channel) => {
+  // fetch unread message count only for joined channels.
+  cabalDetails.getJoinedChannels().map((channel) => {
     channelMessagesUnread[channel] = client.getNumberUnreadMessages(channel, cabalCore)
   })
   return channelMessagesUnread
