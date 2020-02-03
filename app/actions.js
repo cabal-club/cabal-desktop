@@ -152,8 +152,8 @@ export const viewPreviousChannel = ({ addr }) => dispatch => {
   }
 }
 
-export const changeUsername = ({ username }) => dispatch => {
-  const cabalDetails = client.getCurrentCabal()
+export const changeUsername = ({ username, addr }) => dispatch => {
+  const cabalDetails = client.getDetails(addr)
   cabalDetails.publishNick(username)
   dispatch({ type: 'UPDATE_CABAL', addr: cabalDetails.key, username })
   dispatch(addStatusMessage({
@@ -382,10 +382,12 @@ const getCabalUnreadMessagesCount = (cabalDetails) => {
 
 const initializeCabal = ({ addr, username, dispatch, settings }) => async (dispatch, getState) => {
   const cabalDetails = addr ? await client.addCabal(addr) : await client.createCabal()
+  client.focusCabal(addr)
   // if creating a new cabal, addr will be undefined.
   const { key: cabalKey } = cabalDetails
   let firstUpdate = true
 
+  if (username) dispatch(changeUsername({ username, addr }))
   cabalDetails.on('update', throttle((details) => {
     const users = details.getUsers()
     const username = details.getLocalName()
