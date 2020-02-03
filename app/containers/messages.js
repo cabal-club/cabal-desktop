@@ -20,18 +20,19 @@ export default function MessagesContainer (props) {
       </div>
     )
   } else {
-    let lastAuthor = null
+    let prevMessage = {}
     return (
       <div className='messages'>
         {messages.map((message, index) => {
           const enriched = message.enriched
-          const repeatedAuthor = message.author === lastAuthor
+          // avoid comaprison with other types of message than chat/text
+          const repeatedAuthor = message.author === prevMessage.author && prevMessage.type === 'chat/text'
           previousDate = printDate
           printDate = enriched.time.full
           const nextMessageTime = messages[index + 1] && messages[index + 1].enriched.time.full
           const showDivider = previousDate && previousDate !== printDate && nextMessageTime === printDate
           let item = (<div />)
-          lastAuthor = message.author
+          prevMessage = message
           if (message.type === 'status') {
             const defaultSystemName = 'Cabalbot'
             item = (
