@@ -382,6 +382,7 @@ const getCabalUnreadMessagesCount = (cabalDetails) => {
 
 const initializeCabal = ({ addr, username, dispatch, settings }) => async (dispatch, getState) => {
   const cabalDetails = addr ? await client.addCabal(addr) : await client.createCabal()
+  client.focusCabal(addr)
   // if creating a new cabal, addr will be undefined.
   const { key: cabalKey } = cabalDetails
   let firstUpdate = true
