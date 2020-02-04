@@ -412,6 +412,7 @@ form {
   flex-grow: 1;
   background-color: #fff;
   height: 100%;
+  overflow: hidden;
 
   .window {
     display: flex;

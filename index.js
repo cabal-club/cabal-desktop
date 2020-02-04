@@ -7,7 +7,8 @@ const path = require('path')
 
 if (process.env.NODE_ENV === 'development') {
   require('electron-reload')(__dirname, {
-    electron: path.join(__dirname, 'node_modules', '.bin', 'electron')
+    electron: path.join(__dirname, 'node_modules', '.bin', 'electron'),
+    hardResetMethod: 'exit'
   })
 }
 
@@ -113,7 +114,7 @@ app.on('second-instance', (event, argv, cwd) => {
 app.setAsDefaultProtocolClient('cabal')
 
 app.on('ready', () => {
-  let mainWindowState = windowStateKeeper({
+  const mainWindowState = windowStateKeeper({
     defaultWidth: 800,
     defaultHeight: 600
   })
@@ -147,7 +148,7 @@ app.on('ready', () => {
 
   ipcMain.on('update-badge', (event, { badgeCount, showCount }) => {
     if (os.platform() === 'darwin') {
-      let badge = showCount ? badgeCount : '•'
+      const badge = showCount ? badgeCount : '•'
       app.dock.setBadge(badgeCount > 0 ? ('' + badge) : '')
     } else {
       app.setBadgeCount(badgeCount)
