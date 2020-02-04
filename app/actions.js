@@ -277,21 +277,27 @@ export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
   opts.olderThan = opts.olderThan || Date.now()
   opts.amount = opts.amount || DEFAULT_PAGE_SIZE * 2.5
 
+  const sendDesktopNotification = throttle(({ author, content }) => {
+    window.Notification.requestPermission()
+    const notification = new window.Notification(author, {
+      body: content.text
+    })
+    notification.onclick = () => {
+      dispatch(viewCabal({
+        addr,
+        channel
+      }))
+    }
+  }, 5000)
+
   client.getMessages(opts, (messages) => {
     messages = messages.map((message) => {
       const { type, timestamp, content = {} } = message.value
-      const channel = content.channel
       const author = users[message.key] ? users[message.key].name : message.key.substr(0, 6)
 
       const settings = getState().cabalSettings[addr]
       if (!!settings.enableNotifications && !document.hasFocus()) {
-        window.Notification.requestPermission()
-        const notification = new window.Notification(author, {
-          body: content.text
-        })
-        notification.onclick = () => {
-          dispatch(viewCabal({ addr, channel }))
-        }
+        sendDesktopNotification({ author, content })
       }
 
       return enrichMessage({

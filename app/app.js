@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import AddCabalContainer from './containers/addCabal'
@@ -6,7 +6,7 @@ import AppSettingsContainer from './containers/appSettings'
 import Layout from './containers/layout'
 import { loadFromDisk } from './actions'
 
-import styles from './styles/style.scss'
+import './styles/style.scss'
 
 const mapStateToProps = state => ({
   screen: state.screen
@@ -31,9 +31,9 @@ export class AppScreen extends Component {
       Container = AppSettingsContainer
     }
     return (
-      <Fragment>
+      <>
         <Container />
-      </Fragment>
+      </>
     )
   }
 }
