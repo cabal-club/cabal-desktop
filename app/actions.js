@@ -288,7 +288,7 @@ export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
         channel
       }))
     }
-  }, 50000)
+  }, 5000)
 
   client.getMessages(opts, (messages) => {
     messages = messages.map((message) => {
