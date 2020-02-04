@@ -352,7 +352,7 @@ export const updateAllsChannelsUnreadCount = ({ addr, channelMessagesUnread }) =
   const allChannelsUnreadCount = Object.values(channelMessagesUnread).reduce((total, value) => {
     return total + (value || 0)
   }, 0)
-  if (allChannelsUnreadCount !== getState().cabals[addr].allChannelsUnreadCount) {
+  if (allChannelsUnreadCount !== getState()?.cabals[addr]?.allChannelsUnreadCount) {
     dispatch({ type: 'UPDATE_CABAL', addr, allChannelsUnreadCount })
     dispatch(updateAppIconBadge())
   }
@@ -388,11 +388,13 @@ const getCabalUnreadMessagesCount = (cabalDetails) => {
 
 const initializeCabal = ({ addr, username, dispatch, settings }) => async (dispatch, getState) => {
   const cabalDetails = addr ? await client.addCabal(addr) : await client.createCabal()
+
   client.focusCabal(addr)
   // if creating a new cabal, addr will be undefined.
   const { key: cabalKey } = cabalDetails
   let firstUpdate = true
 
+ 
   if (username) dispatch(changeUsername({ username, addr }))
   cabalDetails.on('update', throttle((details) => {
     const users = details.getUsers()
@@ -415,6 +417,13 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => async (dispa
       dispatch(updateCabalSettings({ addr, settings, channelMessagesUnread }))
     }
   }, 500))
+
+
+  // if creating a new cabal, set the username to conspirator.
+  // this also sends the first update, which will switch the cabal; ref: firstUpdateFlag!
+  if (!addr) {
+    dispatch(changeUsername({username: "Conspirator", addr:cabalKey}))
+  }
 }
 
 export const loadFromDisk = () => async dispatch => {
