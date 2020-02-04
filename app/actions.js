@@ -424,12 +424,12 @@ export const loadFromDisk = () => async dispatch => {
   } catch (_) {
     state = {}
   }
-  console.log('sadf')
   const stateKeys = Object.keys(state)
   for (const key of stateKeys) {
     const cabalState = JSON.parse(state[key])
     dispatch(addCabal(cabalState))
   }
+  dispatch({ type: 'CHANGE_SCREEN', screen: stateKeys.length ? 'main' : 'addCabal' })
 }
 
 const storeOnDisk = () => (dispatch, getState) => {
