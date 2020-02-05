@@ -207,6 +207,7 @@ export const viewChannel = ({ addr, channel }) => (dispatch, getState) => {
 
   if (client.getChannels().includes(channel)) {
     client.focusChannel(channel)
+    client.markChannelRead(channel)
   } else {
     dispatch(joinChannel({ addr, channel }))
   }
