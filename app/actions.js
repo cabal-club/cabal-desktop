@@ -101,6 +101,7 @@ export const confirmRemoveCabal = ({ addr }) => async dispatch => {
   } else {
     dispatch({ type: 'CHANGE_SCREEN', screen: 'addCabal' })
   }
+  dispatch(hideAllModals())
 }
 
 export const onCommand = ({ addr, message }) => dispatch => {
@@ -206,6 +207,8 @@ export const viewChannel = ({ addr, channel }) => (dispatch, getState) => {
 
   if (client.getChannels().includes(channel)) {
     client.focusChannel(channel)
+  } else {
+    dispatch(joinChannel({ addr, channel }))
   }
 
   const cabalDetails = client.getCurrentCabal()
