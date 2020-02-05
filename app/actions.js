@@ -101,6 +101,7 @@ export const confirmRemoveCabal = ({ addr }) => async dispatch => {
   } else {
     dispatch({ type: 'CHANGE_SCREEN', screen: 'addCabal' })
   }
+  dispatch(hideAllModals())
 }
 
 export const onCommand = ({ addr, message }) => dispatch => {
@@ -207,6 +208,8 @@ export const viewChannel = ({ addr, channel }) => (dispatch, getState) => {
   if (client.getChannels().includes(channel)) {
     client.focusChannel(channel)
     client.markChannelRead(channel)
+  } else {
+    dispatch(joinChannel({ addr, channel }))
   }
 
   const cabalDetails = client.getCurrentCabal()
@@ -353,7 +356,7 @@ export const updateAllsChannelsUnreadCount = ({ addr, channelMessagesUnread }) =
   const allChannelsUnreadCount = Object.values(channelMessagesUnread).reduce((total, value) => {
     return total + (value || 0)
   }, 0)
-  if (allChannelsUnreadCount !== getState().cabals[addr].allChannelsUnreadCount) {
+  if (allChannelsUnreadCount !== getState()?.cabals[addr]?.allChannelsUnreadCount) {
     dispatch({ type: 'UPDATE_CABAL', addr, allChannelsUnreadCount })
     dispatch(updateAppIconBadge())
   }
@@ -389,11 +392,13 @@ const getCabalUnreadMessagesCount = (cabalDetails) => {
 
 const initializeCabal = ({ addr, username, dispatch, settings }) => async (dispatch, getState) => {
   const cabalDetails = addr ? await client.addCabal(addr) : await client.createCabal()
+
   client.focusCabal(addr)
   // if creating a new cabal, addr will be undefined.
   const { key: cabalKey } = cabalDetails
   let firstUpdate = true
 
+ 
   if (username) dispatch(changeUsername({ username, addr }))
   cabalDetails.on('update', throttle((details) => {
     const users = details.getUsers()
@@ -416,6 +421,13 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => async (dispa
       dispatch(updateCabalSettings({ addr, settings, channelMessagesUnread }))
     }
   }, 500))
+
+
+  // if creating a new cabal, set a default username.
+  // this also sends the first update, which will switch the cabal; ref: firstUpdateFlag!
+  if (!addr) {
+    dispatch(changeUsername({ username: generateUniqueName(), addr: cabalKey }))
+  }
 }
 
 export const loadFromDisk = () => async dispatch => {
@@ -446,4 +458,12 @@ const storeOnDisk = () => (dispatch, getState) => {
     {}
   )
   fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2))
+}
+
+const generateUniqueName = () => {
+  const adjectives = ['ancient', 'whispering', 'hidden', 'emerald', 'occult', 'obscure', 'wandering', 'ephemeral', 'eccentric', 'singing']
+  const nouns = ['lichen', 'moss', 'shadow', 'stone', 'ghost', 'friend', 'spore', 'fungi', 'mold', 'mountain', 'compost', 'conspirator']
+  
+  const randomItem = (array) => array[Math.floor(Math.random() * array.length)]
+  return `${randomItem(adjectives)}-${randomItem(nouns)}`
 }
