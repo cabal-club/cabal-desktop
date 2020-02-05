@@ -423,10 +423,10 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => async (dispa
   }, 500))
 
 
-  // if creating a new cabal, set the username to conspirator.
+  // if creating a new cabal, set a default username.
   // this also sends the first update, which will switch the cabal; ref: firstUpdateFlag!
   if (!addr) {
-    dispatch(changeUsername({username: "Conspirator", addr:cabalKey}))
+    dispatch(changeUsername({ username: generateUniqueName(), addr: cabalKey }))
   }
 }
 
@@ -458,4 +458,12 @@ const storeOnDisk = () => (dispatch, getState) => {
     {}
   )
   fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2))
+}
+
+const generateUniqueName = () => {
+  const adjectives = ['ancient', 'whispering', 'hidden', 'emerald', 'occult', 'obscure', 'wandering', 'ephemeral', 'eccentric', 'singing']
+  const nouns = ['lichen', 'moss', 'shadow', 'stone', 'ghost', 'friend', 'spore', 'fungi', 'mold', 'mountain', 'compost', 'conspirator']
+  
+  const randomItem = (array) => array[Math.floor(Math.random() * array.length)]
+  return `${randomItem(adjectives)}-${randomItem(nouns)}`
 }
