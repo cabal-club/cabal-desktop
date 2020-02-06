@@ -179,6 +179,7 @@ const enrichMessage = (message) => {
 }
 
 export const getMessages = ({ addr, channel, amount }, callback) => dispatch => {
+  client.focusCabal(addr)
   const cabalDetails = client.getDetails(addr)
   const users = cabalDetails.getUsers()
   if (client.getChannels().includes(channel)) {
