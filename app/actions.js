@@ -246,6 +246,8 @@ export const viewChannel = ({ addr, channel }) => (dispatch) => {
   const topic = cabalDetails.getTopic()
   dispatch({ type: 'UPDATE_TOPIC', addr, topic })
   dispatch(updateChannelMessagesUnread({ addr, channel, unreadCount: 0 }))
+
+  dispatch(saveCabalSettings({ addr, settings: { currentChannel: channel } }))
 }
 
 export const changeScreen = ({ screen, addr }) => ({ type: 'CHANGE_SCREEN', screen, addr })
@@ -421,12 +423,8 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => async (dispa
     dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
     if (firstUpdate) {
       firstUpdate = false
-      dispatch(viewCabal({ addr: cabalKey, currentChannel: settings.currentChannel }))
       // Focus default or last channel viewed
-      dispatch(viewChannel({ addr: cabalKey, channel: settings.currentChannel }))
-
-      settings = settings || getState().cabalSettings[addr] || {}
-      dispatch(updateCabalSettings({ addr, settings, channelMessagesUnread }))
+      dispatch(viewCabal({ addr: cabalKey, channel: settings.currentChannel }))
     }
   }, 500))
 
