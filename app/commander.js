@@ -2,14 +2,13 @@ import {
   addStatusMessage,
   changeUsername,
   joinChannel,
+  leaveChannel,
   removeCabal,
   setChannelTopic,
   updateCabalSettings
 } from './actions'
 
 const commander = (addr, message) => (dispatch) => {
-  var self = this
-
   const commands = {
     help: {
       help: () => 'display this help message',
@@ -45,6 +44,13 @@ const commander = (addr, message) => (dispatch) => {
       call: (arg) => {
         var channel = arg || 'default'
         dispatch(joinChannel({ addr, channel }))
+      }
+    },
+    leave: {
+      help: () => 'leave a channel',
+      call: (arg) => {
+        var channel = arg
+        dispatch(leaveChannel({ addr, channel }))
       }
     },
     // quit: {
@@ -131,7 +137,7 @@ const commander = (addr, message) => (dispatch) => {
   if (cmd in commands) {
     commands[cmd].call(arg)
   } else if (cmd) {
-    var text = `/${cmd} is not yet a command. \nTry /help for a list of command descriptions`
+    text = `/${cmd} is not yet a command. \nTry /help for a list of command descriptions`
     dispatch(addStatusMessage({ addr, text }))
   }
 }
