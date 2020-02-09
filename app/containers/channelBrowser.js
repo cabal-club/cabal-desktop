@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
 
-import { addChannel, hideAllModals, joinChannel, leaveChannel, viewChannel } from '../actions'
+import { hideAllModals, joinChannel } from '../actions'
 
 const mapStateToProps = state => {
   var cabal = state.cabals[state.currentCabal]
@@ -15,13 +15,11 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   hideAllModals: () => dispatch(hideAllModals()),
-  joinChannel: ({ addr, channel }) => dispatch(joinChannel({ addr, channel })),
-  viewChannel: ({ addr, channel }) => dispatch(viewChannel({ addr, channel })),
-  addChannel: ({ addr, channel }) => dispatch(addChannel({ addr, channel })),
+  joinChannel: ({ addr, channel }) => dispatch(joinChannel({ addr, channel }))
 })
 
 class ChannelBrowserContainer extends React.Component {
-  onClickClose() {
+  onClickClose () {
     this.props.hideAllModals()
   }
 
@@ -30,7 +28,6 @@ class ChannelBrowserContainer extends React.Component {
   }
 
   onClickNewChannel () {
-    let self = this
     prompt({
       title: 'Create a channel',
       label: 'New channel name',
@@ -39,7 +36,6 @@ class ChannelBrowserContainer extends React.Component {
     }).then((newChannelName) => {
       console.warn(newChannelName, this.props.addr)
       if (newChannelName && newChannelName.trim().length > 0) {
-        // console.warn(newChannelName, 333, {addr: this.props.addr, channel: newChannelName})
         this.props.joinChannel({ addr: this.props.addr, channel: newChannelName })
       }
     }).catch(() => {
@@ -57,7 +53,7 @@ class ChannelBrowserContainer extends React.Component {
     })
   }
 
-  render() {
+  render () {
     const { channels } = this.props
     const channelsJoined = this.sortChannelsByName(channels.filter(c => c.joined) || [])
     const channelsNotJoined = this.sortChannelsByName(channels.filter(c => !c.joined) || [])
@@ -93,7 +89,7 @@ class ChannelBrowserContainer extends React.Component {
                     >
                       <div className='title'>{channel.name}</div>
                       <div className='topic'>{channel.topic}</div>
-                      <div className='members'>{channel.memberCount} {channel.memberCount === 1 ? 'person' : 'people' }</div>
+                      <div className='members'>{channel.memberCount} {channel.memberCount === 1 ? 'person' : 'people'}</div>
                     </div>
                   )
                 })}
@@ -110,7 +106,7 @@ class ChannelBrowserContainer extends React.Component {
                     >
                       <div className='title'>{channel.name}</div>
                       <div className='topic'>{channel.topic}</div>
-                      <div className='members'>{channel.memberCount} {channel.memberCount === 1 ? 'person' : 'people' }</div>
+                      <div className='members'>{channel.memberCount} {channel.memberCount === 1 ? 'person' : 'people'}</div>
                     </div>
                   )
                 })}
