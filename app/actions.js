@@ -122,11 +122,15 @@ export const joinChannel = ({ addr, channel }) => dispatch => {
 }
 
 export const leaveChannel = ({ addr, channel }) => dispatch => {
-  if (channel.length > 0) {
-    const cabalDetails = client.getDetails(addr)
-    cabalDetails.leaveChannel(channel)
+  const currentChannel = client.getCurrentChannel()
+  if (!channel || !channel.length) {
+    channel = currentChannel
+  }
+  if (channel === currentChannel) {
     dispatch(viewNextChannel({ addr }))
   }
+  const cabalDetails = client.getDetails(addr)
+  cabalDetails.leaveChannel(channel)
 }
 
 export const viewNextChannel = ({ addr }) => dispatch => {
