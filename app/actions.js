@@ -63,6 +63,10 @@ export const hideAllModals = () => dispatch => {
 }
 
 export const updateCabalSettings = ({ addr, settings }) => dispatch => {
+export const restoreCabalSettings = ({ addr, settings }) => dispatch => {
+  dispatch({ type: 'UPDATE_CABAL_SETTINGS', addr, settings })
+}
+
   dispatch({ type: 'UPDATE_CABAL_SETTINGS', addr, settings })
   dispatch(storeOnDisk())
 }
@@ -442,10 +446,14 @@ export const loadFromDisk = () => async dispatch => {
     state = {}
   }
   const stateKeys = Object.keys(state)
-  for (const key of stateKeys) {
-    const cabalState = JSON.parse(state[key])
-    dispatch(addCabal(cabalState))
-  }
+  stateKeys.forEach((key) => {
+    const { addr, settings } = JSON.parse(state[key])
+    dispatch(restoreCabalSettings({ addr, settings }))
+  })
+  stateKeys.forEach((key) => {
+    const { addr, settings } = JSON.parse(state[key])
+    dispatch(addCabal({ addr, settings }))
+  })
   dispatch({ type: 'CHANGE_SCREEN', screen: stateKeys.length ? 'main' : 'addCabal' })
 }
 
