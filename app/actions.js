@@ -443,10 +443,12 @@ export const loadFromDisk = () => async dispatch => {
     state = {}
   }
   const stateKeys = Object.keys(state)
+  // Restore previous settings state into store before initializing cabals
   stateKeys.forEach((key) => {
     const { addr, settings } = JSON.parse(state[key])
     dispatch(restoreCabalSettings({ addr, settings }))
   })
+  // Initialize all of the cabals
   stateKeys.forEach((key) => {
     const { addr, settings } = JSON.parse(state[key])
     dispatch(addCabal({ addr, settings }))
