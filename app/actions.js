@@ -423,7 +423,6 @@ const initializeCabal = ({ addr, username, dispatch, settings }) => async (dispa
     }
   }, 500))
 
-
   // if creating a new cabal, set a default username.
   // this also sends the first update, which will switch the cabal; ref: firstUpdateFlag!
   if (!addr) {
@@ -448,16 +447,14 @@ export const loadFromDisk = () => async dispatch => {
 
 const storeOnDisk = () => (dispatch, getState) => {
   const cabalKeys = client.getCabalKeys()
-  const state = cabalKeys.reduce(
-    (acc, addr) => {
-      const settings = getState().cabalSettings[addr] || {}
-      return ({
-        ...acc,
-        [addr]: JSON.stringify({ addr, settings })
-      })
-    },
-    {}
-  )
+  const { cabalSettings } = getState()
+  let state = {}
+  cabalKeys.forEach((addr) => {
+    state[addr] = JSON.stringify({
+      addr,
+      settings: cabalSettings[addr] || {}
+    })
+  })
   fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2))
 }
 
