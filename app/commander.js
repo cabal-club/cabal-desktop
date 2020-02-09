@@ -5,7 +5,7 @@ import {
   leaveChannel,
   removeCabal,
   setChannelTopic,
-  updateCabalSettings
+  saveCabalSettings
 } from './actions'
 
 const commander = (addr, message) => (dispatch) => {
@@ -82,7 +82,7 @@ const commander = (addr, message) => (dispatch) => {
     alias: {
       help: () => 'set alias for the cabal',
       call: (arg) => {
-        dispatch(updateCabalSettings({
+        dispatch(saveCabalSettings({
           addr,
           settings: {
             alias: arg

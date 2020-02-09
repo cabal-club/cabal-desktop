@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import { hideCabalSettings, removeCabal, updateCabalSettings } from '../actions'
+import { hideCabalSettings, removeCabal, saveCabalSettings } from '../actions'
 
 const mapStateToProps = state => {
   var cabal = state.cabals[state.currentCabal]
@@ -14,7 +14,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   hideCabalSettings: () => dispatch(hideCabalSettings()),
   removeCabal: ({ addr }) => dispatch(removeCabal({ addr })),
-  updateCabalSettings: ({ addr, settings }) => dispatch(updateCabalSettings({ addr, settings }))
+  saveCabalSettings: ({ addr, settings }) => dispatch(saveCabalSettings({ addr, settings }))
 })
 
 class CabalSettingsContainer extends React.Component {
@@ -25,7 +25,7 @@ class CabalSettingsContainer extends React.Component {
   onToggleOption (option) {
     const settings = this.props.settings
     settings[option] = !this.props.settings[option]
-    this.props.updateCabalSettings({ addr: this.props.cabal.addr, settings })
+    this.props.saveCabalSettings({ addr: this.props.cabal.addr, settings })
   }
 
   removeCabal (addr) {
@@ -78,7 +78,7 @@ class CabalSettingsContainer extends React.Component {
                   <div className='cabal-settings__item-label-description'>Set a local alias for this cabal.</div>
                 </div>
                 <div className='cabal-settings__item-input'>
-                  <input type='text' placeholder='My Favorite Cabal' value={alias} onChange={(e) => this.props.updateCabalSettings({ addr: this.props.cabal.addr, settings: { ...this.props.settings, alias: e.target.value } })} />
+                  <input type='text' placeholder='My Favorite Cabal' value={alias} onChange={(e) => this.props.saveCabalSettings({ addr: this.props.cabal.addr, settings: { ...this.props.settings, alias: e.target.value } })} />
                 </div>
               </div>
               <div className='cabal-settings__item'>

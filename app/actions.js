@@ -32,6 +32,7 @@ export const viewCabal = ({ addr, channel }) => dispatch => {
     dispatch(viewChannel({ addr, channel }))
   }
   dispatch({ addr, channel, type: 'VIEW_CABAL' })
+  dispatch(hideAllModals())
 }
 
 export const showChannelBrowser = ({ addr }) => dispatch => {
@@ -62,11 +63,11 @@ export const hideAllModals = () => dispatch => {
   dispatch({ type: 'HIDE_ALL_MODALS' })
 }
 
-export const updateCabalSettings = ({ addr, settings }) => dispatch => {
 export const restoreCabalSettings = ({ addr, settings }) => dispatch => {
   dispatch({ type: 'UPDATE_CABAL_SETTINGS', addr, settings })
 }
 
+export const saveCabalSettings = ({ addr, settings }) => dispatch => {
   dispatch({ type: 'UPDATE_CABAL_SETTINGS', addr, settings })
   dispatch(storeOnDisk())
 }
@@ -211,7 +212,7 @@ export const getMessages = ({ addr, channel, amount }, callback) => dispatch => 
   }
 }
 
-export const viewChannel = ({ addr, channel }) => (dispatch, getState) => {
+export const viewChannel = ({ addr, channel }) => (dispatch) => {
   if (!channel || channel.length === 0) return
 
   if (client.getChannels().includes(channel)) {
@@ -245,8 +246,6 @@ export const viewChannel = ({ addr, channel }) => (dispatch, getState) => {
   const topic = cabalDetails.getTopic()
   dispatch({ type: 'UPDATE_TOPIC', addr, topic })
   dispatch(updateChannelMessagesUnread({ addr, channel, unreadCount: 0 }))
-
-  dispatch(updateCabalSettings({ addr, settings: { currentChannel: channel } }))
 }
 
 export const changeScreen = ({ screen, addr }) => ({ type: 'CHANGE_SCREEN', screen, addr })
