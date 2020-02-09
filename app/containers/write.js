@@ -1,5 +1,5 @@
 import form from 'get-form-data'
-import React, { Fragment, Component } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Mousetrap from 'mousetrap'
 
@@ -67,7 +67,7 @@ class writeScreen extends Component {
   gotoCabal (index) {
     const { cabalIdList, viewCabal } = this.props
     if (cabalIdList[index]) {
-      viewCabal({ addr: cabalIdList[index ] })
+      viewCabal({ addr: cabalIdList[index] })
     }
   }
 
@@ -144,10 +144,10 @@ class writeScreen extends Component {
         e.stopPropagation()
         return
       }
-      var el = this.textInput
+      el = this.textInput
       el.value = ''
       const { addr, addMessage, onCommand } = this.props
-      let message = {
+      const message = {
         content: {
           channel: this.props.currentChannel,
           text: data.message
@@ -176,7 +176,7 @@ class writeScreen extends Component {
   }
 
   onClickEmojiPickerContainer (e) {
-    let element = e.target
+    const element = e.target
     // allow click event on emoji buttons but not other emoji picker ui
     if (!element.classList.contains('emoji-mart-emoji') && !element.parentElement.classList.contains('emoji-mart-emoji')) {
       e.preventDefault()
@@ -225,20 +225,21 @@ class writeScreen extends Component {
 
     if (!cabal) {
       return (
-        <Fragment>
+        <>
           <div />
-        </Fragment>
+        </>
       )
     }
 
     return (
-      <div className={'composerContainer'}>
-        <div className={'composer'} >
+      <div className='composerContainer'>
+        <div className='composer'>
           {/* <div className={'composer__meta'}><img src='static/images/icon-composermeta.svg' /></div> */}
-          <div className={'composer__input'} onClick={(e) => this.focusInput()}>
+          <div className='composer__input' onClick={(e) => this.focusInput()}>
             <form
               onSubmit={this.onsubmit.bind(this)}
-              ref={(form) => { this.formField = form }}>
+              ref={(form) => { this.formField = form }}
+            >
               <textarea
                 id='message-bar'
                 name='message'
@@ -251,7 +252,7 @@ class writeScreen extends Component {
             </form>
           </div>
           <div
-            className={'emoji__container'}
+            className='emoji__container'
             ref={(el) => { this.emojiPicker = el }}
             style={{ position: 'absolute', bottom: '100px', right: '16px', display: this.props.emojiPickerVisible ? 'block' : 'none' }}
             onClick={this.onClickEmojiPickerContainer.bind(this)}
@@ -261,11 +262,11 @@ class writeScreen extends Component {
               native
               sheetSize={64}
               autoFocus
-              emoji={'point_up'}
-              title={'Pick an emoji...'}
+              emoji='point_up'
+              title='Pick an emoji...'
             />
           </div>
-          <div className={'composer__other'} onClick={(e) => this.toggleEmojiPicker()}><img src='static/images/icon-composerother.svg' /></div>
+          <div className='composer__other' onClick={(e) => this.toggleEmojiPicker()}><img src='static/images/icon-composerother.svg' /></div>
         </div>
       </div>
     )

@@ -1,15 +1,14 @@
 import {
   addStatusMessage,
-  changeUsername,
+  setUsername,
   joinChannel,
+  leaveChannel,
   removeCabal,
   setChannelTopic,
-  updateCabalSettings
+  saveCabalSettings
 } from './actions'
 
 const commander = (addr, message) => (dispatch) => {
-  var self = this
-
   const commands = {
     help: {
       help: () => 'display this help message',
@@ -27,7 +26,7 @@ const commander = (addr, message) => (dispatch) => {
         var username = arg
         if (!username.length) return
         if (username && username.trim().length > 0) {
-          dispatch(changeUsername({ addr, username }))
+          dispatch(setUsername({ addr, username }))
         }
       }
     },
@@ -45,6 +44,13 @@ const commander = (addr, message) => (dispatch) => {
       call: (arg) => {
         var channel = arg || 'default'
         dispatch(joinChannel({ addr, channel }))
+      }
+    },
+    leave: {
+      help: () => 'leave a channel',
+      call: (arg) => {
+        var channel = arg
+        dispatch(leaveChannel({ addr, channel }))
       }
     },
     // quit: {
@@ -76,7 +82,7 @@ const commander = (addr, message) => (dispatch) => {
     alias: {
       help: () => 'set alias for the cabal',
       call: (arg) => {
-        dispatch(updateCabalSettings({
+        dispatch(saveCabalSettings({
           addr,
           settings: {
             alias: arg
@@ -131,7 +137,7 @@ const commander = (addr, message) => (dispatch) => {
   if (cmd in commands) {
     commands[cmd].call(arg)
   } else if (cmd) {
-    var text = `/${cmd} is not yet a command. \nTry /help for a list of command descriptions`
+    text = `/${cmd} is not yet a command. \nTry /help for a list of command descriptions`
     dispatch(addStatusMessage({ addr, text }))
   }
 }

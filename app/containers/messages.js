@@ -13,7 +13,7 @@ export default function MessagesContainer (props) {
 
   const messages = props.cabal.messages || []
   let printDate, previousDate
-  if (messages.length === 0) {
+  if (messages.length === 0 && props.cabal.channel !== '!status') {
     return (
       <div className='messages starterMessage'>
         This is a new channel. Send a message to start things off!

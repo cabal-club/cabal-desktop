@@ -5,7 +5,7 @@ import prompt from 'electron-prompt'
 import {
   viewChannel,
   joinChannel,
-  changeUsername,
+  setUsername,
   changeScreen,
   hideCabalSettings,
   showCabalSettings,
@@ -31,7 +31,7 @@ const mapDispatchToProps = dispatch => ({
   changeScreen: ({ screen }) => dispatch(changeScreen({ screen })),
   joinChannel: ({ addr, channel }) => dispatch(joinChannel({ addr, channel })),
   viewChannel: ({ addr, channel }) => dispatch(viewChannel({ addr, channel })),
-  changeUsername: ({ addr, username }) => dispatch(changeUsername({ addr, username })),
+  setUsername: ({ addr, username }) => dispatch(setUsername({ addr, username })),
   showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),
   hideCabalSettings: () => dispatch(hideCabalSettings()),
   showChannelBrowser: ({ addr }) => dispatch(showChannelBrowser({ addr }))
@@ -61,7 +61,7 @@ class SidebarScreen extends React.Component {
       type: 'input'
     }).then((username) => {
       if (username && username.trim().length > 0) {
-        this.props.changeUsername({ username, addr: this.props.addr })
+        this.props.setUsername({ username, addr: this.props.addr })
       }
     }).catch(() => {
       console.log('cancelled username')
@@ -149,7 +149,7 @@ class SidebarScreen extends React.Component {
                   onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}
                   title='Browse and join all channels'
                 >Channels
-              </div>
+                </div>
                 <div className='collection__heading__handle' onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}>
                   <img src='static/images/icon-newchannel.svg' />
                 </div>
