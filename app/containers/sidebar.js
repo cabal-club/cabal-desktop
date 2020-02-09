@@ -149,7 +149,7 @@ class SidebarScreen extends React.Component {
                   onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}
                   title='Browse and join all channels'
                 >Channels
-              </div>
+                </div>
                 <div className='collection__heading__handle' onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}>
                   <img src='static/images/icon-newchannel.svg' />
                 </div>
