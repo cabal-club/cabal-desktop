@@ -34,7 +34,6 @@ class ChannelBrowserContainer extends React.Component {
       value: undefined,
       type: 'input'
     }).then((newChannelName) => {
-      console.warn(newChannelName, this.props.addr)
       if (newChannelName && newChannelName.trim().length > 0) {
         this.props.joinChannel({ addr: this.props.addr, channel: newChannelName })
       }

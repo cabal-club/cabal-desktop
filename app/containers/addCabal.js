@@ -49,14 +49,16 @@ class addCabalScreen extends Component {
           open-source decentralized private chat
         </p>
         <hr />
-        <input type='text'
+        <input
+          type='text'
           className='fun'
           id='add-cabal'
           onKeyDown={this.onPressEnter.bind(this)}
           placeholder='Paste cabal:// link and hit Enter'
           defaultValue={this.props.addr}
         />
-        <input type='text'
+        <input
+          type='text'
           className='fun'
           id='nickname'
           onKeyDown={this.onPressEnter.bind(this)}

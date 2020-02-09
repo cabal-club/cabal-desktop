@@ -1,6 +1,6 @@
 import {
   addStatusMessage,
-  changeUsername,
+  setUsername,
   joinChannel,
   leaveChannel,
   removeCabal,
@@ -26,7 +26,7 @@ const commander = (addr, message) => (dispatch) => {
         var username = arg
         if (!username.length) return
         if (username && username.trim().length > 0) {
-          dispatch(changeUsername({ addr, username }))
+          dispatch(setUsername({ addr, username }))
         }
       }
     },
