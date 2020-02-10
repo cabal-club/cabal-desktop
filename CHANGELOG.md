@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.1.0] - 2020-02-09
+### Added
+- Implemented `cabal-client` into Cabal Desktop.
+- Added joining and leaving channels feature.
+- Added channel browser interface.
+- Improved unread message handling.
+- Added version number to UI.
+- Added a random nickname generator for the initiator a new cabal.
+- MacOS: Cabal Desktop will continue running when all windows have closed.
+### Fixed
+- Desktop notifications are now throttled so not to flood you on startup.
+- Fixed message layout and style issues.
+
 ## [4.0.0] - 2019-11-30
 ### Added
 - Improved message rendering speed.
