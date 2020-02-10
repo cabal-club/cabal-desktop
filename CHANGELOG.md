@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 - Added channel browser interface.
 - Improved unread message handling.
 - Added version number to UI.
+- Added a random nickname generator for the initiator a new cabal.
 - MacOS: Cabal Desktop will continue running when all windows have closed.
 ### Fixed
 - Desktop notifications are now throttled so not to flood you on startup.
