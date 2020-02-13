@@ -140,7 +140,7 @@ class MainPanel extends Component {
   }
 
   render () {
-    const { cabal } = this.props
+    const { cabal, toggleMemberList } = this.props
     var self = this
 
     if (!cabal) {
@@ -172,6 +172,8 @@ class MainPanel extends Component {
               <div className='channel-meta__other'>
                 <div onClick={this.showCabalSettings.bind(this, this.props.addr)} className='channel-meta__other__more'><img src='static/images/icon-channelother.svg' /></div>
                 <div className='button channel-meta__other__share' onClick={self.copyClick.bind(self)}>Share Cabal</div>
+                <div className='button channel-meta__other__share' onClick={toggleMemberList}> Toggle Member List</div>
+
               </div>
             </div>
           </div>
