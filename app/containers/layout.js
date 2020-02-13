@@ -5,6 +5,7 @@ import { changeScreen, viewCabal } from '../actions'
 import CabalsList from './cabalsList'
 import Sidebar from './sidebar'
 import MainPanel from './mainPanel'
+import MemberList from './memberList'
 
 const mapStateToProps = state => ({
   addr: state.currentCabal,
@@ -22,9 +23,9 @@ class LayoutScreen extends Component {
     const { cabal } = this.props
     if (!cabal) {
       return (
-        <Fragment>
+        <>
           <div />
-        </Fragment>
+        </>
       )
     }
     return (
@@ -32,6 +33,7 @@ class LayoutScreen extends Component {
         <CabalsList />
         <Sidebar />
         <MainPanel />
+        <MemberList />
       </div>
     )
   }
