@@ -783,11 +783,12 @@ form {
   flex: 0 0 15rem;
   color: #fff;
   padding: 1.5rem;
-
+  overflow: auto;
+  
   .memberList__header {
     font-size: 1.1rem;
     margin-bottom: 2rem;
-    font-weight: 600;
+    font-weight: 600; 
   }
 
     .collection__item {
