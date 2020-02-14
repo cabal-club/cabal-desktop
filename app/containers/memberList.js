@@ -8,7 +8,7 @@ function MemberList ({ members = [] }) {
     <div
       className='memberList'
     >
-      <h2 style={{ marginBottom: '2rem' }}> Channel Members </h2>
+      <div className='memberList__header'> Channel Members </div>
       {members.map((user) =>
         <div key={user.key} className='collection__item'>
           <div className='collection__item__icon'>

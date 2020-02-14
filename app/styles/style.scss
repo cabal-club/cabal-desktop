@@ -784,18 +784,20 @@ form {
   color: #fff;
   padding: 1.5rem;
 
+  .memberList__header {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    font-weight: 600;
+  }
+
     .collection__item {
     display: table;
     width: 100%;
-    padding: 0.25rem 1rem 0.25rem 1rem;
+    // padding: 0.25rem 1rem 0 1rem;
     transition: all 0.05s ease-in-out;
     position: relative;
     font-size: 3rem;
-  }
-
-  .collection__item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    cursor: pointer;
+    color: #fff;
   }
 
    .collection__item__icon {
@@ -817,9 +819,8 @@ form {
    .collection__item .collection__item__content {
     display: table-cell;
     display: inline-block;
-    font-size: 0.875rem;
+    font-size: 1rem;
     line-height: 1.4;
-    color: rgba(255, 255, 255, 0.5);
     padding: 0 0.5rem;
     width: 9.25rem;
     vertical-align: middle;
