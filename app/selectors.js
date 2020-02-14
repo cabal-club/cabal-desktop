@@ -23,3 +23,8 @@ export const currentChannelMembersSelector = createSelector(
   currentCabalSelector,
   cabal => sortUsers(cabal.channelMembers)
 )
+
+export const currentChannelMemberCountSelector = createSelector(
+  currentChannelMembersSelector,
+  (members = []) => members.length
+)

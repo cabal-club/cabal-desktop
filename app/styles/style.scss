@@ -463,6 +463,15 @@ form {
     margin-left: 1rem;
   }
 
+  .channel-meta__other .channel-meta__other__members {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 1rem;
+    cursor: pointer;
+    color: #B497E7;
+    font-size: 20px;
+  }
+
   .channel-meta__other .channel-meta__other__more {
     display: inline-block;
     vertical-align: middle;
