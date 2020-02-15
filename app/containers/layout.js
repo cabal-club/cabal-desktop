@@ -5,6 +5,7 @@ import { changeScreen, viewCabal } from '../actions'
 import CabalsList from './cabalsList'
 import Sidebar from './sidebar'
 import MainPanel from './mainPanel'
+import MemberList from './memberList'
 
 const mapStateToProps = state => ({
   addr: state.currentCabal,
@@ -18,20 +19,35 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class LayoutScreen extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      showMemberList: false
+    }
+    this.toggleMemberList = this.toggleMemberList.bind(this)
+  }
+
+  toggleMemberList () {
+    this.setState((state) => ({
+      showMemberList: !state.showMemberList
+    }))
+  }
+
   render () {
     const { cabal } = this.props
     if (!cabal) {
       return (
-        <Fragment>
+        <>
           <div />
-        </Fragment>
+        </>
       )
     }
     return (
       <div className='client'>
         <CabalsList />
         <Sidebar />
-        <MainPanel />
+        <MainPanel toggleMemberList={this.toggleMemberList} />
+        {this.state.showMemberList && <MemberList />}
       </div>
     )
   }

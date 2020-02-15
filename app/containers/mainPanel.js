@@ -1,4 +1,4 @@
-import React, { Fragment, Component } from 'react'
+import React, { Component } from 'react'
 import { clipboard, ipcRenderer } from 'electron'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
@@ -15,6 +15,7 @@ import CabalSettings from './cabalSettings'
 import ChannelBrowser from './channelBrowser'
 import WriteContainer from './write'
 import MessagesContainer from './messages'
+import { currentChannelMemberCountSelector } from '../selectors'
 
 const mapStateToProps = state => ({
   addr: state.currentCabal,
@@ -22,7 +23,8 @@ const mapStateToProps = state => ({
   cabals: state.cabals,
   cabalSettingsVisible: state.cabalSettingsVisible,
   channelBrowserVisible: state.channelBrowserVisible,
-  emojiPickerVisible: state.emojiPickerVisible
+  emojiPickerVisible: state.emojiPickerVisible,
+  channelMemberCount: currentChannelMemberCountSelector(state)
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -140,7 +142,7 @@ class MainPanel extends Component {
   }
 
   render () {
-    const { cabal } = this.props
+    const { cabal, toggleMemberList, channelMemberCount } = this.props
     var self = this
 
     if (!cabal) {
@@ -170,8 +172,12 @@ class MainPanel extends Component {
                 </div>
               </div>
               <div className='channel-meta__other'>
+                <div className='channel-meta__other__members' onClick={toggleMemberList}>
+                  <img src='static/images/user-icon.svg' /> {channelMemberCount}
+                </div>
                 <div onClick={this.showCabalSettings.bind(this, this.props.addr)} className='channel-meta__other__more'><img src='static/images/icon-channelother.svg' /></div>
                 <div className='button channel-meta__other__share' onClick={self.copyClick.bind(self)}>Share Cabal</div>
+
               </div>
             </div>
           </div>

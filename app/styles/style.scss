@@ -463,6 +463,15 @@ form {
     margin-left: 1rem;
   }
 
+  .channel-meta__other .channel-meta__other__members {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 1rem;
+    cursor: pointer;
+    color: #B497E7;
+    font-size: 20px;
+  }
+
   .channel-meta__other .channel-meta__other__more {
     display: inline-block;
     vertical-align: middle;
@@ -490,6 +499,8 @@ form {
 
   .window__header{
     -webkit-app-region: drag;
+    background-color: #fff;
+    z-index: 10;
   }
 
   .messages {
@@ -764,6 +775,63 @@ form {
     }
   }
 }
+
+
+.memberList {
+  height: 100%;
+  background-color:#16161d;
+  flex: 0 0 15rem;
+  color: #fff;
+  padding: 1.5rem;
+  overflow: auto;
+  
+  .memberList__header {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    font-weight: 600; 
+  }
+
+    .collection__item {
+    display: table;
+    width: 100%;
+    // padding: 0.25rem 1rem 0 1rem;
+    transition: all 0.05s ease-in-out;
+    position: relative;
+    font-size: 3rem;
+    color: #fff;
+  }
+
+   .collection__item__icon {
+    display: table-cell;
+    width: 1.25rem;
+    vertical-align: middle;
+    text-align: center;
+    opacity: 0.5;
+  }
+
+   .collection__item__status {
+    display: table-cell;
+    width: 1.25rem;
+    vertical-align: middle;
+    text-align: center;
+    opacity: 1;
+  }
+
+   .collection__item .collection__item__content {
+    display: table-cell;
+    display: inline-block;
+    font-size: 1rem;
+    line-height: 1.4;
+    padding: 0 0.5rem;
+    width: 9.25rem;
+    vertical-align: middle;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+}
+
 
 .modalScreen {
   background: #fff;
