@@ -1,4 +1,4 @@
-import React, { Fragment, Component } from 'react'
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { changeScreen, viewCabal } from '../actions'

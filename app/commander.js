@@ -123,7 +123,6 @@ const commander = (addr, message) => (dispatch) => {
     return commands
   }
 
-  const history = []
   const pattern = (/^\/(\w*)\s*(.*)/)
 
   var text

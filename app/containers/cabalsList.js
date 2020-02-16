@@ -47,7 +47,7 @@ class CabalsListScreen extends React.Component {
               return (
                 <div title={key} key={key} onClick={self.selectCabal.bind(self, key)} className={addr === cabal.addr ? 'switcher__item switcher__item--active' : 'switcher__item'}>
                   <span>
-                    {(settings[key] && settings[key].alias || key).slice(0, 2)}
+                    {(ettings[key]?.alias || key).slice(0, 2)}
                   </span>
                   {cabal.allChannelsUnreadCount > 0 && <div className='unreadIndicator' />}
                 </div>

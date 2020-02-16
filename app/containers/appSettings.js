@@ -19,7 +19,7 @@ class AppSettingsScreen extends Component {
     return (
       <div className='modalScreen app-settings'>
         <div className='modalScreen__header'>
-          <button className={'modalScreen__close'} onClick={this.onClickClose.bind(this)}>✖️</button>
+          <button className='modalScreen__close' onClick={this.onClickClose.bind(this)}>✖️</button>
           <h1>Cabal Desktop Settings</h1>
         </div>
 
