@@ -8,7 +8,8 @@ import { connect } from 'react-redux'
 const Confirm = ({ addr, onConfirm, onExit }) => (
   <div
     className='modal fixed items-center justify-center top-0 left-0 h-100 w-100 z-9999'
-    style={{ display: addr ? 'flex' : 'none' }}>
+    style={{ display: addr ? 'flex' : 'none' }}
+  >
     <div className='relative flex flex-column justify-center'>
       <h3 className='f4'>Leave Cabal </h3>
       <p className='mt3 mb4 f7 color-neutral-70'>
@@ -30,7 +31,8 @@ const Confirm = ({ addr, onConfirm, onExit }) => (
       <button
         onClick={onExit}
         className='absolute pointer pa0 top-0 right-0 h2 w2 bg-transparent tc exit'
-        aria-label='Close Modal' />
+        aria-label='Close Modal'
+      />
     </div>
   </div>
 

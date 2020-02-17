@@ -67,7 +67,7 @@ class MainPanel extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    if (prevProps.cabal != this.props.cabal) {
+    if (prevProps.cabal !== this.props.cabal) {
       this.scrollToBottom()
     }
     // if you're in the same cabal and a new message arrives we should show a button prompting a scroll to bottom
@@ -138,7 +138,7 @@ class MainPanel extends Component {
 
   copyClick () {
     clipboard.writeText('cabal://' + this.props.addr)
-    alert('Copied cabal:// link to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.')
+    window.alert('Copied cabal:// link to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.')
   }
 
   render () {

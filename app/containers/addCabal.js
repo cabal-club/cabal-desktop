@@ -41,8 +41,7 @@ class addCabalScreen extends Component {
       <div className='modalScreen add-cabal'>
         <div className='modalScreen__header'>
           {this.props.cabals && !!Object.keys(this.props.cabals).length &&
-            <button className='modalScreen__close' onClick={this.onClickClose.bind(this)}>✖️</button>
-          }
+            <button className='modalScreen__close' onClick={this.onClickClose.bind(this)}>✖️</button>}
         </div>
         <h1>Cabal</h1>
         <p className='starterMessage'>
