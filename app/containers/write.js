@@ -233,6 +233,12 @@ class writeScreen extends Component {
 
     return (
       <div className='composerContainer'>
+
+        <div className='scroll__button'>
+
+          <span> You are viewing older messages</span>
+          <span style={{ float: 'right' }}> Jump to present</span>
+        </div>
         <div className='composer'>
           {/* <div className={'composer__meta'}><img src='static/images/icon-composermeta.svg' /></div> */}
           <div className='composer__input' onClick={(e) => this.focusInput()}>
