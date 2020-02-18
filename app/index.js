@@ -9,7 +9,7 @@ import thunk from 'redux-thunk'
 
 const store = createStore(
   reducer,
-  compose(applyMiddleware(thunk, logger))
+  compose(applyMiddleware(thunk))
 )
 
 render(

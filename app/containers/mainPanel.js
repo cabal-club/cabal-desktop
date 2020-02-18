@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { clipboard, ipcRenderer } from 'electron'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
-
+import throttle from 'lodash.throttle'
 import {
   changeScreen,
   hideEmojiPicker,
@@ -37,15 +37,21 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class MainPanel extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
+    this.state = {
+      showScrollToBottom: false
+    }
     this.shouldAutoScroll = true
     this.scrollTop = 0
     this.composerHeight = 55
+    this.scrollEl = null
     this.handleOpenCabalUrl = this.handleOpenCabalUrl.bind(this)
+    this.setScrollToBottomButtonStatus = this.setScrollToBottomButtonStatus.bind(this)
+    this.scrollToBottom = this.scrollToBottom.bind(this)
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const self = this
     var messagesDiv = document.querySelector('.messages')
     if (messagesDiv) messagesDiv.scrollTop = this.scrollTop
@@ -56,9 +62,33 @@ class MainPanel extends Component {
     ipcRenderer.on('open-cabal-url', (event, arg) => {
       this.handleOpenCabalUrl(arg)
     })
+
+    this.scrollEl?.addEventListener("scroll", () => {
+      throttle(this.setScrollToBottomButtonStatus, 500)()
+    })
   }
 
-  componentWillUnmount () {
+  setScrollToBottomButtonStatus() {
+    const totalHeight = this.scrollEl?.scrollHeight;
+    const scrolled = this.scrollEl?.scrollTop;
+    const containerHeight = this.scrollEl?.offsetHeight + 5000
+    if (((totalHeight - scrolled) > containerHeight) && !this.state.showScrollToBottom) {
+
+      this.setState({
+        showScrollToBottom: true
+      })
+    } else if (((totalHeight - scrolled) < containerHeight) && this.state.showScrollToBottom) {
+      this.setState({
+        showScrollToBottom: false
+      })
+    }
+  }
+
+  scrollToBottom() {
+    this.scrollEl?.scrollBy(0, this.scrollEl?.scrollHeight)
+  }
+
+  componentWillUnmount() {
     const self = this
     var messagesContainerDiv = document.querySelector('.window__main')
     if (messagesContainerDiv) {
@@ -66,14 +96,14 @@ class MainPanel extends Component {
     }
   }
 
-  componentDidUpdate (prevProps) {
+  componentDidUpdate(prevProps) {
     if (prevProps.cabal !== this.props.cabal) {
       this.scrollToBottom()
     }
     // if you're in the same cabal and a new message arrives we should show a button prompting a scroll to bottom
   }
 
-  onClickTopic () {
+  onClickTopic() {
     prompt({
       title: 'Set channel topic',
       label: 'New topic',
@@ -93,14 +123,14 @@ class MainPanel extends Component {
     })
   }
 
-  onClickLeaveChannel () {
+  onClickLeaveChannel() {
     this.props.leaveChannel({
       addr: this.props.cabal.addr,
       channel: this.props.cabal.channel
     })
   }
 
-  handleOpenCabalUrl ({ url = '' }) {
+  handleOpenCabalUrl({ url = '' }) {
     const addr = url.replace('cabal://', '').trim()
     if (this.props.cabals[addr]) {
       this.props.viewCabal({ addr })
@@ -109,7 +139,7 @@ class MainPanel extends Component {
     }
   }
 
-  onScrollMessages (event) {
+  onScrollMessages(event) {
     var element = event.target
     if (element.scrollHeight - element.scrollTop === element.clientHeight) {
       this.shouldAutoScroll = true
@@ -118,13 +148,13 @@ class MainPanel extends Component {
     }
   }
 
-  hideModals () {
+  hideModals() {
     if (this.props.emojiPickerVisible) {
       this.props.hideEmojiPicker()
     }
   }
 
-  scrollToBottom (force) {
+  scrollToBottom(force) {
     if (!force && !this.shouldAutoScroll) return
     var messagesDiv = document.querySelector('.window__main')
     if (messagesDiv) {
@@ -132,16 +162,16 @@ class MainPanel extends Component {
     }
   }
 
-  showCabalSettings (addr) {
+  showCabalSettings(addr) {
     this.props.showCabalSettings({ addr })
   }
 
-  copyClick () {
+  copyClick() {
     clipboard.writeText('cabal://' + this.props.addr)
     window.alert('Copied cabal:// link to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.')
   }
 
-  render () {
+  render() {
     const { cabal, toggleMemberList, channelMemberCount } = this.props
     var self = this
 
@@ -181,13 +211,14 @@ class MainPanel extends Component {
               </div>
             </div>
           </div>
-          <div className='window__main'>
+          <div className='window__main' ref={el => { this.scrollEl = el }}>
             <MessagesContainer
               cabal={cabal}
+
               composerHeight={self.composerHeight}
             />
           </div>
-          <WriteContainer />
+          <WriteContainer showScrollToBottom={this.state.showScrollToBottom} scrollToBottom={this.scrollToBottom} />
         </div>
       </div>
     )

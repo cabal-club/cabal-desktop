@@ -801,12 +801,17 @@ form {
     overflow-x: hidden;
   }
 
-  .scroll__button {
+  .scroll__button__container {
     background-color: #858585;
     padding: 7px;
     color: white;
     font-size: .8rem;
     border-radius: 7px 7px 0 0;
+
+    .scroll__button {
+      cursor: pointer;
+      float: right;
+    }
   }
 
   .composer {
