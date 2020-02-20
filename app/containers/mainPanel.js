@@ -30,14 +30,15 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   changeScreen: ({ screen, addr }) => dispatch(changeScreen({ screen, addr })),
   hideEmojiPicker: () => dispatch(hideEmojiPicker()),
-  setChannelTopic: ({ addr, channel, topic }) => dispatch(setChannelTopic({ addr, channel, topic })),
+  setChannelTopic: ({ addr, channel, topic }) =>
+    dispatch(setChannelTopic({ addr, channel, topic })),
   showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),
   viewCabal: ({ addr }) => dispatch(viewCabal({ addr })),
   leaveChannel: ({ addr, channel }) => dispatch(leaveChannel({ addr, channel }))
 })
 
 class MainPanel extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       showScrollToBottom: false
@@ -47,90 +48,105 @@ class MainPanel extends Component {
     this.composerHeight = 55
     this.scrollEl = null
     this.handleOpenCabalUrl = this.handleOpenCabalUrl.bind(this)
-    this.setScrollToBottomButtonStatus = this.setScrollToBottomButtonStatus.bind(this)
+    this.setScrollToBottomButtonStatus = this.setScrollToBottomButtonStatus.bind(
+      this
+    )
     this.scrollToBottom = this.scrollToBottom.bind(this)
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const self = this
     var messagesDiv = document.querySelector('.messages')
     if (messagesDiv) messagesDiv.scrollTop = this.scrollTop
     var messagesContainerDiv = document.querySelector('.window__main')
     if (messagesContainerDiv) {
-      messagesContainerDiv.addEventListener('scroll', self.onScrollMessages.bind(this))
+      messagesContainerDiv.addEventListener(
+        'scroll',
+        self.onScrollMessages.bind(this)
+      )
     }
     ipcRenderer.on('open-cabal-url', (event, arg) => {
       this.handleOpenCabalUrl(arg)
     })
 
-    this.scrollEl?.addEventListener("scroll", () => {
+    this.scrollEl?.addEventListener('scroll', () => {
       throttle(this.setScrollToBottomButtonStatus, 500)()
     })
   }
 
-  setScrollToBottomButtonStatus() {
-    const totalHeight = this.scrollEl?.scrollHeight;
-    const scrolled = this.scrollEl?.scrollTop;
+  setScrollToBottomButtonStatus () {
+    const totalHeight = this.scrollEl?.scrollHeight
+    const scrolled = this.scrollEl?.scrollTop
     const containerHeight = this.scrollEl?.offsetHeight + 5000
-    if (((totalHeight - scrolled) > containerHeight) && !this.state.showScrollToBottom) {
-
+    if (
+      totalHeight - scrolled > containerHeight &&
+      !this.state.showScrollToBottom
+    ) {
       this.setState({
         showScrollToBottom: true
       })
-    } else if (((totalHeight - scrolled) < containerHeight) && this.state.showScrollToBottom) {
+    } else if (
+      totalHeight - scrolled < containerHeight &&
+      this.state.showScrollToBottom
+    ) {
       this.setState({
         showScrollToBottom: false
       })
     }
   }
 
-  scrollToBottom() {
+  scrollToBottom () {
     this.scrollEl?.scrollBy(0, this.scrollEl?.scrollHeight)
   }
 
-  componentWillUnmount() {
+  componentWillUnmount () {
     const self = this
     var messagesContainerDiv = document.querySelector('.window__main')
     if (messagesContainerDiv) {
-      messagesContainerDiv.removeEventListener('scroll', self.onScrollMessages.bind(this))
+      messagesContainerDiv.removeEventListener(
+        'scroll',
+        self.onScrollMessages.bind(this)
+      )
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate (prevProps) {
     if (prevProps.cabal !== this.props.cabal) {
       this.scrollToBottom()
     }
     // if you're in the same cabal and a new message arrives we should show a button prompting a scroll to bottom
   }
 
-  onClickTopic() {
+  onClickTopic () {
     prompt({
       title: 'Set channel topic',
       label: 'New topic',
       value: this.props.cabal.topic,
       type: 'input'
-    }).then((topic) => {
-      if (topic && topic.trim().length > 0) {
-        this.props.cabal.topic = topic
-        this.props.setChannelTopic({
-          addr: this.props.cabal.addr,
-          channel: this.props.cabal.channel,
-          topic
-        })
-      }
-    }).catch(() => {
-      console.log('cancelled new topic')
     })
+      .then(topic => {
+        if (topic && topic.trim().length > 0) {
+          this.props.cabal.topic = topic
+          this.props.setChannelTopic({
+            addr: this.props.cabal.addr,
+            channel: this.props.cabal.channel,
+            topic
+          })
+        }
+      })
+      .catch(() => {
+        console.log('cancelled new topic')
+      })
   }
 
-  onClickLeaveChannel() {
+  onClickLeaveChannel () {
     this.props.leaveChannel({
       addr: this.props.cabal.addr,
       channel: this.props.cabal.channel
     })
   }
 
-  handleOpenCabalUrl({ url = '' }) {
+  handleOpenCabalUrl ({ url = '' }) {
     const addr = url.replace('cabal://', '').trim()
     if (this.props.cabals[addr]) {
       this.props.viewCabal({ addr })
@@ -139,7 +155,7 @@ class MainPanel extends Component {
     }
   }
 
-  onScrollMessages(event) {
+  onScrollMessages (event) {
     var element = event.target
     if (element.scrollHeight - element.scrollTop === element.clientHeight) {
       this.shouldAutoScroll = true
@@ -148,13 +164,13 @@ class MainPanel extends Component {
     }
   }
 
-  hideModals() {
+  hideModals () {
     if (this.props.emojiPickerVisible) {
       this.props.hideEmojiPicker()
     }
   }
 
-  scrollToBottom(force) {
+  scrollToBottom (force) {
     if (!force && !this.shouldAutoScroll) return
     var messagesDiv = document.querySelector('.window__main')
     if (messagesDiv) {
@@ -162,16 +178,18 @@ class MainPanel extends Component {
     }
   }
 
-  showCabalSettings(addr) {
+  showCabalSettings (addr) {
     this.props.showCabalSettings({ addr })
   }
 
-  copyClick() {
+  copyClick () {
     clipboard.writeText('cabal://' + this.props.addr)
-    window.alert('Copied cabal:// link to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.')
+    window.alert(
+      'Copied cabal:// link to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.'
+    )
   }
 
-  render() {
+  render () {
     const { cabal, toggleMemberList, channelMemberCount } = this.props
     var self = this
 
@@ -196,29 +214,60 @@ class MainPanel extends Component {
                 <div className='channel-meta__data__details'>
                   <h1>#{cabal.channel}</h1>
                   <h2>
-                    <span className='channel-meta__data__topic' onClick={this.onClickTopic.bind(this)}>  {cabal.topic || 'Add a topic'}</span>
-                    <span className='channel-meta__data__topic' onClick={this.onClickLeaveChannel.bind(this)}> | Leave Channel</span>
+                    <span
+                      className='channel-meta__data__topic'
+                      onClick={this.onClickTopic.bind(this)}
+                    >
+                      {' '}
+                      {cabal.topic || 'Add a topic'}
+                    </span>
+                    <span
+                      className='channel-meta__data__topic'
+                      onClick={this.onClickLeaveChannel.bind(this)}
+                    >
+                      {' '}
+                      | Leave Channel
+                    </span>
                   </h2>
                 </div>
               </div>
               <div className='channel-meta__other'>
-                <div className='channel-meta__other__members' onClick={toggleMemberList}>
+                <div
+                  className='channel-meta__other__members'
+                  onClick={toggleMemberList}
+                >
                   <img src='static/images/user-icon.svg' /> {channelMemberCount}
                 </div>
-                <div onClick={this.showCabalSettings.bind(this, this.props.addr)} className='channel-meta__other__more'><img src='static/images/icon-channelother.svg' /></div>
-                <div className='button channel-meta__other__share' onClick={self.copyClick.bind(self)}>Share Cabal</div>
-
+                <div
+                  onClick={this.showCabalSettings.bind(this, this.props.addr)}
+                  className='channel-meta__other__more'
+                >
+                  <img src='static/images/icon-channelother.svg' />
+                </div>
+                <div
+                  className='button channel-meta__other__share'
+                  onClick={self.copyClick.bind(self)}
+                >
+                  Share Cabal
+                </div>
               </div>
             </div>
           </div>
-          <div className='window__main' ref={el => { this.scrollEl = el }}>
+          <div
+            className='window__main'
+            ref={el => {
+              this.scrollEl = el
+            }}
+          >
             <MessagesContainer
               cabal={cabal}
-
               composerHeight={self.composerHeight}
             />
           </div>
-          <WriteContainer showScrollToBottom={this.state.showScrollToBottom} scrollToBottom={this.scrollToBottom} />
+          <WriteContainer
+            showScrollToBottom={this.state.showScrollToBottom}
+            scrollToBottom={this.scrollToBottom}
+          />
         </div>
       </div>
     )
