@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { clipboard, ipcRenderer } from 'electron'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
-import throttle from 'lodash.throttle'
+import debounce from 'lodash.debounce'
 import {
   changeScreen,
   hideEmojiPicker,
@@ -69,9 +69,10 @@ class MainPanel extends Component {
       this.handleOpenCabalUrl(arg)
     })
 
-    this.scrollEl?.addEventListener('scroll', () => {
-      throttle(this.setScrollToBottomButtonStatus, 500)()
-    })
+    this.scrollEl?.addEventListener(
+      'scroll',
+      debounce(this.setScrollToBottomButtonStatus, 500)
+    )
   }
 
   setScrollToBottomButtonStatus () {
