@@ -8,7 +8,8 @@ module.exports = {
   watch: process.env.NODE_ENV === 'development',
   externals: [nodeExternals()],
   output: {
-    filename: 'static/build.js',
+    path: path.join(__dirname, 'static'),
+    filename: 'build.js',
     libraryTarget: 'commonjs2'
   },
   devtool: 'eval',
