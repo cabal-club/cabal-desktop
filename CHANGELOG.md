@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.0.0] - 2020-04-10
+### Added
+- Updated to latest `cabal-client` which now uses `hyperswarm` for connecting to peers.
+  This is a breaking change and all clients will need to update to a client 
+  that supports hyperswarm to continuing peering.
+
 ## [4.1.0] - 2020-02-09
 ### Added
 - Implemented `cabal-client` into Cabal Desktop.
