@@ -28,11 +28,9 @@ const client = new Client({
 
 export const viewCabal = ({ addr, channel }) => dispatch => {
   client.focusCabal(addr)
-  if (channel) {
-    dispatch(viewChannel({ addr, channel }))
-  }
+  channel = channel || client.getCurrentChannel()
   dispatch({ addr, channel, type: 'VIEW_CABAL' })
-  dispatch(hideAllModals())
+  dispatch(viewChannel({ addr, channel }))
 }
 
 export const showChannelBrowser = ({ addr }) => dispatch => {
@@ -407,29 +405,73 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
   const isNew = !addr
   const cabalDetails = isNew ? await client.createCabal() : await client.addCabal(addr)
   addr = cabalDetails.key
-  client.focusCabal(addr)
 
-  let firstUpdate = true
-  cabalDetails.on('update', throttle((details) => {
-    const users = details.getUsers()
-    const username = details.getLocalName()
-    const channels = details.getChannels()
-    const channelsJoined = details.getJoinedChannels()
-    const channelMessagesUnread = getCabalUnreadMessagesCount(details)
-    const currentChannel = details.getCurrentChannel()
-    const channelMembers = details.getChannelMembers()
+  function onUpdate () {
+    const users = cabalDetails.getUsers()
+    const username = cabalDetails.getLocalName()
+    const channels = cabalDetails.getChannels()
+    const channelsJoined = cabalDetails.getJoinedChannels()
+    const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
+    const currentChannel = cabalDetails.getCurrentChannel()
+    const channelMembers = cabalDetails.getChannelMembers()
     dispatch({ type: 'UPDATE_CABAL', addr, channelMessagesUnread, users, username, channels, channelsJoined, currentChannel, channelMembers })
     dispatch(getMessages({ addr, amount: 1000, channel: currentChannel }))
     dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
-    if (firstUpdate) {
-      firstUpdate = false
-      // Focus default or last channel viewed
-      dispatch(viewCabal({ addr, channel: settings.currentChannel }))
+  }
+  const onUpdateThrottled = throttle(onUpdate, 500)
+
+  const cabalDetailsEvents = [
+    {
+      name: 'cabal-focus',
+      action: (data) => {}
+    }, {
+      name: 'channel-focus',
+      action: onUpdateThrottled
+    }, {
+      name: 'channel-join',
+      action: onUpdateThrottled
+    }, {
+      name: 'channel-leave',
+      action: onUpdateThrottled
+    }, {
+      name: 'new-channel',
+      action: onUpdateThrottled
+    }, {
+      name: 'new-message',
+      action: onUpdateThrottled
+    }, {
+      name: 'publish-message',
+      action: onUpdateThrottled
+    }, {
+      name: 'publish-nick',
+      action: onUpdateThrottled
+    }, {
+      name: 'started-peering',
+      action: onUpdateThrottled
+    }, {
+      name: 'status-message',
+      action: onUpdateThrottled
+    }, {
+      name: 'stopped-peering',
+      action: onUpdateThrottled
+    }, {
+      name: 'topic',
+      action: onUpdateThrottled
+    }, {
+      name: 'user-updated',
+      action: onUpdateThrottled
     }
-  }, 500))
+  ]
+  cabalDetailsEvents.forEach((event) => {
+    cabalDetails.on(event.name, (data) => {
+      event.action(data)
+    })
+  })
+  dispatch(viewCabal({ addr, channel: settings.currentChannel }))
+
+  client.focusCabal(addr)
 
   // if creating a new cabal, set a default username.
-  // this also sends the first update, which will switch the cabal; ref: firstUpdateFlag!
   if (isNew || username) {
     dispatch(setUsername({ username: username || generateUniqueName(), addr }))
   }
