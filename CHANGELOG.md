@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.0.1] - 2020-04-12
+### Fixed
+- Fixed performance issues in event handling.
+
 ## [5.0.0] - 2020-04-10
 ### Added
 - Updated to latest `cabal-client` which now uses `hyperswarm` for connecting to peers.
