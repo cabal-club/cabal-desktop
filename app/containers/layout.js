@@ -47,7 +47,9 @@ class LayoutScreen extends Component {
     const { cabal } = this.props
     if (!cabal || !this.cabalsInitialized()) {
       return (
-        <div className='loading'>➤</div>
+        <div className='loading'>
+          <img src='static/images/cabal-logo-black.svg' />
+        </div>
       )
     }
     return (
