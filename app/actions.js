@@ -368,7 +368,7 @@ export const updateAllsChannelsUnreadCount = ({ addr, channelMessagesUnread }) =
     return total + (value || 0)
   }, 0)
   if (allChannelsUnreadCount !== getState()?.cabals[addr]?.allChannelsUnreadCount) {
-    dispatch({ type: 'UPDATE_CABAL', addr, allChannelsUnreadCount })
+    dispatch({ type: 'UPDATE_CABAL', addr, allChannelsUnreadCount, channelMessagesUnread })
     dispatch(updateAppIconBadge())
   }
 }
