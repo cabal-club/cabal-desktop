@@ -444,19 +444,21 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
     }, {
       name: 'init',
       action: () => {
-        const users = cabalDetails.getUsers()
-        const username = cabalDetails.getLocalName()
-        const channels = cabalDetails.getChannels()
-        const channelsJoined = cabalDetails.getJoinedChannels() || []
-        const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
-        const currentChannel = cabalDetails.getCurrentChannel()
-        const channelMembers = cabalDetails.getChannelMembers()
-        dispatch({ type: 'UPDATE_CABAL', initialized: true, addr, channelMessagesUnread, users, username, channels, channelsJoined, currentChannel, channelMembers })
-        dispatch(getMessages({ addr, amount: 1000, channel: currentChannel }))
-        dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
+        setTimeout(() => {
+          const users = cabalDetails.getUsers()
+          const username = cabalDetails.getLocalName()
+          const channels = cabalDetails.getChannels()
+          const channelsJoined = cabalDetails.getJoinedChannels() || []
+          const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
+          const currentChannel = cabalDetails.getCurrentChannel()
+          const channelMembers = cabalDetails.getChannelMembers()
+          dispatch({ type: 'UPDATE_CABAL', initialized: true, addr, channelMessagesUnread, users, username, channels, channelsJoined, currentChannel, channelMembers })
+          dispatch(getMessages({ addr, amount: 1000, channel: currentChannel }))
+          dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
 
-        dispatch(viewCabal({ addr, channel: settings.currentChannel }))
-        client.focusCabal(addr)      
+          dispatch(viewCabal({ addr, channel: settings.currentChannel }))
+          client.focusCabal(addr)     
+        }, 2000) 
       }
     }, {
       name: 'new-channel',
@@ -522,9 +524,9 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
     }
   ]
   cabalDetailsEvents.forEach((event) => {
-    cabalDetails.on(event.name, (data) => {
+    cabalDetails.on(event.name, throttle((data) => {
       event.action(data)
-    })
+    }), 2000)
   })
 
   // if creating a new cabal, set a default username.

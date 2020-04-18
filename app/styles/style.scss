@@ -1066,3 +1066,21 @@ form {
     line-height: 1.4;
   }
 }
+
+.loading {
+  align-items: center;
+  animation-duration: 4s;
+  animation-iteration-count: infinite;
+  animation-name: loading;
+  display: flex;
+  font-size: 200px;
+  height: 100%;
+  justify-content: center;
+  text-shadow: #693afa4f 60px 0px 60px;
+}
+
+@keyframes loading {
+  from { transform: rotate(90deg) scale(1); }
+  50% { transform: rotate(90deg) scale(0.75); }
+  to { transform: rotate(90deg) scale(1); }
+}
