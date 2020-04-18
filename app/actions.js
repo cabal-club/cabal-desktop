@@ -469,6 +469,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
       }
     }, {
       name: 'new-message',
+      throttleDelay: 1000,
       action: () => {
         const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
         const currentChannel = cabalDetails.getCurrentChannel()
@@ -491,6 +492,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
       }
     }, {
       name: 'started-peering',
+      throttleDelay: 1000,
       action: () => {
         const users = cabalDetails.getUsers()
         dispatch({ type: 'UPDATE_CABAL', addr, users })
@@ -505,6 +507,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
       }
     }, {
       name: 'stopped-peering',
+      throttleDelay: 1000,
       action: () => {
         const users = cabalDetails.getUsers()
         dispatch({ type: 'UPDATE_CABAL', addr, users })
@@ -526,7 +529,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
   cabalDetailsEvents.forEach((event) => {
     cabalDetails.on(event.name, throttle((data) => {
       event.action(data)
-    }), 2000)
+    }), event.throttleDelay || 200)
   })
 
   // if creating a new cabal, set a default username.
