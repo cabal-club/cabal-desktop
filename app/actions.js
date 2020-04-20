@@ -213,6 +213,30 @@ export const getMessages = ({ addr, channel, amount }, callback) => dispatch => 
   }
 }
 
+export const onIncomingMessage = ({ addr, channel, message }, callback) => (dispatch, getState) => {
+  const cabalDetails = client.getDetails(addr)
+  const currentChannel = cabalDetails.getCurrentChannel()
+  if ((channel === currentChannel) && (addr === client.getCurrentCabal().key)) {
+    const users = cabalDetails.getUsers()
+    const author = users[message.key] ? users[message.key].name : message.key.substr(0, 6)
+    const { type, timestamp, content } = message.value
+    const enrichedMessage = enrichMessage({
+      author,
+      content: content && content.text,
+      key: message.key + timestamp,
+      time: timestamp,
+      type
+    })
+    const messages = [
+      ...getState()?.cabals[addr].messages,
+      enrichedMessage
+    ]
+    dispatch({ type: 'UPDATE_CABAL', addr, messages })
+  } else {
+    dispatch(updateUnreadCounts({ addr }))
+  }
+}
+
 export const viewChannel = ({ addr, channel }) => (dispatch) => {
   if (!channel || channel.length === 0) return
 
@@ -373,6 +397,12 @@ export const updateAllsChannelsUnreadCount = ({ addr, channelMessagesUnread }) =
   }
 }
 
+export const updateUnreadCounts = ({ addr }) => (dispatch) => {
+  const cabalDetails = client.getDetails(addr)
+  const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
+  dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
+}
+
 export const updateAppIconBadge = (badgeCount) => (dispatch, getState) => {
   // TODO: if (!!app.settings.enableBadgeCount) {
   const cabals = getState().cabals || {}
@@ -469,12 +499,10 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
       }
     }, {
       name: 'new-message',
-      throttleDelay: 1000,
-      action: () => {
-        const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
-        const currentChannel = cabalDetails.getCurrentChannel()
-        dispatch(getMessages({ addr, amount: 1000, channel: currentChannel }))
-        dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
+      action: (data) => {
+        const channel = data.channel
+        const message = data.message
+        dispatch(onIncomingMessage({ addr, channel, message }))        
       }
     }, {
       name: 'publish-message',
