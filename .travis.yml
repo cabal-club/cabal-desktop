@@ -9,14 +9,14 @@ os:
   - windows
 
 script:
-  - npm install
-  - npm rebuild
-  - npm run build
-  - npm run dist
+  - yarn install
+  - yarn rebuild
+  - yarn run build
+  - yarn run dist
 
 deploy:
   provider: script
-  script: npm run dist
+  script: yarn run dist
   on:
     all_branches: true
   skip_cleanup: true

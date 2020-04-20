@@ -9,4 +9,4 @@ docker run --rm -ti \
   -v ~/.cache/electron:/root/.cache/electron \
   -v ~/.cache/electron-builder:/root/.cache/electron-builder \
   electronuserland/builder:wine \
-  /bin/bash -c "uname -a && npm install && npm run build && npm run dist:multi"
+  /bin/bash -c "uname -a && yarn install && yarn run build && yarn run dist:multi"
