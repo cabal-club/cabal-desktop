@@ -11,7 +11,8 @@
     "pack": "electron-builder --dir",
     "dist": "yarn run build && electron-builder",
     "dist:multi": "electron-builder -mlw",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 jest --passWithNoTests"
   },
   "productName": "Cabal",
   "repository": "cabal-club/cabal-desktop",
