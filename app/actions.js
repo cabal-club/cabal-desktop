@@ -213,6 +213,30 @@ export const getMessages = ({ addr, channel, amount }, callback) => dispatch => 
   }
 }
 
+export const onIncomingMessage = ({ addr, channel, message }, callback) => (dispatch, getState) => {
+  const cabalDetails = client.getDetails(addr)
+  const currentChannel = cabalDetails.getCurrentChannel()
+  if ((channel === currentChannel) && (addr === client.getCurrentCabal().key)) {
+    const users = cabalDetails.getUsers()
+    const author = users[message.key] ? users[message.key].name : message.key.substr(0, 6)
+    const { type, timestamp, content } = message.value
+    const enrichedMessage = enrichMessage({
+      author,
+      content: content && content.text,
+      key: message.key + timestamp,
+      time: timestamp,
+      type
+    })
+    const messages = [
+      ...getState()?.cabals[addr].messages,
+      enrichedMessage
+    ]
+    dispatch({ type: 'UPDATE_CABAL', addr, messages })
+  } else {
+    dispatch(updateUnreadCounts({ addr }))
+  }
+}
+
 export const viewChannel = ({ addr, channel }) => (dispatch) => {
   if (!channel || channel.length === 0) return
 
@@ -368,9 +392,15 @@ export const updateAllsChannelsUnreadCount = ({ addr, channelMessagesUnread }) =
     return total + (value || 0)
   }, 0)
   if (allChannelsUnreadCount !== getState()?.cabals[addr]?.allChannelsUnreadCount) {
-    dispatch({ type: 'UPDATE_CABAL', addr, allChannelsUnreadCount })
+    dispatch({ type: 'UPDATE_CABAL', addr, allChannelsUnreadCount, channelMessagesUnread })
     dispatch(updateAppIconBadge())
   }
+}
+
+export const updateUnreadCounts = ({ addr }) => (dispatch) => {
+  const cabalDetails = client.getDetails(addr)
+  const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
+  dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
 }
 
 export const updateAppIconBadge = (badgeCount) => (dispatch, getState) => {
@@ -444,19 +474,21 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
     }, {
       name: 'init',
       action: () => {
-        const users = cabalDetails.getUsers()
-        const username = cabalDetails.getLocalName()
-        const channels = cabalDetails.getChannels()
-        const channelsJoined = cabalDetails.getJoinedChannels() || []
-        const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
-        const currentChannel = cabalDetails.getCurrentChannel()
-        const channelMembers = cabalDetails.getChannelMembers()
-        dispatch({ type: 'UPDATE_CABAL', initialized: true, addr, channelMessagesUnread, users, username, channels, channelsJoined, currentChannel, channelMembers })
-        dispatch(getMessages({ addr, amount: 1000, channel: currentChannel }))
-        dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
+        setTimeout(() => {
+          const users = cabalDetails.getUsers()
+          const username = cabalDetails.getLocalName()
+          const channels = cabalDetails.getChannels()
+          const channelsJoined = cabalDetails.getJoinedChannels() || []
+          const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
+          const currentChannel = cabalDetails.getCurrentChannel()
+          const channelMembers = cabalDetails.getChannelMembers()
+          dispatch({ type: 'UPDATE_CABAL', initialized: true, addr, channelMessagesUnread, users, username, channels, channelsJoined, currentChannel, channelMembers })
+          dispatch(getMessages({ addr, amount: 1000, channel: currentChannel }))
+          dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
 
-        dispatch(viewCabal({ addr, channel: settings.currentChannel }))
-        client.focusCabal(addr)      
+          dispatch(viewCabal({ addr, channel: settings.currentChannel }))
+          client.focusCabal(addr)     
+        }, 2000) 
       }
     }, {
       name: 'new-channel',
@@ -467,11 +499,10 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
       }
     }, {
       name: 'new-message',
-      action: () => {
-        const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
-        const currentChannel = cabalDetails.getCurrentChannel()
-        dispatch(getMessages({ addr, amount: 1000, channel: currentChannel }))
-        dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
+      action: (data) => {
+        const channel = data.channel
+        const message = data.message
+        dispatch(onIncomingMessage({ addr, channel, message }))        
       }
     }, {
       name: 'publish-message',
@@ -489,6 +520,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
       }
     }, {
       name: 'started-peering',
+      throttleDelay: 1000,
       action: () => {
         const users = cabalDetails.getUsers()
         dispatch({ type: 'UPDATE_CABAL', addr, users })
@@ -503,6 +535,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
       }
     }, {
       name: 'stopped-peering',
+      throttleDelay: 1000,
       action: () => {
         const users = cabalDetails.getUsers()
         dispatch({ type: 'UPDATE_CABAL', addr, users })
@@ -522,9 +555,9 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
     }
   ]
   cabalDetailsEvents.forEach((event) => {
-    cabalDetails.on(event.name, (data) => {
+    cabalDetails.on(event.name, throttle((data) => {
       event.action(data)
-    })
+    }), event.throttleDelay || 200)
   })
 
   // if creating a new cabal, set a default username.

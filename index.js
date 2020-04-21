@@ -65,7 +65,7 @@ const template = [
 
 if (process.platform === 'darwin') {
   template.unshift({
-    label: app.getName(),
+    label: 'Cabal',
     submenu: [
       { role: 'about' },
       { type: 'separator' },

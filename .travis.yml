@@ -1,23 +1,24 @@
-sudo: false
 language: node_js
 node_js:
   - '10'
+cache: yarn
 
 os:
   - osx
   - linux
   - windows
 
-script:
-  - npm install
-  - npm rebuild
-  - npm run build
-  - npm run dist
+install:
+  - yarn install
+  - yarn run build
+  - yarn run dist
 
 deploy:
-  provider: script
-  script: npm run dist
-  on:
-    all_branches: true
-  skip_cleanup: true
+  draft: true
+  edge: true
   file_glob: true
+  overwrite: true
+  provider: releases
+  on:
+    tags: true
+    all_branches: true
