@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.0.2] - 2020-04-21
+### Fixed
+- Fixed additional performance issues in event handling.
+### Added
+- Added a loading screen while cabals initialize to reduce UI flashing.
+- Updated to Electron 7.
+
 ## [5.0.1] - 2020-04-12
 ### Fixed
 - Fixed performance issues in event handling.
