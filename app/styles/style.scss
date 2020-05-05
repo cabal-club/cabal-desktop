@@ -56,6 +56,7 @@ html {
 body {
   height: 100%;
   margin: 0;
+  background-color: #1e1e1e;
 }
 
 form {
@@ -1069,21 +1070,31 @@ form {
 
 .loading {
   align-items: center;
+  background-color: #1e1e1e;
   display: flex;
+  flex-direction: column;
   height: 100%;
-  justify-content: center;
+  justify-content: space-around;
+  width: 100%;
 
   img {
     animation-duration: 7s;
     animation-iteration-count: infinite;
     animation-name: loading;
     filter: drop-shadow(0px 70px 40px #693afa4f);
+    height: 8em;
     transition-timing-function: ease-in-out;
+  }
+
+  .status {
+    animation: fadein 5s;
+    color: #777;
+    font-family: Arial, Helvetica, sans-serif;
   }
 }
 
 @keyframes loading {
   from { transform: scale(1); }
-  50% { transform: scale(0.75); }
+  50% { transform: scale(0.6); }
   to { transform: scale(1); }
 }

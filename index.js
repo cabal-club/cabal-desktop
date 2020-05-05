@@ -120,6 +120,7 @@ app.on('ready', () => {
   })
 
   win = new BrowserWindow({
+    backgroundColor: '#1e1e1e',
     x: mainWindowState.x,
     y: mainWindowState.y,
     width: mainWindowState.width,
