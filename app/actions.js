@@ -9,7 +9,6 @@ import remark from 'remark'
 import remarkEmoji from 'remark-emoji'
 import remarkReact from 'remark-react'
 import throttle from 'lodash.throttle'
-import commander from './commander'
 const { dialog } = require('electron').remote
 
 const DEFAULT_CHANNEL = 'default'
@@ -23,7 +22,25 @@ const client = new Client({
   maxFeeds: MAX_FEEDS,
   config: {
     dbdir: DATA_DIR
-  }
+  },
+  commands: {
+    help: {
+      help: () => 'display this help message',
+      call: (cabal, res, arg) => {
+        const commands = client.getCommands()
+        let helpContent = ''
+        for (var key in commands) {
+          helpContent = helpContent + `/${key} - ${commands[key].help()} \n`
+        }
+        addStatusMessage({ addr: cabal.key, text: helpContent })
+      }
+    }
+  }  
+})
+// Disable a few slash commands for now
+const removedCommands = ['add', 'channels', 'clear', 'ids', 'names', 'new', 'qr', 'whoami', 'whois']
+removedCommands.forEach((command) => {
+  client.removeCommand(command)
 })
 
 export const viewCabal = ({ addr, channel }) => dispatch => {
@@ -75,7 +92,7 @@ export const removeCabal = ({ addr }) => dispatch => {
     type: 'question',
     buttons: ['Cancel', 'Remove'],
     message: `Are you sure you want to remove this cabal (${addr.substr(0, 8)}...) from Cabal Desktop?`
-  }, (response) => {
+  }).then((response) => {
     if (response) {
       dispatch(confirmRemoveCabal({ addr }))
     }
@@ -107,12 +124,8 @@ export const confirmRemoveCabal = ({ addr }) => async dispatch => {
   dispatch(hideAllModals())
 }
 
-export const onCommand = ({ addr, message }) => dispatch => {
-  dispatch(commander(addr, message))
-}
-
 export const listCommands = () => dispatch => {
-  return dispatch(commander())
+  return client.getCommands()
 }
 
 export const joinChannel = ({ addr, channel }) => dispatch => {
@@ -166,11 +179,11 @@ export const setUsername = ({ username, addr }) => dispatch => {
   if (username !== currentUsername) {
     cabalDetails.publishNick(username)
     dispatch({ type: 'UPDATE_CABAL', addr: cabalDetails.key, username })
-    dispatch(addStatusMessage({
+    addStatusMessage({
       addr: cabalDetails.key,
       channel: cabalDetails.getCurrentChannel(),
       text: `Nick set to: ${username}`
-    }))
+    })
   }
 }
 
@@ -353,12 +366,22 @@ export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
   })
 }
 
+export const processLine = ({ message, addr }) => dispatch => {
+  const text = message.content.text
+  if (text.startsWith('/')) {
+    const cabal = client.getCurrentCabal()
+    cabal.processLine(text)
+  } else {
+    dispatch(addMessage({ message, addr }))
+  }
+}
+
 export const addMessage = ({ message, addr }) => dispatch => {
   const cabalDetails = client.getDetails(addr)
   cabalDetails.publishMessage(message)
 }
 
-export const addStatusMessage = ({ addr, channel, text }) => dispatch => {
+export const addStatusMessage = ({ addr, channel, text }) => {
   const cabalDetails = addr ? client.getDetails(addr) : client.getCurrentCabal()
   client.addStatusMessage({ text }, channel, cabalDetails._cabal)
 }
@@ -367,11 +390,11 @@ export const setChannelTopic = ({ topic, channel, addr }) => dispatch => {
   const cabalDetails = client.getDetails(addr)
   cabalDetails.publishChannelTopic(channel, topic)
   dispatch({ type: 'UPDATE_TOPIC', addr, topic })
-  dispatch(addStatusMessage({
+  addStatusMessage({
     addr,
     channel,
     text: `Topic set to: ${topic}`
-  }))
+  })
 }
 
 export const updateChannelMessagesUnread = ({ addr, channel, unreadCount }) => (dispatch, getState) => {
@@ -462,14 +485,22 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
         dispatch({ type: 'UPDATE_CABAL', addr, channelMembers, channelMessagesUnread, channelsJoined, currentChannel })
         dispatch(getMessages({ addr, amount: 1000, channel: currentChannel }))
         dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
+        dispatch(viewChannel({ addr, channel: currentChannel }))
       }
     }, {
       name: 'channel-leave',
-      action: () => {
+      action: (data) => {
+        const currentChannel = client.getCurrentChannel()
         const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
         const channelsJoined = cabalDetails.getJoinedChannels()
         dispatch({ type: 'UPDATE_CABAL', addr, channelMessagesUnread, channelsJoined })
         dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
+        dispatch(viewChannel({ addr, channel: currentChannel }))
+      }
+    }, {
+      name: 'command',
+      action: ({ arg, command, data }) => {
+        console.warn('command', { arg, command, data })
       }
     }, {
       name: 'init',
@@ -542,15 +573,35 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
       }
     }, {
       name: 'topic',
-      action: () => {
+      action: (data) => {
+        const cabal = client.getCurrentCabal()
+        const channel = data.channel
         const topic = cabalDetails.getTopic()
         dispatch({ type: 'UPDATE_TOPIC', addr, topic })
+        if (addr === cabal.key && channel === cabalDetails.getCurrentChannel()) {
+          addStatusMessage({
+            addr,
+            channel,
+            text: `Topic set to: ${topic}`
+          })
+        }
       }
     }, {
       name: 'user-updated',
-      action: () => {
+      action: (data) => {
         const users = cabalDetails.getUsers()
         dispatch({ type: 'UPDATE_CABAL', addr, users })
+        // Update local user
+        const cabal = client.getCurrentCabal()
+        if (data.key === cabal.getLocalUser().key) {
+          const username = data.user?.name 
+          dispatch({ type: 'UPDATE_CABAL', addr: cabalDetails.key, username })
+          addStatusMessage({
+            addr: cabalDetails.key,
+            channel: cabalDetails.getCurrentChannel(),
+            text: `Nick set to: ${username}`
+          })
+        }
       }
     }
   ]

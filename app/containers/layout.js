@@ -48,9 +48,9 @@ class LayoutScreen extends Component {
     if (!cabal || !this.cabalsInitialized()) {
       return (
         <div className='loading'>
-          <div class='status'> </div>
+          <div className='status'> </div>
           <img src='static/images/cabal-logo-black.svg' />
-          <div class='status'>Loading hypercores and swarming...</div>
+          <div className='status'>Loading hypercores and swarming...</div>
         </div>
       )
     }

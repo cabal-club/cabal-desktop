@@ -173,7 +173,8 @@ class MainPanel extends Component {
               </div>
               <div className='channel-meta__other'>
                 <div className='channel-meta__other__members' onClick={toggleMemberList}>
-                  <img src='static/images/user-icon.svg' /> {channelMemberCount}
+                  <img src='static/images/user-icon.svg' />
+                  <div className='channel-meta__other__members__count'>{channelMemberCount}</div>
                 </div>
                 <div onClick={this.showCabalSettings.bind(this, this.props.addr)} className='channel-meta__other__more'><img src='static/images/icon-channelother.svg' /></div>
                 <div className='button channel-meta__other__share' onClick={self.copyClick.bind(self)}>Share Cabal</div>
