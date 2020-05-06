@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.0.3] - 2020-05-05
+### Fixed
+- Fixed bug in removing cabals.
+### Added
+- Added slash command handling from `cabal-client`.
+- Improved loading screen experience.
+- Duplicated nicks are now shown as one.
+
 ## [5.0.2] - 2020-04-21
 ### Fixed
 - Fixed additional performance issues in event handling.

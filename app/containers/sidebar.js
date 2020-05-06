@@ -80,6 +80,10 @@ class SidebarScreen extends React.Component {
     this.props.showChannelBrowser({ addr })
   }
 
+  onContextMenu (user) {
+    console.log(user)
+  }
+
   joinChannel (channel) {
     var addr = this.props.addr
     this.props.joinChannel({ addr, channel })
@@ -113,6 +117,22 @@ class SidebarScreen extends React.Component {
     })
   }
 
+  deduplicatedNicks (users) {
+    const deduplicatedNicks = []
+    users && users.forEach((user) => {
+      const userIndex = deduplicatedNicks.findIndex((u) => u.name === user.name)
+      if (user.name && userIndex > -1) {
+        deduplicatedNicks[userIndex].users.push(user)
+      } else {
+        deduplicatedNicks.push({
+          ...user,
+          users: [user]
+        })
+      }
+    })
+    return deduplicatedNicks
+  }
+
   render () {
     var self = this
     const { addr, cabal, settings } = this.props
@@ -120,6 +140,7 @@ class SidebarScreen extends React.Component {
 
     const channels = cabal.channelsJoined.slice().sort()
     const users = this.sortUsers(Object.values(cabal.users) || [])
+    const deduplicatedNicks = this.deduplicatedNicks(users)
     const onlineCount = users.filter(i => !!i.online).length
     const username = cabal.username
     return (
@@ -137,9 +158,9 @@ class SidebarScreen extends React.Component {
                 {username}
               </h2>
             </div>
-            {/* <div className='session__configuration'>
+            <div className='session__configuration'>
               <img src='static/images/icon-sidebarmenu.svg' />
-            </div> */}
+            </div>
           </div>
           <div className='sidebar__section'>
             <div className='collection collection--push'>
@@ -169,21 +190,24 @@ class SidebarScreen extends React.Component {
                 <div className='collection__heading__title'>Peers - {onlineCount} online</div>
                 <div className='collection__heading__handle' />
               </div>
-              {users.map((user) =>
-                <div key={user.key} className='collection__item'>
-                  <div className='collection__item__icon'>
-                    {!!user.online &&
-                      <img alt='Online' src='static/images/icon-status-online.svg' />}
-                    {!user.online &&
-                      <img alt='Offline' src='static/images/icon-status-offline.svg' />}
+              {deduplicatedNicks.map((nick) => {
+                const keys = nick.users.map((u) => u.key).join(', ')
+                return (
+                  <div key={keys} className='collection__item' title={keys} onContextMenu={this.onContextMenu.bind(this, nick)}>
+                    <div className='collection__item__icon'>
+                      {!!nick.online &&
+                        <img alt='Online' src='static/images/icon-status-online.svg' />}
+                      {!nick.online &&
+                        <img alt='Offline' src='static/images/icon-status-offline.svg' />}
+                    </div>
+                    <div className={`collection__item__content ${nick.online ? 'active' : ''}`}>
+                      {nick.name || nick.key.substring(0, 6)}
+                      {nick.users.length > 1 && <span className='collection__item__count'>({nick.users.length})</span>}
+                    </div>
+                    <div className='collection__item__handle' />
                   </div>
-                  {!!user.online &&
-                    <div className='collection__item__content active'>{user.name || user.key.substring(0, 6)}</div>}
-                  {!user.online &&
-                    <div className='collection__item__content'>{user.name || user.key.substring(0, 6)}</div>}
-                  <div className='collection__item__handle' />
-                </div>
-              )}
+                )
+              })}
             </div>
           </div>
         </div>
