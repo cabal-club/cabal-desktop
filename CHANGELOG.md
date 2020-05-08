@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.0.4] - 2020-05-07
+### Fixed
+- Fixed issue with missing icon.
+
 ## [5.0.3] - 2020-05-05
 ### Fixed
 - Fixed bug in removing cabals.
