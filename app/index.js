@@ -7,7 +7,11 @@ import App from './app'
 import logger from 'redux-logger'
 import thunk from 'redux-thunk'
 
-const store = createStore(reducer, compose(applyMiddleware(thunk, logger)))
+const store = createStore(
+  reducer,
+  // compose(applyMiddleware(thunk, logger))
+  compose(applyMiddleware(thunk))
+)
 
 render(
   <Provider store={store}>

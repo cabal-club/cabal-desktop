@@ -5,13 +5,13 @@ import Mousetrap from 'mousetrap'
 
 import {
   addMessage,
-  listCommands,
   hideEmojiPicker,
-  onCommand,
+  listCommands,
+  processLine,
   showEmojiPicker,
+  viewCabal,
   viewNextChannel,
-  viewPreviousChannel,
-  viewCabal
+  viewPreviousChannel
 } from '../actions'
 
 import '../../node_modules/emoji-mart/css/emoji-mart.css'
@@ -31,13 +31,13 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   addMessage: ({ addr, message }) => dispatch(addMessage({ addr, message })),
-  listCommands: () => dispatch(listCommands()),
   hideEmojiPicker: () => dispatch(hideEmojiPicker()),
-  onCommand: ({ addr, message }) => dispatch(onCommand({ addr, message })),
+  listCommands: () => dispatch(listCommands()),
+  processLine: ({ addr, message }) => dispatch(processLine({ addr, message })),
   showEmojiPicker: () => dispatch(showEmojiPicker()),
+  viewCabal: ({ addr }) => dispatch(viewCabal({ addr })),
   viewNextChannel: ({ addr }) => dispatch(viewNextChannel({ addr })),
-  viewPreviousChannel: ({ addr }) => dispatch(viewPreviousChannel({ addr })),
-  viewCabal: ({ addr }) => dispatch(viewCabal({ addr }))
+  viewPreviousChannel: ({ addr }) => dispatch(viewPreviousChannel({ addr }))
 })
 
 class writeScreen extends Component {
@@ -146,7 +146,7 @@ class writeScreen extends Component {
       }
       el = this.textInput
       el.value = ''
-      const { addr, addMessage, onCommand } = this.props
+      const { addr, processLine } = this.props
       const message = {
         content: {
           channel: this.props.currentChannel,
@@ -154,12 +154,7 @@ class writeScreen extends Component {
         },
         type: 'chat/text'
       }
-      var opts = { message, addr }
-      if (data.message.startsWith('/')) {
-        onCommand(opts)
-      } else {
-        addMessage(opts)
-      }
+      processLine({ addr, message })
       e.preventDefault()
       e.stopPropagation()
     } else if ((e.keyCode === 78 && (e.ctrlKey || e.metaKey)) && e.shiftKey) {

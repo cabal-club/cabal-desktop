@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.0.4] - 2020-05-07
+### Fixed
+- Fixed issue with missing icon.
+
+## [5.0.3] - 2020-05-05
+### Fixed
+- Fixed bug in removing cabals.
+### Added
+- Added slash command handling from `cabal-client`.
+- Improved loading screen experience.
+- Duplicated nicks are now shown as one.
+
+## [5.0.2] - 2020-04-21
+### Fixed
+- Fixed additional performance issues in event handling.
+### Added
+- Added a loading screen while cabals initialize to reduce UI flashing.
+- Updated to Electron 7.
+
+## [5.0.1] - 2020-04-12
+### Fixed
+- Fixed performance issues in event handling.
+
+## [5.0.0] - 2020-04-10
+### Added
+- Updated to latest `cabal-client` which now uses `hyperswarm` for connecting to peers.
+  This is a breaking change and all clients will need to update to a client 
+  that supports hyperswarm to continuing peering.
+
 ## [4.1.0] - 2020-02-09
 ### Added
 - Implemented `cabal-client` into Cabal Desktop.

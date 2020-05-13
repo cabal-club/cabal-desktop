@@ -33,13 +33,25 @@ class LayoutScreen extends Component {
     }))
   }
 
+  cabalsInitialized () {
+    if (this.props.cabals) {
+      return Object.values(this.props.cabals).every((cabal) => {
+        return cabal.initialized
+      })
+    } else {
+      return false
+    }
+  }
+
   render () {
     const { cabal } = this.props
-    if (!cabal) {
+    if (!cabal || !this.cabalsInitialized()) {
       return (
-        <>
-          <div />
-        </>
+        <div className='loading'>
+          <div className='status'> </div>
+          <img src='static/images/cabal-logo-black.svg' />
+          <div className='status'>Loading hypercores and swarming...</div>
+        </div>
       )
     }
     return (

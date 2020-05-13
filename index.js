@@ -53,7 +53,7 @@ const template = [
     submenu: [
       {
         label: 'Learn More',
-        click () { require('electron').shell.openExternal('http://cabal.chat/') }
+        click () { require('electron').shell.openExternal('https://cabal.chat/') }
       },
       {
         label: 'Report Issue',
@@ -65,7 +65,7 @@ const template = [
 
 if (process.platform === 'darwin') {
   template.unshift({
-    label: app.getName(),
+    label: 'Cabal',
     submenu: [
       { role: 'about' },
       { type: 'separator' },
@@ -120,6 +120,7 @@ app.on('ready', () => {
   })
 
   win = new BrowserWindow({
+    backgroundColor: '#1e1e1e',
     x: mainWindowState.x,
     y: mainWindowState.y,
     width: mainWindowState.width,

@@ -141,6 +141,7 @@ html {
 body {
   height: 100%;
   margin: 0;
+  background-color: #1e1e1e;
 }
 
 form {
@@ -459,6 +460,12 @@ form {
     overflow: hidden;
   }
 
+  .collection .collection__item .collection__item__count {
+    color: rgba(255, 255, 255, 0.3);
+    font-weight: 400;
+    margin-left: 0.3rem;
+  }
+
   .collection .collection__item .collection__item__messagesUnreadCount {
     display: table-cell;
     display: inline-block;
@@ -484,6 +491,10 @@ form {
   }
 
   /* States */
+  .collection .collection__item.active {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
   .collection .collection__item.active .collection__item__content,
   .collection .collection__item .collection__item__content.active {
     font-weight: 700;
@@ -551,12 +562,20 @@ form {
   }
 
   .channel-meta__other .channel-meta__other__members {
-    display: inline-block;
-    vertical-align: middle;
-    margin-left: 1rem;
-    cursor: pointer;
+    align-items: center;
     color: #B497E7;
-    font-size: 20px;
+    cursor: pointer;
+    display: inline-block;
+    flex-direction: row;
+    margin-left: 1rem;
+    margin-right: 1rem;
+    vertical-align: middle;
+  }
+
+  .channel-meta__other .channel-meta__other__members__count {
+    display: inline-block;
+    margin-top: 2px;
+    position: absolute;
   }
 
   .channel-meta__other .channel-meta__other__more {
@@ -1196,4 +1215,34 @@ form {
     font-size: 0.875rem;
     line-height: 1.4;
   }
+}
+
+.loading {
+  align-items: center;
+  background-color: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-around;
+  width: 100%;
+
+  img {
+    animation-duration: 7s;
+    animation-iteration-count: infinite;
+    animation-name: loading;
+    height: 8em;
+    transition-timing-function: ease-in-out;
+  }
+
+  .status {
+    animation: fadein 5s;
+    color: #777;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+}
+
+@keyframes loading {
+  from { transform: scale(1); }
+  50% { transform: scale(0.6); }
+  to { transform: scale(1); }
 }
