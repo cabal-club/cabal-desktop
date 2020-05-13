@@ -67,7 +67,9 @@ class MainPanel extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    if (prevProps.cabal !== this.props.cabal) {
+    if ((prevProps.cabal !== this.props.cabal) ||
+      (prevProps.channelBrowserVisible !== this.props.channelBrowserVisible) ||
+      (prevProps.cabalSettingsVisible !== this.props.cabalSettingsVisible)) {
       this.scrollToBottom()
     }
     // if you're in the same cabal and a new message arrives we should show a button prompting a scroll to bottom
