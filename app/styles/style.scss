@@ -1,43 +1,128 @@
 /* Reset */
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-	display: block;
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
 }
+
 body {
-	line-height: 1;
+  line-height: 1;
 }
-blockquote, q {
-	quotes: none;
+
+blockquote,
+q {
+  quotes: none;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
 }
+
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 * {
@@ -154,16 +239,7 @@ form {
   animation-direction: alternate;
 }
 
-@keyframes pulse {
-  from {
-    opacity: 0.5;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.client__cabals .switcher__item.--addnew img{
+.client__cabals .switcher__item.--addnew img {
   opacity: 0.25;
 }
 
@@ -246,7 +322,8 @@ form {
     margin: 0 0.75rem 0 0.75rem;
   }
 
-  .session .session__meta h1, .sidebar .session .session__meta h2 {
+  .session .session__meta h1,
+  .sidebar .session .session__meta h2 {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -516,7 +593,7 @@ form {
     margin-bottom: 1rem;
   }
 
-  .window__header{
+  .window__header {
     -webkit-app-region: drag;
     background-color: #fff;
     z-index: 10;
@@ -571,14 +648,14 @@ form {
     align-items: flex-end;
   }
 
-	.messages__item__metadata .messages__item__metadata__name .messages__item__metadata__date {
-		opacity: 0;
-		transition: opacity .2s ease-in-out;
-	}
+  .messages__item__metadata .messages__item__metadata__name .messages__item__metadata__date {
+    opacity: 0;
+    transition: opacity .2s ease-in-out;
+  }
 
-	.messages__item__metadata:hover .messages__item__metadata__name .messages__item__metadata__date {
-		opacity: 1;
-	}
+  .messages__item__metadata:hover .messages__item__metadata__name .messages__item__metadata__date {
+    opacity: 1;
+  }
 
   .messages__item__metadata span {
     color: rgba(0, 0, 0, 0.33);
@@ -593,12 +670,18 @@ form {
     word-wrap: break-word;
     white-space: pre-wrap;
 
-    h1, h2, h3, h4, h5, h6 {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       font-weight: 700;
     }
 
     h1 {
-      font-size: 1.6rem; margin-top: 1rem;
+      font-size: 1.6rem;
+      margin-top: 1rem;
     }
 
     h2 {
@@ -609,7 +692,9 @@ form {
       font-size: 1.1rem;
     }
 
-    h4, h5, h6 {
+    h4,
+    h5,
+    h6 {
       font-size: 1.1rem;
     }
 
@@ -716,13 +801,39 @@ form {
     cursor: text;
   }
 
-  .emoji__container{
+  .emoji__container {
     box-shadow: 0 4px 10px 0px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
   }
 
-  .emoji-mart-scroll{
+  .emoji-mart-scroll {
     overflow-x: hidden;
+  }
+
+  .scroll__button__container {
+    display: flex;
+    justify-content: center;
+
+    .scroll__button {
+      animation: scrollButtonFadeInAndUp 0.5s;
+      background-color: #693afa;
+      border-radius: 7px;
+      color: white;
+      cursor: pointer;
+      font-size: .8rem;
+      margin-bottom: 1rem;  
+      margin-top: -2rem;      
+      padding: 7px;
+      position: absolute;
+      text-align: center;
+      transition: all 0.5s;
+      width: 20rem;
+
+      &:hover {
+        box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.5);
+        transform: scale(1.01);
+      }
+    }
   }
 
   .composer {
@@ -754,7 +865,7 @@ form {
       padding: 0 1rem;
     }
 
-    .composer__input form{
+    .composer__input form {
       width: 100%;
       display: flex;
       align-content: center;
@@ -789,7 +900,7 @@ form {
       transform: scale(1);
     }
 
-    .composer__other:hover{
+    .composer__other:hover {
       transform: scale(1.02);
     }
   }
@@ -798,19 +909,19 @@ form {
 
 .memberList {
   height: 100%;
-  background-color:#16161d;
+  background-color: #16161d;
   flex: 0 0 15rem;
   color: #fff;
   padding: 1.5rem;
   overflow: auto;
-  
+
   .memberList__header {
     font-size: 1.1rem;
     margin-bottom: 2rem;
-    font-weight: 600; 
+    font-weight: 600;
   }
 
-    .collection__item {
+  .collection__item {
     display: table;
     width: 100%;
     // padding: 0.25rem 1rem 0 1rem;
@@ -820,7 +931,7 @@ form {
     color: #fff;
   }
 
-   .collection__item__icon {
+  .collection__item__icon {
     display: table-cell;
     width: 1.25rem;
     vertical-align: middle;
@@ -828,7 +939,7 @@ form {
     opacity: 0.5;
   }
 
-   .collection__item__status {
+  .collection__item__status {
     display: table-cell;
     width: 1.25rem;
     vertical-align: middle;
@@ -836,7 +947,7 @@ form {
     opacity: 1;
   }
 
-   .collection__item .collection__item__content {
+  .collection__item .collection__item__content {
     display: table-cell;
     display: inline-block;
     font-size: 1rem;
@@ -885,6 +996,7 @@ form {
     margin: 2rem;
   }
 }
+
 /*
   ------------------------------------------------------
   Remaining styles from previous stylesheet.
@@ -895,78 +1007,83 @@ form {
   text-align: center;
   animation: fadein 5s;
 }
-@keyframes fadein {
-  0% { opacity: 0; }
-  50% { opacity: 0; }
-  100% { opacity: 1; }
-}
 
 .modal-overlay {
-	background-color: rgba(0,0,0,0.001);
-	width: 100%;
-	height: 100%;
-	position: fixed;
-	top: 0;
-	left: 0;
-	z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.001);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
 }
+
 .modal-overlay .modal {
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	z-index: 9998;
-	background-color: #fff;
-	border-radius: 3px;
-	padding: 0.5em;
-	color: #1e1e1e;
-	-webkit-box-shadow: 0 1px 6px rgba(0,0,0,0.12);
-	box-shadow: 0 1px 6px rgba(0,0,0,0.12);
-	margin-top: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 9998;
+  background-color: #fff;
+  border-radius: 3px;
+  padding: 0.5em;
+  color: #1e1e1e;
+  -webkit-box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12);
+  margin-top: 10px;
 }
+
 .modal-overlay .modal ul {
-	margin: 0;
-	padding: 0;
+  margin: 0;
+  padding: 0;
 }
+
 .modal-overlay .modal li {
-	list-style: none;
+  list-style: none;
 }
+
 .modal-overlay .modal li a,
 .modal-overlay .modal li button {
-	width: 100%;
-	display: block;
-	text-decoration: none;
-	color: #1e1e1e;
-	background: none;
-	border: none;
-	text-align: left;
-	padding: 0.3em;
-	cursor: pointer;
+  width: 100%;
+  display: block;
+  text-decoration: none;
+  color: #1e1e1e;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 0.3em;
+  cursor: pointer;
 }
+
 .modal-overlay .modal li a:hover,
 .modal-overlay .modal li button:hover {
-	background-color: #dcdcdc;
+  background-color: #dcdcdc;
 }
+
 ::-webkit-scrollbar {
-	width: 0.5rem;
+  width: 0.5rem;
 }
+
 ::-webkit-scrollbar-track {
-	background-color: transparent;
-	border-radius: 8px;
+  background-color: transparent;
+  border-radius: 8px;
 }
+
 ::-webkit-scrollbar-thumb {
-	background-color: rgba(0,0,0,0.175);
-	border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.175);
+  border-radius: 8px;
 }
+
 .sidebar ::-webkit-scrollbar-thumb {
-	background-color: rgba(255,255,255,0.175);
-	border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.175);
+  border-radius: 8px;
 }
+
 .add-cabal {
-	text-align: center;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   height: 100%;
 
   h1 {
@@ -1004,40 +1121,43 @@ form {
       font-size: 12px;
     }
   }
+
   h2:before,
   h2:after {
-      background-color: #c2c5cc;
-      content: "";
-      display: inline-block;
-      height: 1px;
-      position: relative;
-      vertical-align: middle;
-      width: 50%;
+    background-color: #c2c5cc;
+    content: "";
+    display: inline-block;
+    height: 1px;
+    position: relative;
+    vertical-align: middle;
+    width: 50%;
   }
+
   h2:before {
-      right: 0.5em;
-      margin-left: -50%;
+    right: 0.5em;
+    margin-left: -50%;
   }
+
   h2:after {
-      left: 0.5em;
-      margin-right: -50%;
+    left: 0.5em;
+    margin-right: -50%;
   }
 }
 
 .app-settings {
-	display: flex;
-	flex-direction: column;
-	height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 
-	> .body {
-		flex-grow: 1;
-	}
+  >.body {
+    flex-grow: 1;
+  }
 
-	> .footer {
-		color: #c2c5cc;
+  >.footer {
+    color: #c2c5cc;
     font-size: 14px;
-		margin: 2rem;
-	}
+    margin: 2rem;
+  }
 }
 
 .channelBrowser {
@@ -1114,4 +1234,36 @@ form {
   from { transform: scale(1); }
   50% { transform: scale(0.6); }
   to { transform: scale(1); }
+}
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes scrollButtonFadeInAndUp {
+  0% {
+    opacity: 0;
+    margin-top: -1.5rem;
+  }
+  100% {
+    opacity: 1;
+    margin-top: -2rem
+  }
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
 }
