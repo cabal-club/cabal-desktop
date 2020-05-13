@@ -93,7 +93,7 @@ export const removeCabal = ({ addr }) => dispatch => {
     buttons: ['Cancel', 'Remove'],
     message: `Are you sure you want to remove this cabal (${addr.substr(0, 8)}...) from Cabal Desktop?`
   }).then((response) => {
-    if (response) {
+    if (response.response === 1) {
       dispatch(confirmRemoveCabal({ addr }))
     }
   })
@@ -177,12 +177,13 @@ export const setUsername = ({ username, addr }) => dispatch => {
   const cabalDetails = client.getDetails(addr)
   const currentUsername = cabalDetails.getLocalName()
   if (username !== currentUsername) {
-    cabalDetails.publishNick(username)
-    dispatch({ type: 'UPDATE_CABAL', addr: cabalDetails.key, username })
-    addStatusMessage({
-      addr: cabalDetails.key,
-      channel: cabalDetails.getCurrentChannel(),
-      text: `Nick set to: ${username}`
+    cabalDetails.publishNick(username, () => {
+      dispatch({ type: 'UPDATE_CABAL', addr: cabalDetails.key, username })
+      addStatusMessage({
+        addr: cabalDetails.key,
+        channel: cabalDetails.getCurrentChannel(),
+        text: `Nick set to: ${username}`
+      })
     })
   }
 }
@@ -196,7 +197,7 @@ const enrichMessage = (message) => {
         short: t.format('h:mm A'),
         full: t.format('LL')
       },
-      content: remark().use(remarkReact).use(remarkEmoji).processSync(message.content).contents
+      content: remark().use(remarkReact).use(remarkEmoji).processSync(message.content).result
     }
   })
 }
@@ -247,6 +248,18 @@ export const onIncomingMessage = ({ addr, channel, message }, callback) => (disp
     dispatch({ type: 'UPDATE_CABAL', addr, messages })
   } else {
     dispatch(updateUnreadCounts({ addr }))
+  }
+
+  const settings = getState().cabalSettings[addr]
+  if (!!settings.enableNotifications && !document.hasFocus()) {
+    const users = cabalDetails.getUsers()
+    const author = users[message.key] ? users[message.key].name : message.key.substr(0, 6)
+    dispatch(sendDesktopNotification({
+      addr,
+      author,
+      channel,
+      content: message.value.content
+    }))
   }
 }
 
@@ -316,6 +329,16 @@ export const addCabal = ({ addr, input, username, settings }) => dispatch => {
   dispatch(initializeCabal({ addr, username, dispatch, settings }))
 }
 
+export const sendDesktopNotification = throttle(({ addr, author, channel, content }) => (dispatch) => {
+  window.Notification.requestPermission()
+  const notification = new window.Notification(author, {
+    body: content.text
+  })
+  notification.onclick = () => {
+    dispatch(viewCabal({ addr, channel }))
+  }
+}, 5000, { leading: true, trailing: true })
+
 export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
   dispatch(hideAllModals())
   const cabalDetails = client.getCurrentCabal()
@@ -329,19 +352,6 @@ export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
   opts.olderThan = opts.olderThan || Date.now()
   opts.amount = opts.amount || DEFAULT_PAGE_SIZE * 2.5
 
-  const sendDesktopNotification = throttle(({ author, content }) => {
-    window.Notification.requestPermission()
-    const notification = new window.Notification(author, {
-      body: content.text
-    })
-    notification.onclick = () => {
-      dispatch(viewCabal({
-        addr,
-        channel
-      }))
-    }
-  }, 5000)
-
   client.getMessages(opts, (messages) => {
     messages = messages.map((message) => {
       const { type, timestamp, content = {} } = message.value
@@ -349,7 +359,7 @@ export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
 
       const settings = getState().cabalSettings[addr]
       if (!!settings.enableNotifications && !document.hasFocus()) {
-        sendDesktopNotification({ author, content })
+        dispatch(sendDesktopNotification({ addr, author, channel, content }))
       }
 
       return enrichMessage({

@@ -77,17 +77,11 @@ class MainPanel extends Component {
     const totalHeight = this.scrollEl?.scrollHeight
     const scrolled = this.scrollEl?.scrollTop
     const containerHeight = this.scrollEl?.offsetHeight
-    if (
-      (scrolled < totalHeight - containerHeight) &&
-      !this.state.showScrollToBottom
-    ) {
+    if (scrolled < totalHeight - containerHeight) {
       this.setState({
         showScrollToBottom: true
       })
-    } else if (
-      (scrolled >= totalHeight - containerHeight) &&
-      this.state.showScrollToBottom
-    ) {
+    } else if (scrolled >= totalHeight - containerHeight) {
       this.setState({
         showScrollToBottom: false
       })
@@ -110,6 +104,10 @@ class MainPanel extends Component {
   }
 
   componentDidUpdate (prevProps) {
+    if ((prevProps.channelBrowserVisible !== this.props.channelBrowserVisible) ||
+      (prevProps.cabalSettingsVisible !== this.props.cabalSettingsVisible)) {
+      this.scrollToBottom()
+    }
     if (prevProps.cabal !== this.props.cabal) {
       if (document.hasFocus()) {
         this.scrollToBottom()
