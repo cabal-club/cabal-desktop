@@ -93,7 +93,7 @@ export const removeCabal = ({ addr }) => dispatch => {
     buttons: ['Cancel', 'Remove'],
     message: `Are you sure you want to remove this cabal (${addr.substr(0, 8)}...) from Cabal Desktop?`
   }).then((response) => {
-    if (response) {
+    if (response.response === 1) {
       dispatch(confirmRemoveCabal({ addr }))
     }
   })
