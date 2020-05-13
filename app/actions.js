@@ -177,12 +177,13 @@ export const setUsername = ({ username, addr }) => dispatch => {
   const cabalDetails = client.getDetails(addr)
   const currentUsername = cabalDetails.getLocalName()
   if (username !== currentUsername) {
-    cabalDetails.publishNick(username)
-    dispatch({ type: 'UPDATE_CABAL', addr: cabalDetails.key, username })
-    addStatusMessage({
-      addr: cabalDetails.key,
-      channel: cabalDetails.getCurrentChannel(),
-      text: `Nick set to: ${username}`
+    cabalDetails.publishNick(username, () => {
+      dispatch({ type: 'UPDATE_CABAL', addr: cabalDetails.key, username })
+      addStatusMessage({
+        addr: cabalDetails.key,
+        channel: cabalDetails.getCurrentChannel(),
+        text: `Nick set to: ${username}`
+      })
     })
   }
 }
