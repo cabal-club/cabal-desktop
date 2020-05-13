@@ -220,18 +220,16 @@ class writeScreen extends Component {
   }
 
   render () {
-    const { cabal } = this.props
-
+    const { cabal, showScrollToBottom = true, scrollToBottom } = this.props
     if (!cabal) {
-      return (
-        <>
-          <div />
-        </>
-      )
+      return <div />
     }
-
     return (
       <div className='composerContainer'>
+        {showScrollToBottom && (
+          <div className='scroll__button__container'>
+            <span className='scroll__button' onClick={scrollToBottom}>Newer messages below. Jump to latest ↓</span>
+          </div>)}
         <div className='composer'>
           {/* <div className={'composer__meta'}><img src='static/images/icon-composermeta.svg' /></div> */}
           <div className='composer__input' onClick={(e) => this.focusInput()}>
