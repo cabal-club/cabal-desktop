@@ -196,7 +196,7 @@ const enrichMessage = (message) => {
         short: t.format('h:mm A'),
         full: t.format('LL')
       },
-      content: remark().use(remarkReact).use(remarkEmoji).processSync(message.content).contents
+      content: remark().use(remarkReact).use(remarkEmoji).processSync(message.content).result
     }
   })
 }
