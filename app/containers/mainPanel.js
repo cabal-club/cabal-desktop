@@ -48,9 +48,7 @@ class MainPanel extends Component {
     this.composerHeight = 55
     this.scrollEl = null
     this.handleOpenCabalUrl = this.handleOpenCabalUrl.bind(this)
-    this.setScrollToBottomButtonStatus = this.setScrollToBottomButtonStatus.bind(
-      this
-    )
+    this.setScrollToBottomButtonStatus = this.setScrollToBottomButtonStatus.bind(this)
     this.scrollToBottom = this.scrollToBottom.bind(this)
   }
 
@@ -78,16 +76,16 @@ class MainPanel extends Component {
   setScrollToBottomButtonStatus () {
     const totalHeight = this.scrollEl?.scrollHeight
     const scrolled = this.scrollEl?.scrollTop
-    const containerHeight = this.scrollEl?.offsetHeight + 5000
+    const containerHeight = this.scrollEl?.offsetHeight
     if (
-      totalHeight - scrolled > containerHeight &&
+      (scrolled < totalHeight - containerHeight) &&
       !this.state.showScrollToBottom
     ) {
       this.setState({
         showScrollToBottom: true
       })
     } else if (
-      totalHeight - scrolled < containerHeight &&
+      (scrolled >= totalHeight - containerHeight) &&
       this.state.showScrollToBottom
     ) {
       this.setState({
@@ -113,9 +111,12 @@ class MainPanel extends Component {
 
   componentDidUpdate (prevProps) {
     if (prevProps.cabal !== this.props.cabal) {
-      this.scrollToBottom()
+      if (document.hasFocus()) {
+        this.scrollToBottom()
+      } else {
+        this.setScrollToBottomButtonStatus()
+      }
     }
-    // if you're in the same cabal and a new message arrives we should show a button prompting a scroll to bottom
   }
 
   onClickTopic () {

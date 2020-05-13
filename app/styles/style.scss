@@ -239,16 +239,6 @@ form {
   animation-direction: alternate;
 }
 
-@keyframes pulse {
-  from {
-    opacity: 0.5;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
 .client__cabals .switcher__item.--addnew img {
   opacity: 0.25;
 }
@@ -821,15 +811,28 @@ form {
   }
 
   .scroll__button__container {
-    background-color: #858585;
-    padding: 7px;
-    color: white;
-    font-size: .8rem;
-    border-radius: 7px 7px 0 0;
+    display: flex;
+    justify-content: center;
 
     .scroll__button {
+      animation: scrollButtonFadeInAndUp 0.5s;
+      background-color: #693afa;
+      border-radius: 7px;
+      color: white;
       cursor: pointer;
-      float: right;
+      font-size: .8rem;
+      margin-bottom: 1rem;  
+      margin-top: -2rem;      
+      padding: 7px;
+      position: absolute;
+      text-align: center;
+      transition: all 0.5s;
+      width: 20rem;
+
+      &:hover {
+        box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.5);
+        transform: scale(1.01);
+      }
     }
   }
 
@@ -1003,20 +1006,6 @@ form {
 .starterMessage {
   text-align: center;
   animation: fadein 5s;
-}
-
-@keyframes fadein {
-  0% {
-    opacity: 0;
-  }
-
-  50% {
-    opacity: 0;
-  }
-
-  100% {
-    opacity: 1;
-  }
 }
 
 .modal-overlay {
@@ -1245,4 +1234,36 @@ form {
   from { transform: scale(1); }
   50% { transform: scale(0.6); }
   to { transform: scale(1); }
+}
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes scrollButtonFadeInAndUp {
+  0% {
+    opacity: 0;
+    margin-top: -1.5rem;
+  }
+  100% {
+    opacity: 1;
+    margin-top: -2rem
+  }
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
 }
