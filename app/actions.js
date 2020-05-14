@@ -214,7 +214,7 @@ export const getMessages = ({ addr, channel, amount }, callback) => dispatch => 
         return enrichMessage({
           author,
           content: content && content.text,
-          key: message.key + timestamp,
+          key: message.key,
           time: timestamp,
           type
         })
@@ -237,7 +237,7 @@ export const onIncomingMessage = ({ addr, channel, message }, callback) => (disp
     const enrichedMessage = enrichMessage({
       author,
       content: content && content.text,
-      key: message.key + timestamp,
+      key: message.key,
       time: timestamp,
       type
     })
@@ -365,7 +365,7 @@ export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
       return enrichMessage({
         author,
         content: content.text,
-        key: message.key + timestamp,
+        key: message.key,
         time: timestamp,
         type
       })
@@ -517,13 +517,14 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
       action: () => {
         setTimeout(() => {
           const users = cabalDetails.getUsers()
+          const userkey = cabalDetails.getLocalUser().key
           const username = cabalDetails.getLocalName()
           const channels = cabalDetails.getChannels()
           const channelsJoined = cabalDetails.getJoinedChannels() || []
           const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
           const currentChannel = cabalDetails.getCurrentChannel()
           const channelMembers = cabalDetails.getChannelMembers()
-          dispatch({ type: 'UPDATE_CABAL', initialized: true, addr, channelMessagesUnread, users, username, channels, channelsJoined, currentChannel, channelMembers })
+          dispatch({ type: 'UPDATE_CABAL', initialized: true, addr, channelMessagesUnread, users, userkey, username, channels, channelsJoined, currentChannel, channelMembers })
           dispatch(getMessages({ addr, amount: 1000, channel: currentChannel }))
           dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
 

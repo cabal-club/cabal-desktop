@@ -142,6 +142,7 @@ class SidebarScreen extends React.Component {
     const users = this.sortUsers(Object.values(cabal.users) || [])
     const deduplicatedNicks = this.deduplicatedNicks(users)
     const onlineCount = users.filter(i => !!i.online).length
+    const userkey = cabal.userkey
     const username = cabal.username
     return (
       <div className='client__sidebar'>
@@ -149,7 +150,7 @@ class SidebarScreen extends React.Component {
           <div className='session' onClick={self.onClickCabalSettings.bind(self, cabal.addr)}>
             <div className='session__avatar'>
               <div className='session__avatar__img'>
-                <Avatar name={username} />
+                <Avatar name={userkey} />
               </div>
             </div>
             <div className='session__meta'>
@@ -190,10 +191,10 @@ class SidebarScreen extends React.Component {
                 <div className='collection__heading__title'>Peers - {onlineCount} online</div>
                 <div className='collection__heading__handle' />
               </div>
-              {deduplicatedNicks.map((nick) => {
+              {deduplicatedNicks.map((nick, index) => {
                 const keys = nick.users.map((u) => u.key).join(', ')
                 return (
-                  <div key={keys} className='collection__item' title={keys} onContextMenu={this.onContextMenu.bind(this, nick)}>
+                  <div key={index} className='collection__item' title={keys} onContextMenu={this.onContextMenu.bind(this, nick)}>
                     <div className='collection__item__icon'>
                       {!!nick.online &&
                         <img alt='Online' src='static/images/icon-status-online.svg' />}

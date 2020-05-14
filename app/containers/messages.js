@@ -39,7 +39,7 @@ export default function MessagesContainer (props) {
               <div className='messages__item messages__item--system'>
                 <div className='messages__item__avatar'>
                   <div className='messages__item__avatar__img'>
-                    <Avatar name={message.author || defaultSystemName} />
+                    <Avatar name={message.key || defaultSystemName} />
                   </div>
                 </div>
                 <div className='messages__item__metadata'>
@@ -53,7 +53,7 @@ export default function MessagesContainer (props) {
             item = (
               <div className='messages__item'>
                 <div className='messages__item__avatar'>
-                  {repeatedAuthor ? null : <Avatar name={message.author || message.key.substr(0, 6)} />}
+                  {repeatedAuthor ? null : <Avatar name={message.key} />}
                 </div>
                 <div className='messages__item__metadata'>
                   {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author || message.key.substr(0, 6)}{renderDate(enriched.time)}</div>}
@@ -69,7 +69,7 @@ export default function MessagesContainer (props) {
               <div className='messages__item messages__item--emote'>
                 <div className='messages__item__avatar'>
                   <div className='messages__item__avatar__img'>
-                    {repeatedAuthor ? null : <Avatar name={message.author || message.key.substr(0, 6)} />}
+                    {repeatedAuthor ? null : <Avatar name={message.key} />}
                   </div>
                 </div>
                 <div className='messages__item__metadata'>

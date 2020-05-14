@@ -297,12 +297,13 @@ form {
 
   /* Session */
   .session {
-    display: flex;
-    align-items: center;
-    width: 13.75rem;
-    padding: 1rem;
     -webkit-app-region: drag;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
     cursor: pointer;
+    display: flex;
+    padding: 1.15rem 1rem;
+    width: 13.75rem;
   }
 
   .session .session__avatar {
@@ -314,7 +315,7 @@ form {
   .session .session__avatar__img .identicon {
     width: 2rem;
     height: 2rem;
-    border-radius: 10rem;
+    border-radius: 3px;
   }
 
   .session .session__meta {
@@ -527,9 +528,9 @@ form {
   .channel-meta__data .channel-meta__data__details h1 {
     font-size: 1.1rem;
     font-weight: 900;
-    margin-bottom: 0.5rem;
     align-items: center;
     display: flex;
+    justify-content: space-between;
   }
 
   .channel-meta__data__topic {
@@ -537,8 +538,9 @@ form {
   }
 
   .channel-meta__data .channel-meta__data__details h2 {
-    font-size: 0.75rem;
     color: rgba(0, 0, 0, 0.5);
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
   }
 
   .channel-meta__other {
@@ -625,7 +627,7 @@ form {
 
   .messages__item__avatar .identicon {
     overflow: hidden;
-    border-radius: 10rem;
+    border-radius: 3px;
   }
 
   .messages__item__metadata {
@@ -793,6 +795,11 @@ form {
   }
 
   .cabal-settings__item-input input {
+    border-radius: 3px;
+    border: 2px solid rgba(0,0,0,0.25);
+    font-size: 100%;
+    height: 2rem;
+    padding: 1.2rem 1rem;
     width: 100%;
   }
 
