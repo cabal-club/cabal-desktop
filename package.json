@@ -69,6 +69,7 @@
     "ms": "^2.1.2",
     "react": "^16.13.1",
     "react-blockies": "^1.4.1",
+    "react-contexify": "^4.1.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
     "redux": "^4.0.5",

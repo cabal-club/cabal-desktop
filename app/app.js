@@ -6,6 +6,7 @@ import AppSettingsContainer from './containers/appSettings'
 import Layout from './containers/layout'
 import { loadFromDisk } from './actions'
 
+import './styles/react-contexify.css'
 import './styles/style.scss'
 
 const mapStateToProps = state => ({

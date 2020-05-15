@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
+import { contextMenu, Item, Menu, MenuProvider, Separator, Submenu, theme } from 'react-contexify'
 
 import {
   viewChannel,
@@ -36,6 +37,32 @@ const mapDispatchToProps = dispatch => ({
   hideCabalSettings: () => dispatch(hideCabalSettings()),
   showChannelBrowser: ({ addr }) => dispatch(showChannelBrowser({ addr }))
 })
+
+function UserMenu (props) {
+  useEffect(() => {
+    console.warn('UserMenu', props)
+  }, [props.nick])
+
+  return (
+    <Menu id='user_menu' theme={theme.dark}>
+      <Item>Add as moderator</Item>
+      <Item>Add as administrator</Item>
+      <Separator />
+      <Item>Block</Item>
+      <Item>Hide cabal-wide</Item>
+      <Item>Hide in this channel</Item>
+      <Item>Mute cabal-wide</Item>
+      <Item>Mute in this channel</Item>
+      <Item>Hide in this channel</Item>
+      <Submenu label='Hide...'>
+        <Item>😺</Item>
+      </Submenu>
+      <Submenu label='Mute...'>
+        <Item>🌴</Item>
+      </Submenu>
+    </Menu>
+  )
+}
 
 class SidebarScreen extends React.Component {
   onClickNewChannel () {
@@ -80,8 +107,15 @@ class SidebarScreen extends React.Component {
     this.props.showChannelBrowser({ addr })
   }
 
-  onContextMenu (user) {
-    console.log(user)
+  onContextMenu (nick, e) {
+    e.preventDefault()
+    contextMenu.show({
+      id: 'user_menu',
+      event: e,
+      props: {
+        nick: nick
+      }
+    })
   }
 
   joinChannel (channel) {
@@ -194,7 +228,13 @@ class SidebarScreen extends React.Component {
               {deduplicatedNicks.map((nick, index) => {
                 const keys = nick.users.map((u) => u.key).join(', ')
                 return (
-                  <div key={index} className='collection__item' title={keys} onContextMenu={this.onContextMenu.bind(this, nick)}>
+                  <div
+                    key={index}
+                    className='collection__item'
+                    title={keys}
+                    onClick={this.onContextMenu.bind(this, nick)}
+                    onContextMenu={this.onContextMenu.bind(this, nick)}
+                  >
                     <div className='collection__item__icon'>
                       {!!nick.online &&
                         <img alt='Online' src='static/images/icon-status-online.svg' />}
@@ -209,6 +249,7 @@ class SidebarScreen extends React.Component {
                   </div>
                 )
               })}
+              <UserMenu />
             </div>
           </div>
         </div>
