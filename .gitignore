@@ -5,3 +5,4 @@ static/build.js
 dist
 .idea
 yarn-error.log
+.env

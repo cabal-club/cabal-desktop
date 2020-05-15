@@ -31,6 +31,7 @@
     "babel-loader": "^8.1.0",
     "cross-env": "^7.0.2",
     "css-loader": "^3.5.3",
+    "dotenv": "^8.2.0",
     "electron": "7.1.13",
     "electron-builder": "^22.5.1",
     "electron-notarize": "^0.3.0",
@@ -81,8 +82,9 @@
     "to2": "^1.0.0"
   },
   "build": {
-    "productName": "Cabal",
     "appId": "club.cabal.desktop",
+    "afterSign": "scripts/notarize.js",
+    "productName": "Cabal",
     "protocols": [
       {
         "name": "cabal",
@@ -92,10 +94,15 @@
       }
     ],
     "mac": {
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist",
+      "gatekeeperAssess": false,
+      "hardenedRuntime": true
     },
     "dmg": {
       "sign": false,
+      "background": "static/images/dmg-background.tiff",
       "contents": [
         {
           "x": 135,
