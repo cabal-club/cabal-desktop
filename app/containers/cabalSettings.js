@@ -43,26 +43,15 @@ class CabalSettingsContainer extends React.Component {
               <div className='channel-meta__data'>
                 <div className='channel-meta__data__details'>
                   <h1>
-                    <span onClick={this.onClickCloseSettings.bind(this)} className='cabal-settings__close'><img src='static/images/icon-composermeta.svg' /></span>
                     Settings
+                    <span onClick={this.onClickCloseSettings.bind(this)} className='cabal-settings__close'><img src='static/images/icon-composermeta.svg' /></span>
                   </h1>
                 </div>
               </div>
             </div>
           </div>
           <div className='window__main'>
-            <div className='window__main__content'>
-              <div className='cabal-settings__item' onClick={this.onToggleOption.bind(this, 'enableNotifications')}>
-                <div className='cabal-settings__item-row'>
-                  <div className='cabal-settings__item-checkbox'>
-                    <input type='checkbox' checked={this.props.settings && !!enableNotifications} onChange={() => { }} />
-                  </div>
-                  <div className='cabal-settings__item-label'>
-                    <div className='cabal-settings__item-label-title'>Enable desktop notifications</div>
-                    <div className='cabal-settings__item-label-description'>Display a notification for new messages for this cabal when a channel is in the background.</div>
-                  </div>
-                </div>
-              </div>
+            <div className='window__main__content'>              
               <div className='cabal-settings__item'>
                 <div className='cabal-settings__item-label'>
                   <div className='cabal-settings__item-label-title'>Cabal Key</div>
@@ -74,11 +63,22 @@ class CabalSettingsContainer extends React.Component {
               </div>
               <div className='cabal-settings__item'>
                 <div className='cabal-settings__item-label'>
-                  <div className='cabal-settings__item-label-title'>Cabal Alias</div>
-                  <div className='cabal-settings__item-label-description'>Set a local alias for this cabal.</div>
+                  <div className='cabal-settings__item-label-title'>Cabal Name</div>
+                  <div className='cabal-settings__item-label-description'>Set a local name for this cabal. Only you can see this.</div>
                 </div>
                 <div className='cabal-settings__item-input'>
                   <input type='text' placeholder='My Favorite Cabal' value={alias} onChange={(e) => this.props.saveCabalSettings({ addr: this.props.cabal.addr, settings: { ...this.props.settings, alias: e.target.value } })} />
+                </div>
+              </div>
+              <div className='cabal-settings__item' onClick={this.onToggleOption.bind(this, 'enableNotifications')}>
+                <div className='cabal-settings__item-row'>
+                  <div className='cabal-settings__item-checkbox'>
+                    <input type='checkbox' checked={this.props.settings && !!enableNotifications} onChange={() => { }} />
+                  </div>
+                  <div className='cabal-settings__item-label'>
+                    <div className='cabal-settings__item-label-title'>Enable desktop notifications</div>
+                    <div className='cabal-settings__item-label-description'>Display a notification for new messages for this cabal when a channel is in the background.</div>
+                  </div>
                 </div>
               </div>
               <div className='cabal-settings__item'>

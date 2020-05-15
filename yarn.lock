@@ -3537,6 +3537,14 @@ electron-default-menu@^1.0.1:
   resolved "https://registry.yarnpkg.com/electron-default-menu/-/electron-default-menu-1.0.1.tgz#3173c5018eb507404fec63bdf3b78c38eedba808"
   integrity sha1-MXPFAY61B0BP7GO987eMOO7bqAg=
 
+electron-notarize@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/electron-notarize/-/electron-notarize-0.3.0.tgz#b93c606306eac558b250c78ff95273ddb9fedf0a"
+  integrity sha512-tuDw8H0gcDOalNLv6RM2CwGvUXU60MPGZRDEmd0ppX+yP5XqL8Ec2DuXyz9J7WQSA3aRCfzIgH8C5CAivDYWMw==
+  dependencies:
+    debug "^4.1.1"
+    fs-extra "^8.1.0"
+
 electron-prompt@^1.5.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/electron-prompt/-/electron-prompt-1.5.1.tgz#fa9e2e519b76236271d7f83ac716b98d53162731"

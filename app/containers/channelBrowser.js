@@ -64,7 +64,6 @@ class ChannelBrowserContainer extends React.Component {
               <div className='channel-meta__data'>
                 <div className='channel-meta__data__details'>
                   <h1>
-                    <span onClick={this.onClickClose.bind(this)} className='cabal-settings__close'><img src='static/images/icon-composermeta.svg' /></span>
                     Browse Channels
                   </h1>
                 </div>
