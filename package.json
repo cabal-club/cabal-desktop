@@ -6,6 +6,7 @@
     "build": "cross-env NODE_ENV=production webpack",
     "start:electron": "electron .",
     "start:webpack": "webpack",
+    "nixstart": "nix run nixpkgs.electron_6 -c electron .",
     "watch": "webpack --watch",
     "start": "cross-env NODE_ENV=development npm-run-all --parallel start:*",
     "pack": "electron-builder --dir",
@@ -14,12 +15,22 @@
     "postinstall": "electron-builder install-app-deps",
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 jest --passWithNoTests"
   },
+
   "productName": "Cabal",
   "repository": "cabal-club/cabal-desktop",
   "author": {
     "name": "Cabal Club",
     "email": "github-noreply@cabal.club"
   },
+
+  "launcher": {
+    "title": "Cabal Desktop",
+    "icon": "",
+    "main": "./index.html",
+    "width": 800,
+    "height": 600
+  },
+
   "license": "GPL-3.0",
   "devDependencies": {
     "@babel/core": "^7.9.0",
