@@ -7,6 +7,9 @@ import App from './app'
 import logger from 'redux-logger'
 import thunk from 'redux-thunk'
 
+// Disable debug console.log messages coming from dependencies
+window.localStorage.removeItem('debug')
+
 const store = createStore(
   reducer,
   // compose(applyMiddleware(thunk, logger))

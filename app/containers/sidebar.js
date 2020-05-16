@@ -4,13 +4,14 @@ import prompt from 'electron-prompt'
 import { contextMenu, Item, Menu, MenuProvider, Separator, Submenu, theme } from 'react-contexify'
 
 import {
-  viewChannel,
-  joinChannel,
-  setUsername,
   changeScreen,
   hideCabalSettings,
+  joinChannel,
+  saveCabalSettings,
+  setUsername,
   showCabalSettings,
-  showChannelBrowser
+  showChannelBrowser,
+  viewChannel
 } from '../actions'
 import Avatar from './avatar'
 
@@ -30,12 +31,13 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   changeScreen: ({ screen }) => dispatch(changeScreen({ screen })),
+  hideCabalSettings: () => dispatch(hideCabalSettings()),
   joinChannel: ({ addr, channel }) => dispatch(joinChannel({ addr, channel })),
-  viewChannel: ({ addr, channel }) => dispatch(viewChannel({ addr, channel })),
+  saveCabalSettings: ({ addr, settings }) => dispatch(saveCabalSettings({ addr, settings })),
   setUsername: ({ addr, username }) => dispatch(setUsername({ addr, username })),
   showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),
-  hideCabalSettings: () => dispatch(hideCabalSettings()),
-  showChannelBrowser: ({ addr }) => dispatch(showChannelBrowser({ addr }))
+  showChannelBrowser: ({ addr }) => dispatch(showChannelBrowser({ addr })),
+  viewChannel: ({ addr, channel }) => dispatch(viewChannel({ addr, channel })),
 })
 
 function UserMenu (props) {
@@ -107,15 +109,22 @@ class SidebarScreen extends React.Component {
     this.props.showChannelBrowser({ addr })
   }
 
+  onToggleCollection (collection) {
+    const option = `sidebar-hide-${collection}`
+    const settings = this.props.settings
+    settings[option] = !this.props.settings[option]
+    this.props.saveCabalSettings({ addr: this.props.cabal.addr, settings })
+  }
+
   onContextMenu (nick, e) {
     e.preventDefault()
-    contextMenu.show({
-      id: 'user_menu',
-      event: e,
-      props: {
-        nick: nick
-      }
-    })
+    // contextMenu.show({
+    //   id: 'user_menu',
+    //   event: e,
+    //   props: {
+    //     nick: nick
+    //   }
+    // })
   }
 
   joinChannel (channel) {
@@ -200,17 +209,24 @@ class SidebarScreen extends React.Component {
           <div className='sidebar__section'>
             <div className='collection collection--push'>
               <div className='collection__heading'>
-                <div
-                  className='collection__heading__title collection__heading__title__channelBrowserButton'
-                  onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}
-                  title='Browse and join all channels'
-                >Channels
+                <div className='collection__heading__title__container'>
+                  <span
+                    className={`collection__toggle ${this.props.settings['sidebar-hide-channels'] ? 'collection__toggle__off' : 'collection__toggle__on'}`}
+                    onClick={self.onToggleCollection.bind(self, 'channels')}
+                  >▼
+                  </span>
+                  <div
+                    className='collection__heading__title collection__heading__title__channelBrowserButton'
+                    onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}
+                    title='Browse and join all channels'
+                  >Channels
+                  </div>
                 </div>
                 <div className='collection__heading__handle' onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}>
                   <img src='static/images/icon-newchannel.svg' />
                 </div>
               </div>
-              {this.sortByProperty(channels).map((channel) =>
+              {!this.props.settings['sidebar-hide-channels'] && this.sortByProperty(channels).map((channel) =>
                 <div key={channel} onClick={this.selectChannel.bind(this, channel)} className={cabal.channel === channel ? 'collection__item active' : 'collection__item'}>
                   <div className='collection__item__icon'><img src='static/images/icon-channel.svg' /></div>
                   <div className='collection__item__content'>{channel}</div>
@@ -222,10 +238,17 @@ class SidebarScreen extends React.Component {
             </div>
             <div className='collection'>
               <div className='collection__heading'>
-                <div className='collection__heading__title'>Peers - {onlineCount} online</div>
+                <div className='collection__heading__title__container'>
+                  <span
+                    className={`collection__toggle ${this.props.settings['sidebar-hide-peers'] ? 'collection__toggle__off' : 'collection__toggle__on'}`}
+                    onClick={self.onToggleCollection.bind(self, 'peers')}
+                  >▼
+                  </span>
+                  <div className='collection__heading__title'>Peers - {onlineCount} online</div>
+                </div>
                 <div className='collection__heading__handle' />
               </div>
-              {deduplicatedNicks.map((nick, index) => {
+              {!this.props.settings['sidebar-hide-peers'] && deduplicatedNicks.map((nick, index) => {
                 const keys = nick.users.map((u) => u.key).join(', ')
                 return (
                   <div
