@@ -7,6 +7,7 @@ import {
   changeScreen,
   hideEmojiPicker,
   leaveChannel,
+  saveCabalSettings,
   setChannelTopic,
   showCabalSettings,
   viewCabal
@@ -17,24 +18,30 @@ import WriteContainer from './write'
 import MessagesContainer from './messages'
 import { currentChannelMemberCountSelector } from '../selectors'
 
-const mapStateToProps = state => ({
-  addr: state.currentCabal,
-  cabal: state.cabals[state.currentCabal],
-  cabals: state.cabals,
-  cabalSettingsVisible: state.cabalSettingsVisible,
-  channelBrowserVisible: state.channelBrowserVisible,
-  emojiPickerVisible: state.emojiPickerVisible,
-  channelMemberCount: currentChannelMemberCountSelector(state)
-})
+const mapStateToProps = state => {
+  const cabal = state.cabals[state.currentCabal]
+  const addr = cabal.addr
+  return {
+    addr,
+    cabal,
+    cabals: state.cabals,
+    cabalSettingsVisible: state.cabalSettingsVisible,
+    channelBrowserVisible: state.channelBrowserVisible,
+    channelMemberCount: currentChannelMemberCountSelector(state),
+    emojiPickerVisible: state.emojiPickerVisible,
+    settings: state.cabalSettings[addr] || {},
+  }
+}
 
 const mapDispatchToProps = dispatch => ({
   changeScreen: ({ screen, addr }) => dispatch(changeScreen({ screen, addr })),
   hideEmojiPicker: () => dispatch(hideEmojiPicker()),
+  leaveChannel: ({ addr, channel }) => dispatch(leaveChannel({ addr, channel })),
+  saveCabalSettings: ({ addr, settings }) => dispatch(saveCabalSettings({ addr, settings })),
   setChannelTopic: ({ addr, channel, topic }) =>
     dispatch(setChannelTopic({ addr, channel, topic })),
   showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),
   viewCabal: ({ addr }) => dispatch(viewCabal({ addr })),
-  leaveChannel: ({ addr, channel }) => dispatch(leaveChannel({ addr, channel }))
 })
 
 class MainPanel extends Component {
@@ -108,6 +115,7 @@ class MainPanel extends Component {
   }
 
   componentDidUpdate (prevProps) {
+    console.log(this.props.settings['favorite-channels'])
     if ((prevProps.channelBrowserVisible !== this.props.channelBrowserVisible) ||
       (prevProps.cabalSettingsVisible !== this.props.cabalSettingsVisible)) {
       this.scrollToBottom()
@@ -148,6 +156,19 @@ class MainPanel extends Component {
       addr: this.props.cabal.addr,
       channel: this.props.cabal.channel
     })
+  }
+
+  onToggleFavoriteChannel (channelName) {
+    let favorites = this.props.settings['favorite-channels'] || []
+    const index = favorites.indexOf(channelName)
+    if (index > -1) {
+      favorites.splice(index)
+    } else {
+      favorites.push(channelName)
+    }
+    const settings = this.props.settings
+    settings['favorite-channels'] = favorites
+    this.props.saveCabalSettings({ addr: this.props.cabal.addr, settings })
   }
 
   handleOpenCabalUrl ({ url = '' }) {
@@ -194,7 +215,7 @@ class MainPanel extends Component {
   }
 
   render () {
-    const { cabal, toggleMemberList, channelMemberCount } = this.props
+    const { cabal, toggleMemberList, channelMemberCount, settings } = this.props
     var self = this
 
     if (!cabal) {
@@ -209,6 +230,8 @@ class MainPanel extends Component {
       return <CabalSettings />
     }
 
+    const isFavoriteChannel = settings['favorite-channels'] && settings['favorite-channels'].includes(cabal.channel)
+
     return (
       <div className='client__main' onClick={this.hideModals.bind(this)}>
         <div className='window'>
@@ -216,7 +239,17 @@ class MainPanel extends Component {
             <div className='channel-meta'>
               <div className='channel-meta__data'>
                 <div className='channel-meta__data__details'>
-                  <h1>#{cabal.channel}</h1>
+                  <h1>
+                    {cabal.channel}
+                    <span
+                      className='channel-meta__favoriteChannel__toggle'
+                      onClick={self.onToggleFavoriteChannel.bind(self, cabal.channel)}
+                      title={isFavoriteChannel ? 'Click to Unstar this channel' : 'Click to Star this channel'}
+                    >
+                      {isFavoriteChannel && <span>★</span>}
+                      {!isFavoriteChannel && <span>☆</span>}
+                    </span>
+                  </h1>
                   <h2>
                     <span
                       className='channel-meta__data__topic'

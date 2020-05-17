@@ -181,7 +181,8 @@ class SidebarScreen extends React.Component {
     const { addr, cabal, settings } = this.props
     const cabalLabel = settings.alias || addr
 
-    const channels = cabal.channelsJoined.slice().sort()
+    const favorites = (settings['favorite-channels'] || []).sort()
+    const channels = cabal.channelsJoined.slice().sort().filter(x => !favorites.includes(x))
     const users = this.sortUsers(Object.values(cabal.users) || [])
     const deduplicatedNicks = this.deduplicatedNicks(users)
     const onlineCount = users.filter(i => !!i.online).length
@@ -207,7 +208,29 @@ class SidebarScreen extends React.Component {
             </div>
           </div>
           <div className='sidebar__section'>
-            <div className='collection collection--push'>
+            {!!favorites.length &&
+              <div className='collection'>
+                <div className='collection__heading'>
+                  <div className='collection__heading__title__container'>
+                    <span
+                      className={`collection__toggle ${this.props.settings['sidebar-hide-favorites'] ? 'collection__toggle__off' : 'collection__toggle__on'}`}
+                      onClick={self.onToggleCollection.bind(self, 'favorites')}
+                    >▼
+                    </span>
+                    <div className='collection__heading__title'>Starred</div>
+                  </div>
+                </div>
+                {!this.props.settings['sidebar-hide-favorites'] && this.sortByProperty(favorites).map((channel) =>
+                  <div key={channel} onClick={this.selectChannel.bind(this, channel)} className={cabal.channel === channel ? 'collection__item active' : 'collection__item'}>
+                    <div className='collection__item__icon'><img src='static/images/icon-channel.svg' /></div>
+                    <div className='collection__item__content'>{channel}</div>
+                    {this.props.channelMessagesUnread && this.props.channelMessagesUnread[channel] > 0 &&
+                      <div className='collection__item__messagesUnreadCount'>{this.props.channelMessagesUnread[channel]}</div>}
+                    <div className='collection__item__handle' />
+                  </div>
+                )}
+              </div>}
+            <div className='collection'>
               <div className='collection__heading'>
                 <div className='collection__heading__title__container'>
                   <span
