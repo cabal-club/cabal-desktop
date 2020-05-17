@@ -410,6 +410,7 @@ form {
   }
 
   .collection .collection__heading .collection__heading__handle {
+    cursor: pointer;
     display: table-cell;
     height: 1.25rem;
     opacity: 0.5;

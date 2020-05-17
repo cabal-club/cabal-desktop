@@ -159,10 +159,10 @@ class MainPanel extends Component {
   }
 
   onToggleFavoriteChannel (channelName) {
-    let favorites = this.props.settings['favorite-channels'] || []
+    const favorites = [...this.props.settings['favorite-channels']]
     const index = favorites.indexOf(channelName)
     if (index > -1) {
-      favorites.splice(index)
+      favorites.splice(index, 1)
     } else {
       favorites.push(channelName)
     }
