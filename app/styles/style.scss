@@ -298,8 +298,7 @@ form {
   /* Session */
   .session {
     -webkit-app-region: drag;
-    align-items: center;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    align-items: center;    
     cursor: pointer;
     display: flex;
     padding: 1.15rem 1rem;
@@ -364,26 +363,44 @@ form {
 
   /* Collection */
   .collection {
-    margin-bottom: 2rem;
-  }
-
-  .collection--push {
-    margin-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 1.2rem;
+    padding-top: 1.2em;
   }
 
   /* Collection heading */
   .collection .collection__heading {
-    display: table;
-    width: 100%;
-    padding: 0 1rem;
-    margin-bottom: 0.25rem;
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.25rem;
+      padding: 0 1rem;
+      width: 100%;
+  }
+
+  .collection .collection__heading .collection__heading__title__container {
+    align-items: center;
+    display: flex;
+    margin-left: 0.3rem;
+  }
+
+  .collection .collection__heading .collection__toggle {
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    font-size: 0.8rem;
+    transform: scaleY(0.7);
+
+    &.collection__toggle__off {
+      transform: rotate(-90deg);
+    }
   }
 
   .collection .collection__heading .collection__heading__title {
+    color: rgba(255, 255, 255, 0.5);
     display: table-cell;
     font-size: 0.75rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    margin-left: 0.5rem;
     text-transform: uppercase;
     vertical-align: middle;
   }

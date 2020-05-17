@@ -45,7 +45,6 @@ class MainPanel extends Component {
     }
     this.shouldAutoScroll = true
     this.scrollTop = 0
-    this.composerHeight = 55
     this.scrollEl = null
     this.handleOpenCabalUrl = this.handleOpenCabalUrl.bind(this)
     this.setScrollToBottomButtonStatus = this.setScrollToBottomButtonStatus.bind(this)
@@ -69,13 +68,16 @@ class MainPanel extends Component {
 
     this.scrollEl?.addEventListener(
       'scroll',
-      debounce(this.setScrollToBottomButtonStatus, 500)
+      debounce(this.setScrollToBottomButtonStatus, 500, {
+        leading: true,
+        trailing: true
+      })
     )
   }
 
   setScrollToBottomButtonStatus () {
     const totalHeight = this.scrollEl?.scrollHeight
-    const scrolled = this.scrollEl?.scrollTop
+    const scrolled = this.scrollEl?.scrollTop + 100
     const containerHeight = this.scrollEl?.offsetHeight
     if (scrolled < totalHeight - containerHeight) {
       this.setState({
@@ -86,6 +88,8 @@ class MainPanel extends Component {
         showScrollToBottom: false
       })
     }
+
+    this.scrollToBottom()
   }
 
   scrollToBottom () {
@@ -257,10 +261,7 @@ class MainPanel extends Component {
               this.scrollEl = el
             }}
           >
-            <MessagesContainer
-              cabal={cabal}
-              composerHeight={self.composerHeight}
-            />
+            <MessagesContainer cabal={cabal} />
           </div>
           <WriteContainer
             showScrollToBottom={this.state.showScrollToBottom}

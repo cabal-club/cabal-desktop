@@ -23,6 +23,11 @@ $ yarn start               # start the application
 ### Download from AUR
 https://aur.archlinux.org/packages/cabal-desktop-git/
 
+### Updating MacOS DMG background image
+```
+tiffutil -cathidpicheck cabal-desktop-dmg-background.jpg cabal-desktop-dmg-background@2x.jpg -out dmg-background.tiff
+```
+
 ## Distribute
 
 build for current platform:
