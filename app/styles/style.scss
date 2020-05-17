@@ -410,13 +410,14 @@ form {
   }
 
   .collection .collection__heading .collection__heading__handle {
+    cursor: pointer;
     display: table-cell;
-    width: 1.25rem;
     height: 1.25rem;
-    vertical-align: middle;
+    opacity: 0.5;
     text-align: center;
     transition: all 0.05s ease-in-out;
-    opacity: 0.5;
+    vertical-align: middle;
+    width: 1.25rem;
   }
 
   .collection .collection__heading .collection__heading__handle:hover {
@@ -547,7 +548,12 @@ form {
     font-weight: 900;
     align-items: center;
     display: flex;
-    justify-content: space-between;
+  }
+
+  .channel-meta__favoriteChannel__toggle {
+    cursor: pointer;
+    font-weight: 100;
+    padding-left: 0.5rem;
   }
 
   .channel-meta__data__topic {
