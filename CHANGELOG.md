@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [5.0.5] - 2020-05-19
+### Added
+- Added "starred/favorite" channels list.
+- Clicking the star next to a channels name in the header will add it to the starred list.
+- Added toggles to the channel and peers lists to hide or show them.
+- Clicking usernames will now show a profile panel with info about the user.
+- Added initial support for right-click context menus.
+- Added a custom font.
+- Added an indicator when there are newer messages in the message list.
+- MacOS builds are now signed and notarized reducing warnings during install.
+- MacOS DMG builds now have a custom background.
+- Added keyboard commands for cmd+arrow to navigate channels and cabals.
+- Avatars are now generated based on the user's unique key.
+### Fixed
+- Fixed issue crash on username change on new cabals.
+- Fixed bug in removing cabals.
+- Fixed issue causing message list to incorrectly jump back in time.
+- Fixed issue preventing desktop notifications.
+- Fixed message parsing for urls and markdown.
+
 ## [5.0.4] - 2020-05-07
 ### Fixed
 - Fixed issue with missing icon.

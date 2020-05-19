@@ -1,6 +1,6 @@
 {
   "name": "cabal-desktop",
-  "version": "5.0.4",
+  "version": "5.0.5",
   "description": "Cabal p2p offline-first desktop application",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
