@@ -115,7 +115,6 @@ class MainPanel extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    console.log(this.props.settings['favorite-channels'])
     if ((prevProps.channelBrowserVisible !== this.props.channelBrowserVisible) ||
       (prevProps.cabalSettingsVisible !== this.props.cabalSettingsVisible)) {
       this.scrollToBottom()
@@ -159,7 +158,7 @@ class MainPanel extends Component {
   }
 
   onToggleFavoriteChannel (channelName) {
-    const favorites = [...this.props.settings['favorite-channels']]
+    const favorites = [...(this.props.settings['favorite-channels'] || [])]
     const index = favorites.indexOf(channelName)
     if (index > -1) {
       favorites.splice(index, 1)

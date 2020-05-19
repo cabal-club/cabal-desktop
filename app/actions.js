@@ -50,6 +50,14 @@ export const viewCabal = ({ addr, channel }) => dispatch => {
   dispatch(viewChannel({ addr, channel }))
 }
 
+export const showProfilePanel = ({ addr, user }) => (dispatch) => {
+  dispatch({ type: 'SHOW_PROFILE_PANEL', addr, user })
+}
+
+export const hideProfilePanel = ({ addr }) => (dispatch) => {
+  dispatch({ type: 'HIDE_PROFILE_PANEL', addr })
+}
+
 export const showChannelBrowser = ({ addr }) => dispatch => {
   const cabalDetails = client.getDetails(addr)
   const channelsData = Object.values(cabalDetails.channels).map((channel) => {

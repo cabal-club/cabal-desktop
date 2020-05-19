@@ -6,11 +6,13 @@ import { contextMenu, Item, Menu, MenuProvider, Separator, Submenu, theme } from
 import {
   changeScreen,
   hideCabalSettings,
+  hideProfilePanel,
   joinChannel,
   saveCabalSettings,
   setUsername,
   showCabalSettings,
   showChannelBrowser,
+  showProfilePanel,
   viewChannel
 } from '../actions'
 import Avatar from './avatar'
@@ -32,12 +34,14 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   changeScreen: ({ screen }) => dispatch(changeScreen({ screen })),
   hideCabalSettings: () => dispatch(hideCabalSettings()),
+  hideProfilePanel: ({ addr }) => dispatch(hideProfilePanel({ addr })),
   joinChannel: ({ addr, channel }) => dispatch(joinChannel({ addr, channel })),
   saveCabalSettings: ({ addr, settings }) => dispatch(saveCabalSettings({ addr, settings })),
   setUsername: ({ addr, username }) => dispatch(setUsername({ addr, username })),
   showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),
   showChannelBrowser: ({ addr }) => dispatch(showChannelBrowser({ addr })),
-  viewChannel: ({ addr, channel }) => dispatch(viewChannel({ addr, channel })),
+  showProfilePanel: ({ addr, user }) => dispatch(showProfilePanel({ addr, user })),
+  viewChannel: ({ addr, channel }) => dispatch(viewChannel({ addr, channel }))
 })
 
 function UserMenu (props) {
@@ -116,7 +120,14 @@ class SidebarScreen extends React.Component {
     this.props.saveCabalSettings({ addr: this.props.cabal.addr, settings })
   }
 
-  onContextMenu (nick, e) {
+  onClickUser (user) {
+    this.props.showProfilePanel({
+      addr: this.props.addr,
+      user
+    })
+  }
+
+  onContextMenu (peer, e) {
     e.preventDefault()
     // contextMenu.show({
     //   id: 'user_menu',
@@ -271,25 +282,25 @@ class SidebarScreen extends React.Component {
                 </div>
                 <div className='collection__heading__handle' />
               </div>
-              {!this.props.settings['sidebar-hide-peers'] && deduplicatedNicks.map((nick, index) => {
-                const keys = nick.users.map((u) => u.key).join(', ')
+              {!this.props.settings['sidebar-hide-peers'] && deduplicatedNicks.map((peer, index) => {
+                const keys = peer.users.map((u) => u.key).join(', ')
                 return (
                   <div
                     key={index}
                     className='collection__item'
                     title={keys}
-                    onClick={this.onContextMenu.bind(this, nick)}
-                    onContextMenu={this.onContextMenu.bind(this, nick)}
+                    onClick={this.onClickUser.bind(this, peer)}
+                    onContextMenu={this.onContextMenu.bind(this, peer)}
                   >
                     <div className='collection__item__icon'>
-                      {!!nick.online &&
+                      {!!peer.online &&
                         <img alt='Online' src='static/images/icon-status-online.svg' />}
-                      {!nick.online &&
+                      {!peer.online &&
                         <img alt='Offline' src='static/images/icon-status-offline.svg' />}
                     </div>
-                    <div className={`collection__item__content ${nick.online ? 'active' : ''}`}>
-                      {nick.name || nick.key.substring(0, 6)}
-                      {nick.users.length > 1 && <span className='collection__item__count'>({nick.users.length})</span>}
+                    <div className={`collection__item__content ${peer.online ? 'active' : ''}`}>
+                      {peer.name || peer.key.substring(0, 6)}
+                      {peer.users.length > 1 && <span className='collection__item__count'>({peer.users.length})</span>}
                     </div>
                     <div className='collection__item__handle' />
                   </div>
