@@ -6,11 +6,14 @@ import CabalsList from './cabalsList'
 import Sidebar from './sidebar'
 import MainPanel from './mainPanel'
 import MemberList from './memberList'
+import ProfilePanel from './profilePanel'
 
 const mapStateToProps = state => ({
   addr: state.currentCabal,
   cabal: state.cabals[state.currentCabal],
-  cabals: state.cabals
+  cabals: state.cabals,
+  profilePanelVisible: state.profilePanelVisible[state.currentCabal],
+  profilePanelUser: state.profilePanelUser[state.currentCabal]
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -60,6 +63,7 @@ class LayoutScreen extends Component {
         <Sidebar />
         <MainPanel toggleMemberList={this.toggleMemberList} />
         {this.state.showMemberList && <MemberList />}
+        {this.props.profilePanelVisible && <ProfilePanel addr={this.props.addr} user={this.props.profilePanelUser} />}
       </div>
     )
   }

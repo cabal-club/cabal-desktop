@@ -4,10 +4,11 @@ import Identicon from 'react-blockies'
 export default class Avatar extends Component {
   render () {
     return (
-      <span title={this.props.name}>
+      <span title={this.props.name} className={this.props.className}>
         <Identicon
-          seed={this.props.name}
           bgColor='#fff'
+          scale={this.props.scale}
+          seed={this.props.name}
         />
       </span>
     )

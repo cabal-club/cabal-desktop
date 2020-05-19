@@ -7,14 +7,16 @@ import { setAutoFreeze } from 'immer'
 setAutoFreeze(false)
 
 const defaultState = {
-  screen: 'main',
-  cabalSettingsVisible: false,
-  currentCabal: null,
-  currentChannel: 'default',
-  channelMembers: [],
   cabals: {},
   cabalSettings: {},
-  emojiPickerVisible: false
+  cabalSettingsVisible: false,
+  channelMembers: [],
+  currentCabal: null,
+  currentChannel: 'default',
+  emojiPickerVisible: false,
+  profilePanelUser: {},
+  profilePanelVisible: {},
+  screen: 'main'
 }
 
 const reducer = createReducer(defaultState, {
@@ -53,6 +55,7 @@ const reducer = createReducer(defaultState, {
   },
   SHOW_CHANNEL_BROWSER: (state) => {
     state.channelBrowserVisible = true
+    // state.profilePanelVisible[addr] = false
   },
   UPDATE_CHANNEL_BROWSER: (state, { channelsData }) => {
     state.channelBrowserChannelsData = channelsData
@@ -60,6 +63,7 @@ const reducer = createReducer(defaultState, {
   SHOW_CABAL_SETTINGS: (state) => {
     state.cabalSettingsVisible = true
     state.emojiPickerVisible = false
+    // state.profilePanelVisible[addr] = false
   },
   HIDE_CABAL_SETTINGS: state => { state.cabalSettingsVisible = false },
   HIDE_ALL_MODALS: state => {
@@ -69,8 +73,14 @@ const reducer = createReducer(defaultState, {
   },
   UPDATE_WINDOW_BADGE: (state, { badgeCount }) => { state.badgeCount = badgeCount },
   SHOW_EMOJI_PICKER: (state) => { state.emojiPickerVisible = true },
-  HIDE_EMOJI_PICKER: state => { state.emojiPickerVisible = false }
-
+  HIDE_EMOJI_PICKER: state => { state.emojiPickerVisible = false },
+  SHOW_PROFILE_PANEL: (state, { addr, user }) => {
+    state.profilePanelVisible[addr] = true
+    state.profilePanelUser[addr] = user
+  },
+  HIDE_PROFILE_PANEL: (state, { addr }) => {
+    state.profilePanelVisible[addr] = false
+  }
 })
 
 export default reducer

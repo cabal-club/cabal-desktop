@@ -1,7 +1,28 @@
 import React from 'react'
+import { connect } from 'react-redux'
+
+import {
+  showProfilePanel,
+} from '../actions'
 import Avatar from './avatar'
 
-export default function MessagesContainer (props) {
+const mapStateToProps = state => ({
+  addr: state.currentCabal,
+  cabal: state.cabals[state.currentCabal],
+})
+
+const mapDispatchToProps = dispatch => ({
+  showProfilePanel: ({ addr, user }) => dispatch(showProfilePanel({ addr, user })),
+})
+
+function MessagesContainer (props) {
+  const onClickProfile = (user) => {
+    props.showProfilePanel({
+      addr: props.addr,
+      user
+    })
+  }
+
   const renderDate = (time) => {
     return (
       <span>
@@ -31,6 +52,10 @@ export default function MessagesContainer (props) {
           printDate = enriched.time.full
           const nextMessageTime = messages[index + 1] && messages[index + 1].enriched.time.full
           const showDivider = previousDate && previousDate !== printDate && nextMessageTime === printDate
+          const user = {
+            key: message.key,
+            name: message.author
+          }
           let item = (<div />)
           prevMessage = message
           if (message.type === 'status') {
@@ -52,11 +77,11 @@ export default function MessagesContainer (props) {
           if (message.type === 'chat/text') {
             item = (
               <div className='messages__item'>
-                <div className='messages__item__avatar'>
+                <div className='messages__item__avatar' onClick={onClickProfile.bind(this, user)}>
                   {repeatedAuthor ? null : <Avatar name={message.key} />}
                 </div>
                 <div className='messages__item__metadata'>
-                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author || message.key.substr(0, 6)}{renderDate(enriched.time)}</div>}
+                  {repeatedAuthor ? null : <div onClick={onClickProfile.bind(this, user)} className='messages__item__metadata__name'>{message.author || message.key.substr(0, 6)}{renderDate(enriched.time)}</div>}
                   <div className={repeatedAuthor ? 'text indent' : 'text'}>
                     {enriched.content}
                   </div>
@@ -68,12 +93,12 @@ export default function MessagesContainer (props) {
             item = (
               <div className='messages__item messages__item--emote'>
                 <div className='messages__item__avatar'>
-                  <div className='messages__item__avatar__img'>
+                  <div className='messages__item__avatar__img' onClick={onClickProfile.bind(this, user)}>
                     {repeatedAuthor ? null : <Avatar name={message.key} />}
                   </div>
                 </div>
                 <div className='messages__item__metadata'>
-                  {repeatedAuthor ? null : <div className='messages__item__metadata__name'>{message.author}{renderDate(enriched.time)}</div>}
+                  {repeatedAuthor ? null : <div onClick={onClickProfile.bind(this, user)} className='messages__item__metadata__name'>{message.author}{renderDate(enriched.time)}</div>}
                   <div className={repeatedAuthor ? 'text indent' : 'text'}>{enriched.content}</div>
                 </div>
               </div>
@@ -94,3 +119,5 @@ export default function MessagesContainer (props) {
     )
   }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(MessagesContainer)
