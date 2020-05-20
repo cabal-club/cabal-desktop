@@ -2,20 +2,20 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import {
-  showProfilePanel,
+  showProfilePanel
 } from '../actions'
 import Avatar from './avatar'
 
 const mapStateToProps = state => ({
   addr: state.currentCabal,
-  cabal: state.cabals[state.currentCabal],
+  cabal: state.cabals[state.currentCabal]
 })
 
 const mapDispatchToProps = dispatch => ({
-  showProfilePanel: ({ addr, user }) => dispatch(showProfilePanel({ addr, user })),
+  showProfilePanel: ({ addr, user }) => dispatch(showProfilePanel({ addr, user }))
 })
 
-function MessagesContainer (props) {
+function MessagesContainer(props) {
   const onClickProfile = (user) => {
     props.showProfilePanel({
       addr: props.addr,
@@ -47,7 +47,8 @@ function MessagesContainer (props) {
         {messages.map((message, index) => {
           const enriched = message.enriched
           // avoid comaprison with other types of message than chat/text
-          const repeatedAuthor = message.author === prevMessage.author && prevMessage.type === 'chat/text'
+
+          const repeatedAuthor = message.key === prevMessage.key && prevMessage.type === 'chat/text'
           previousDate = printDate
           printDate = enriched.time.full
           const nextMessageTime = messages[index + 1] && messages[index + 1].enriched.time.full
