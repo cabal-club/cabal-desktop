@@ -8,8 +8,10 @@ import {
   hideEmojiPicker,
   listCommands,
   processLine,
+  setScreenViewHistoryPostion,
   showEmojiPicker,
   viewCabal,
+  viewChannel,
   viewNextChannel,
   viewPreviousChannel
 } from '../actions'
@@ -25,6 +27,8 @@ const mapStateToProps = state => {
     cabalIdList: Object.keys(state.cabals).sort() || [],
     currentChannel: state.currentChannel,
     emojiPickerVisible: state.emojiPickerVisible,
+    screenViewHistory: state.screenViewHistory,
+    screenViewHistoryPosition: state.screenViewHistoryPosition,
     users: cabal.users
   }
 }
@@ -34,8 +38,10 @@ const mapDispatchToProps = dispatch => ({
   hideEmojiPicker: () => dispatch(hideEmojiPicker()),
   listCommands: () => dispatch(listCommands()),
   processLine: ({ addr, message }) => dispatch(processLine({ addr, message })),
+  setScreenViewHistoryPostion: ({ index }) => dispatch(setScreenViewHistoryPostion({ index })),
   showEmojiPicker: () => dispatch(showEmojiPicker()),
-  viewCabal: ({ addr }) => dispatch(viewCabal({ addr })),
+  viewCabal: ({ addr, skipScreenHistory }) => dispatch(viewCabal({ addr, skipScreenHistory })),
+  viewChannel: ({ addr, channel, skipScreenHistory }) => dispatch(viewChannel({ addr, channel, skipScreenHistory })),
   viewNextChannel: ({ addr }) => dispatch(viewNextChannel({ addr })),
   viewPreviousChannel: ({ addr }) => dispatch(viewPreviousChannel({ addr }))
 })
@@ -49,8 +55,8 @@ class writeScreen extends Component {
     this.clearInput = this.clearInput.bind(this)
     this.resizeTextInput = this.resizeTextInput.bind(this)
     this.addEmoji = this.addEmoji.bind(this)
-    Mousetrap.bind(['command+left', 'ctrl+left'], this.viewPreviousChannel.bind(this))
-    Mousetrap.bind(['command+right', 'ctrl+right'], this.viewNextChannel.bind(this))
+    Mousetrap.bind(['command+left', 'ctrl+left'], this.viewPreviousScreen.bind(this))
+    Mousetrap.bind(['command+right', 'ctrl+right'], this.viewNextScreen.bind(this))
     Mousetrap.bind(['command+n', 'ctrl+n'], this.viewNextChannel.bind(this))
     Mousetrap.bind(['command+p', 'ctrl+p'], this.viewPreviousChannel.bind(this))
     Mousetrap.bind(['command+shift+n', 'ctrl+shift+n'], this.goToNextCabal.bind(this))
@@ -100,6 +106,40 @@ class writeScreen extends Component {
     }
   }
 
+  viewNextScreen () {
+    const position = this.props.screenViewHistoryPosition + 1
+    const nextScreen = this.props.screenViewHistory[position]
+    if (nextScreen) {
+      if (this.props.addr === nextScreen.addr) {
+        this.props.viewChannel({ addr: nextScreen.addr, channel: nextScreen.channel, skipScreenHistory: true })
+      } else {
+        this.props.viewCabal({ addr: nextScreen.addr, channel: nextScreen.channel, skipScreenHistory: true })
+      }
+      this.props.setScreenViewHistoryPostion({ index: position })
+    } else {
+      this.props.setScreenViewHistoryPostion({
+        index: this.props.screenViewHistory.length - 1
+      })
+    }
+  }
+
+  viewPreviousScreen () {
+    const position = this.props.screenViewHistoryPosition - 1
+    const previousScreen = this.props.screenViewHistory[position]
+    if (previousScreen) {
+      if (this.props.addr === previousScreen.addr) {
+        this.props.viewChannel({ addr: previousScreen.addr, channel: previousScreen.channel, skipScreenHistory: true })
+      } else {
+        this.props.viewCabal({ addr: previousScreen.addr, channel: previousScreen.channel, skipScreenHistory: true })
+      }
+      this.props.setScreenViewHistoryPostion({ index: position })
+    } else {
+      this.props.setScreenViewHistoryPostion({
+        index: 0
+      })
+    }
+  }
+
   viewNextChannel () {
     this.props.viewNextChannel({ addr: this.props.addr })
   }
@@ -109,10 +149,9 @@ class writeScreen extends Component {
   }
 
   onKeyDown (e) {
+    var el = this.textInput
+    var line = el.value
     if (e.key === 'Tab') {
-      var el = this.textInput
-      var line = el.value
-
       if (line.length > 1 && line[0] === '/') {
         // command completion
         var soFar = line.slice(1)
@@ -162,15 +201,27 @@ class writeScreen extends Component {
       e.preventDefault()
       e.stopPropagation()
     } else if (((e.keyCode === 78 || e.keyCode === 38) && (e.ctrlKey || e.metaKey)) && e.shiftKey) {
-      this.goToNextCabal()
+      if (line.length === 0) {
+        this.goToNextCabal()
+      }
     } else if (((e.keyCode === 80 || e.keyCode === 40) && (e.ctrlKey || e.metaKey)) && e.shiftKey) {
-      this.goToPreviousCabal()
+      if (line.length === 0) {
+        this.goToPreviousCabal()
+      }
     } else if (e.keyCode > 48 && e.keyCode < 58 && (e.ctrlKey || e.metaKey)) {
       this.gotoCabal(e.keyCode - 49)
-    } else if (((e.keyCode === 78 || e.keyCode === 39) && (e.ctrlKey || e.metaKey))) {
+    } else if ((e.keyCode === 78 && (e.ctrlKey || e.metaKey))) {
       this.viewNextChannel()
-    } else if (((e.keyCode === 80 || e.keyCode === 37) && (e.ctrlKey || e.metaKey))) {
+    } else if ((e.keyCode === 80 && (e.ctrlKey || e.metaKey))) {
       this.viewPreviousChannel()
+    } else if ((e.keyCode === 39 && (e.ctrlKey || e.metaKey))) {
+      if (line.length === 0) {
+        this.viewNextScreen()
+      }
+    } else if ((e.keyCode === 37 && (e.ctrlKey || e.metaKey))) {
+      if (line.length === 0) {
+        this.viewPreviousScreen()
+      }
     }
   }
 
