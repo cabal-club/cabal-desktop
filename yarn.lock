@@ -2344,12 +2344,10 @@ bulk-write-stream@^1.1.3:
     inherits "^2.0.1"
     readable-stream "^2.1.4"
 
-cabal-client@^4.1.0:
+"cabal-client@file:../cabal-client":
   version "4.1.0"
-  resolved "https://registry.yarnpkg.com/cabal-client/-/cabal-client-4.1.0.tgz#0226ed4ce2717b932b8d1e6a0a375c1f709d66c0"
-  integrity sha512-sTuuUcjUYL/WgO4vipBzOSQpiJbO1ZGHw6EV+3QtBCLohms2lpUwbwhw3ZZZ4nO1CwLY5OAZDTPgqNLtxbDIfQ==
   dependencies:
-    cabal-core "^10.0.0"
+    cabal-core "^11.1.0"
     collect-stream "^1.2.1"
     dat-dns "^4.0.1"
     debug "^4.1.1"
@@ -2357,25 +2355,30 @@ cabal-client@^4.1.0:
     level "^6.0.0"
     memdb "^1.3.1"
     mkdirp "^0.5.1"
+    pump "^3.0.0"
     qrcode "^1.4.4"
     random-access-memory "^3.1.1"
+    strftime "^0.10.0"
+    to2 "^1.0.0"
 
-cabal-core@^10.0.0:
-  version "10.0.1"
-  resolved "https://registry.yarnpkg.com/cabal-core/-/cabal-core-10.0.1.tgz#ee35efb52cc6b9588bc3a595302b17ed73cba2c8"
-  integrity sha512-QcBsfYRsoIhZ1zBH4xfve2twA6u3QcuqeaOHvXioL/V7ZNoTASFnOnI1blHMToXKu2Sao/vArUxh6mlteEw+Qg==
+cabal-core@^11.1.0:
+  version "11.2.0"
+  resolved "https://registry.yarnpkg.com/cabal-core/-/cabal-core-11.2.0.tgz#9d019af6b6dcf96cbf3877e0e145983d572627da"
+  integrity sha512-hfJAqbCqbDVZab/kRm/Uh4gbkKZuu9O6np5ywLf4EvgV/MvN4XJW5U6CCUk94c3U2sqRJoniWKmKR5u5znA/SA==
   dependencies:
     charwise "^3.0.1"
+    collect-stream "^1.2.1"
     concat-stream "^2.0.0"
     dat-encoding "^5.0.1"
     debug "^4.1.1"
+    duplexify "^4.1.1"
     hypercore-crypto "^1.0.0"
     hyperswarm "^2.13.0"
     inherits "^2.0.4"
     kappa-core "^6.0.0"
     kappa-view-level "^2.0.1"
     level-mem "^5.0.1"
-    materialized-group-auth "^1.1.1"
+    materialized-group-auth "^2.1.0"
     monotonic-timestamp "0.0.9"
     once "^1.4.0"
     pump "^3.0.0"
@@ -3499,7 +3502,7 @@ duplexify@^3.4.2, duplexify@^3.6.0:
     readable-stream "^2.0.0"
     stream-shift "^1.0.0"
 
-duplexify@^4.0.0:
+duplexify@^4.0.0, duplexify@^4.1.1:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/duplexify/-/duplexify-4.1.1.tgz#7027dc374f157b122a8ae08c2d3ea4d2d953aa61"
   integrity sha512-DY3xVEmVHTv1wSzKNbwoU6nVjzI369Y6sPoqfYr0/xlx3IdX2n94xIszTcjPO8W8ZIv0Wb0PXNcjuZyT4wiICA==
@@ -6877,10 +6880,10 @@ matcher@^2.1.0:
   dependencies:
     escape-string-regexp "^2.0.0"
 
-materialized-group-auth@^1.1.1:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/materialized-group-auth/-/materialized-group-auth-1.1.3.tgz#d33ff010f77951eac2ab9871bf9232c05b600060"
-  integrity sha512-VlmHVEdzogn2FtyufZ9glzg1mj/SOHRFTqGMt5Bw9O2gwysQdKRvRECRSjiLF0WEfSgR98/01HymMHBjZZaZSA==
+materialized-group-auth@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/materialized-group-auth/-/materialized-group-auth-2.1.0.tgz#7c01764954123f3872f1b477cd4e71c9f912e67f"
+  integrity sha512-lXZXhBBUfC1YoEemBhszwXqbX0AZkhInIiku7ZZyP2GZHTkTsFHLef78QKBDFw0O9CA/uxVcA5PbqC51BaZgnQ==
   dependencies:
     collect-stream "^1.2.1"
     duplexify "^4.0.0"
