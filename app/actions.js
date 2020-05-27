@@ -43,11 +43,11 @@ removedCommands.forEach((command) => {
   client.removeCommand(command)
 })
 
-export const viewCabal = ({ addr, channel }) => dispatch => {
+export const viewCabal = ({ addr, channel, skipScreenHistory }) => dispatch => {
   client.focusCabal(addr)
   channel = channel || client.getCurrentChannel()
   dispatch({ addr, channel, type: 'VIEW_CABAL' })
-  dispatch(viewChannel({ addr, channel }))
+  dispatch(viewChannel({ addr, channel, skipScreenHistory }))
 }
 
 export const showProfilePanel = ({ addr, user }) => (dispatch) => {
@@ -56,6 +56,14 @@ export const showProfilePanel = ({ addr, user }) => (dispatch) => {
 
 export const hideProfilePanel = ({ addr }) => (dispatch) => {
   dispatch({ type: 'HIDE_PROFILE_PANEL', addr })
+}
+
+export const updateScreenViewHistory = ({ addr, channel }) => (dispatch) => {
+  dispatch({ type: 'UPDATE_SCREEN_VIEW_HISTORY', addr, channel })
+}
+
+export const setScreenViewHistoryPostion = ({ index }) => (dispatch) => {
+  dispatch({ type: 'SET_SCREEN_VIEW_HISTORY_POSITION', index })
 }
 
 export const showChannelBrowser = ({ addr }) => dispatch => {
@@ -271,7 +279,7 @@ export const onIncomingMessage = ({ addr, channel, message }, callback) => (disp
   }
 }
 
-export const viewChannel = ({ addr, channel }) => (dispatch) => {
+export const viewChannel = ({ addr, channel, skipScreenHistory }) => (dispatch, getState) => {
   if (!channel || channel.length === 0) return
 
   if (client.getChannels().includes(channel)) {
@@ -305,6 +313,13 @@ export const viewChannel = ({ addr, channel }) => (dispatch) => {
   const topic = cabalDetails.getTopic()
   dispatch({ type: 'UPDATE_TOPIC', addr, topic })
   dispatch(updateChannelMessagesUnread({ addr, channel, unreadCount: 0 }))
+
+  // When a user is walking through history by using screen history navigation commands,
+  // `skipScreenHistory=true` does not add that navigation event to the end of the history 
+  // stack so that navigating again forward through history works.
+  if (!skipScreenHistory) {
+    dispatch(updateScreenViewHistory({ addr, channel }))
+  }
 
   dispatch(saveCabalSettings({ addr, settings: { currentChannel: channel } }))
 }

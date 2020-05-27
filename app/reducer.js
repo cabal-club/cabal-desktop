@@ -16,7 +16,9 @@ const defaultState = {
   emojiPickerVisible: false,
   profilePanelUser: {},
   profilePanelVisible: {},
-  screen: 'main'
+  screen: 'main',
+  screenViewHistory: [],
+  screenViewHistoryPosition: 0
 }
 
 const reducer = createReducer(defaultState, {
@@ -80,6 +82,13 @@ const reducer = createReducer(defaultState, {
   },
   HIDE_PROFILE_PANEL: (state, { addr }) => {
     state.profilePanelVisible[addr] = false
+  },
+  UPDATE_SCREEN_VIEW_HISTORY: (state, { addr, channel }) => {
+    state.screenViewHistory.push({ addr, channel })
+    state.screenViewHistoryPosition = state.screenViewHistory.length - 1
+  },
+  SET_SCREEN_VIEW_HISTORY_POSITION: (state, { index }) => {
+    state.screenViewHistoryPosition = index
   }
 })
 
