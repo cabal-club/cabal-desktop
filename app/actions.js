@@ -314,6 +314,9 @@ export const viewChannel = ({ addr, channel, skipScreenHistory }) => (dispatch, 
   dispatch({ type: 'UPDATE_TOPIC', addr, topic })
   dispatch(updateChannelMessagesUnread({ addr, channel, unreadCount: 0 }))
 
+  // When a user is walking through history by using screen history navigation commands,
+  // `skipScreenHistory=true` does not add that navigation event to the end of the history 
+  // stack so that navigating again forward through history works.
   if (!skipScreenHistory) {
     dispatch(updateScreenViewHistory({ addr, channel }))
   }
