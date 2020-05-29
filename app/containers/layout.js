@@ -47,8 +47,10 @@ class LayoutScreen extends Component {
   }
 
   render () {
-    const { cabal } = this.props
-    if (!cabal || !this.cabalsInitialized()) {
+    const { cabal, cabals, addr } = this.props
+    // console.log('render', { cabal, cabals, addr })
+    // if (!cabal || !this.cabalsInitialized()) {
+    if (!cabal) {
       return (
         <div className='loading'>
           <div className='status'> </div>
@@ -63,7 +65,7 @@ class LayoutScreen extends Component {
         <Sidebar />
         <MainPanel toggleMemberList={this.toggleMemberList} />
         {this.state.showMemberList && <MemberList />}
-        {this.props.profilePanelVisible && <ProfilePanel addr={this.props.addr} user={this.props.profilePanelUser} />}
+        {this.props.profilePanelVisible && <ProfilePanel addr={this.props.addr} userKey={this.props.profilePanelUser} />}
       </div>
     )
   }

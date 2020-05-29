@@ -40,14 +40,14 @@ const mapDispatchToProps = dispatch => ({
   setUsername: ({ addr, username }) => dispatch(setUsername({ addr, username })),
   showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),
   showChannelBrowser: ({ addr }) => dispatch(showChannelBrowser({ addr })),
-  showProfilePanel: ({ addr, user }) => dispatch(showProfilePanel({ addr, user })),
+  showProfilePanel: ({ addr, userKey }) => dispatch(showProfilePanel({ addr, userKey })),
   viewChannel: ({ addr, channel }) => dispatch(viewChannel({ addr, channel }))
 })
 
 function UserMenu (props) {
   useEffect(() => {
-    console.warn('UserMenu', props)
-  }, [props.nick])
+    // console.warn('UserMenu', props)
+  }, [props.peer])
 
   return (
     <Menu id='user_menu' theme={theme.dark}>
@@ -123,17 +123,17 @@ class SidebarScreen extends React.Component {
   onClickUser (user) {
     this.props.showProfilePanel({
       addr: this.props.addr,
-      user
+      userKey: user.key
     })
   }
 
   onContextMenu (peer, e) {
-    e.preventDefault()
+    // e.preventDefault()
     // contextMenu.show({
     //   id: 'user_menu',
     //   event: e,
     //   props: {
-    //     nick: nick
+    //     peer
     //   }
     // })
   }
@@ -162,8 +162,14 @@ class SidebarScreen extends React.Component {
 
   sortUsers (users) {
     return users.sort((a, b) => {
+      if (a.isHidden() && !b.isHidden()) return 1
+      if (b.isHidden() && !a.isHidden()) return -1
       if (a.online && !b.online) return -1
       if (b.online && !a.online) return 1
+      if (a.isAdmin() && !b.isAdmin()) return -1
+      if (b.isAdmin() && !a.isAdmin()) return 1
+      if (a.isModerator() && !b.isModerator()) return -1
+      if (b.isModerator() && !a.isModerator()) return 1
       if (a.name && !b.name) return -1
       if (b.name && !a.name) return 1
       if (a.name && b.name) return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
@@ -199,6 +205,9 @@ class SidebarScreen extends React.Component {
     const onlineCount = users.filter(i => !!i.online).length
     const userkey = cabal.userkey
     const username = cabal.username
+    const unreadNonFavoriteMessageCount = Object.entries((this.props.channelMessagesUnread || {})).reduce((total, value) => {
+      return (value[1] && channels.includes(value[0])) ? (total + value[1]) : total
+    }, 0)
     return (
       <div className='client__sidebar'>
         <div className='sidebar'>
@@ -214,7 +223,7 @@ class SidebarScreen extends React.Component {
                 {username}
               </h2>
             </div>
-            <div className='session__configuration'>
+            <div className='session__configuration' title='Settings for this Cabal'>
               <img src='static/images/icon-sidebarmenu.svg' />
             </div>
           </div>
@@ -228,7 +237,12 @@ class SidebarScreen extends React.Component {
                       onClick={self.onToggleCollection.bind(self, 'favorites')}
                     >▼
                     </span>
-                    <div className='collection__heading__title'>Starred</div>
+                    <div
+                      className='collection__heading__title'
+                      onClick={self.onToggleCollection.bind(self, 'favorites')}
+                    >
+                      Starred
+                    </div>
                   </div>
                 </div>
                 {!this.props.settings['sidebar-hide-favorites'] && this.sortByProperty(favorites).map((channel) =>
@@ -251,12 +265,18 @@ class SidebarScreen extends React.Component {
                   </span>
                   <div
                     className='collection__heading__title collection__heading__title__channelBrowserButton'
-                    onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}
-                    title='Browse and join all channels'
-                  >Channels
+                    onClick={self.onToggleCollection.bind(self, 'channels')}
+                  >
+                    Channels
+                    {this.props.settings['sidebar-hide-channels'] && unreadNonFavoriteMessageCount > 0 &&
+                      <span className='messagesUnreadCount'>{unreadNonFavoriteMessageCount}</span>}
                   </div>
                 </div>
-                <div className='collection__heading__handle' onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}>
+                <div 
+                  className='collection__heading__handle' 
+                  onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}
+                  title='Browse and join or create channels'
+                >
                   <img src='static/images/icon-newchannel.svg' />
                 </div>
               </div>
@@ -278,12 +298,20 @@ class SidebarScreen extends React.Component {
                     onClick={self.onToggleCollection.bind(self, 'peers')}
                   >▼
                   </span>
-                  <div className='collection__heading__title'>Peers - {onlineCount} online</div>
+                  <div
+                    className='collection__heading__title'
+                    onClick={self.onToggleCollection.bind(self, 'peers')}
+                  >
+                    Peers - {onlineCount} online
+                  </div>
                 </div>
                 <div className='collection__heading__handle' />
               </div>
               {!this.props.settings['sidebar-hide-peers'] && deduplicatedNicks.map((peer, index) => {
                 const keys = peer.users.map((u) => u.key).join(', ')
+                const isAdmin = peer.users.some((u) => u.isAdmin())
+                const isModerator = peer.users.some((u) => u.isModerator())
+                const isHidden = peer.users.some((u) => u.isHidden())
                 return (
                   <div
                     key={index}
@@ -298,8 +326,11 @@ class SidebarScreen extends React.Component {
                       {!peer.online &&
                         <img alt='Offline' src='static/images/icon-status-offline.svg' />}
                     </div>
-                    <div className={`collection__item__content ${peer.online ? 'active' : ''}`}>
+                    <div className={`collection__item__content ${(peer.online && !isHidden) ? 'active' : ''}`}>
+                      {isHidden && <span>Hidden: </span>}
                       {peer.name || peer.key.substring(0, 6)}
+                      {isModerator && <span className='sigil' title='Moderator'>%</span>}
+                      {isAdmin && <span className='sigil' title='Admin'>@</span>}
                       {peer.users.length > 1 && <span className='collection__item__count'>({peer.users.length})</span>}
                     </div>
                     <div className='collection__item__handle' />

@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import {
+  getUsers,
   showProfilePanel
 } from '../actions'
 import Avatar from './avatar'
@@ -12,14 +13,15 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  showProfilePanel: ({ addr, user }) => dispatch(showProfilePanel({ addr, user }))
+  getUsers: ({ addr }) => dispatch(getUsers({ addr })),
+  showProfilePanel: ({ addr, userKey }) => dispatch(showProfilePanel({ addr, userKey }))
 })
 
-function MessagesContainer(props) {
+function MessagesContainer (props) {
   const onClickProfile = (user) => {
     props.showProfilePanel({
       addr: props.addr,
-      user
+      userKey: user.key
     })
   }
 
@@ -45,6 +47,10 @@ function MessagesContainer(props) {
     return (
       <div className='messages'>
         {messages.map((message, index) => {
+          const user = props.getUsers({ addr: props.addr })[message.key]
+          // Hide messages from hidden users
+          if (user && user.isHidden()) return null
+
           const enriched = message.enriched
           // avoid comaprison with other types of message than chat/text
 
@@ -53,10 +59,7 @@ function MessagesContainer(props) {
           printDate = enriched.time.full
           const nextMessageTime = messages[index + 1] && messages[index + 1].enriched.time.full
           const showDivider = previousDate && previousDate !== printDate && nextMessageTime === printDate
-          const user = {
-            key: message.key,
-            name: message.author
-          }
+
           let item = (<div />)
           prevMessage = message
           if (message.type === 'status') {
@@ -82,7 +85,13 @@ function MessagesContainer(props) {
                   {repeatedAuthor ? null : <Avatar name={message.key} />}
                 </div>
                 <div className='messages__item__metadata'>
-                  {repeatedAuthor ? null : <div onClick={onClickProfile.bind(this, user)} className='messages__item__metadata__name'>{message.author || message.key.substr(0, 6)}{renderDate(enriched.time)}</div>}
+                  {!repeatedAuthor &&
+                    <div onClick={onClickProfile.bind(this, user)} className='messages__item__metadata__name'>
+                      {message.author || message.key.substr(0, 6)}
+                      {user.isAdmin() && <span className='sigil admin' title='Admin'>@</span>}
+                      {user.isModerator() && <span className='sigil moderator' title='Moderator'>%</span>}
+                      {renderDate(enriched.time)}
+                    </div>}
                   <div className={repeatedAuthor ? 'text indent' : 'text'}>
                     {enriched.content}
                   </div>

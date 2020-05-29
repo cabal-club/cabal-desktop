@@ -76,9 +76,9 @@ const reducer = createReducer(defaultState, {
   UPDATE_WINDOW_BADGE: (state, { badgeCount }) => { state.badgeCount = badgeCount },
   SHOW_EMOJI_PICKER: (state) => { state.emojiPickerVisible = true },
   HIDE_EMOJI_PICKER: state => { state.emojiPickerVisible = false },
-  SHOW_PROFILE_PANEL: (state, { addr, user }) => {
+  SHOW_PROFILE_PANEL: (state, { addr, userKey }) => {
     state.profilePanelVisible[addr] = true
-    state.profilePanelUser[addr] = user
+    state.profilePanelUser[addr] = userKey
   },
   HIDE_PROFILE_PANEL: (state, { addr }) => {
     state.profilePanelVisible[addr] = false
