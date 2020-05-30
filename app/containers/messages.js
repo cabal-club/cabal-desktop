@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import moment from 'moment'
 
 import {
   showProfilePanel
@@ -33,7 +34,8 @@ function MessagesContainer(props) {
   }
 
   const messages = props.cabal.messages || []
-  let printDate, previousDate
+  let lastDividerDate // hold the time of the message for which divider was last added
+
   if (messages.length === 0 && props.cabal.channel !== '!status') {
     return (
       <div className='messages starterMessage'>
@@ -44,15 +46,20 @@ function MessagesContainer(props) {
     let prevMessage = {}
     return (
       <div className='messages'>
-        {messages.map((message, index) => {
+        {messages.map((message) => {
           const enriched = message.enriched
           // avoid comaprison with other types of message than chat/text
 
           const repeatedAuthor = message.key === prevMessage.key && prevMessage.type === 'chat/text'
-          previousDate = printDate
-          printDate = enriched.time.full
-          const nextMessageTime = messages[index + 1] && messages[index + 1].enriched.time.full
-          const showDivider = previousDate && previousDate !== printDate && nextMessageTime === printDate
+          const printDate = enriched.time.full
+
+          // divider only needs to be added if its a normal message
+          // and if day has changed since the last divider
+          const showDivider = message.content && !moment(lastDividerDate).isSame(moment(printDate), 'day')
+          if (showDivider) {
+            lastDividerDate = printDate
+          }
+
           const user = {
             key: message.key,
             name: message.author
