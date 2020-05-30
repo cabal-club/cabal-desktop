@@ -28,13 +28,13 @@ function MessagesContainer(props) {
     return (
       <span>
         {time.short}
-        <span className='messages__item__metadata__date'>{time.full}</span>
+        <span className='messages__item__metadata__date'>{time.long}</span>
       </span>
     )
   }
 
   const messages = props.cabal.messages || []
-  let lastDividerDate // hold the time of the message for which divider was last added
+  let lastDividerDate = moment() // hold the time of the message for which divider was last added
 
   if (messages.length === 0 && props.cabal.channel !== '!status') {
     return (
@@ -51,11 +51,14 @@ function MessagesContainer(props) {
           // avoid comaprison with other types of message than chat/text
 
           const repeatedAuthor = message.key === prevMessage.key && prevMessage.type === 'chat/text'
-          const printDate = enriched.time.full
-
+          const printDate = moment(enriched.time)
+          const formattedTime = {
+            short: printDate.format('h:mm A'),
+            long: printDate.format('LL')
+          }
           // divider only needs to be added if its a normal message
           // and if day has changed since the last divider
-          const showDivider = message.content && !moment(lastDividerDate).isSame(moment(printDate), 'day')
+          const showDivider = message.content && !lastDividerDate.isSame(printDate, 'day')
           if (showDivider) {
             lastDividerDate = printDate
           }
@@ -76,7 +79,7 @@ function MessagesContainer(props) {
                   </div>
                 </div>
                 <div className='messages__item__metadata'>
-                  <div className='messages__item__metadata__name'>{message.name || defaultSystemName}{renderDate(enriched.time)}</div>
+                  <div className='messages__item__metadata__name'>{message.name || defaultSystemName}{renderDate(formattedTime)}</div>
                   <div className='text'>{enriched.content}</div>
                 </div>
               </div>
@@ -89,7 +92,7 @@ function MessagesContainer(props) {
                   {repeatedAuthor ? null : <Avatar name={message.key} />}
                 </div>
                 <div className='messages__item__metadata'>
-                  {repeatedAuthor ? null : <div onClick={onClickProfile.bind(this, user)} className='messages__item__metadata__name'>{message.author || message.key.substr(0, 6)}{renderDate(enriched.time)}</div>}
+                  {repeatedAuthor ? null : <div onClick={onClickProfile.bind(this, user)} className='messages__item__metadata__name'>{message.author || message.key.substr(0, 6)}{renderDate(formattedTime)}</div>}
                   <div className={repeatedAuthor ? 'text indent' : 'text'}>
                     {enriched.content}
                   </div>
@@ -106,7 +109,7 @@ function MessagesContainer(props) {
                   </div>
                 </div>
                 <div className='messages__item__metadata'>
-                  {repeatedAuthor ? null : <div onClick={onClickProfile.bind(this, user)} className='messages__item__metadata__name'>{message.author}{renderDate(enriched.time)}</div>}
+                  {repeatedAuthor ? null : <div onClick={onClickProfile.bind(this, user)} className='messages__item__metadata__name'>{message.author}{renderDate(formattedTime)}</div>}
                   <div className={repeatedAuthor ? 'text indent' : 'text'}>{enriched.content}</div>
                 </div>
               </div>
@@ -116,7 +119,7 @@ function MessagesContainer(props) {
             <div key={message.time + message.key}>
               {showDivider && (
                 <div className='messages__date__divider'>
-                  <h2> {printDate} <span>({enriched.time.diff})</span> </h2>
+                  <h2> {printDate.format('LL')} <span>({printDate.fromNow()})</span> </h2>
                 </div>
               )}
               {item}
