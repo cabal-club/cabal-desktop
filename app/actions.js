@@ -35,7 +35,7 @@ const client = new Client({
         addStatusMessage({ addr: cabal.key, text: helpContent })
       }
     }
-  }  
+  }
 })
 // Disable a few slash commands for now
 const removedCommands = ['add', 'channels', 'clear', 'ids', 'names', 'new', 'qr', 'whoami', 'whois']
@@ -205,14 +205,9 @@ export const setUsername = ({ username, addr }) => dispatch => {
 }
 
 const enrichMessage = (message) => {
-  const t = moment(message.time)
   return Object.assign({}, message, {
     enriched: {
-      time: {
-        diff: t.fromNow(),
-        short: t.format('h:mm A'),
-        full: t.format('LL')
-      },
+      time: message.time,
       content: remark().use(remarkReact).use(remarkEmoji).processSync(message.content).result
     }
   })
@@ -495,7 +490,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
   const cabalDetailsEvents = [
     {
       name: 'cabal-focus',
-      action: () => {}
+      action: () => { }
     }, {
       name: 'channel-focus',
       action: () => {
@@ -552,8 +547,8 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
           dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
 
           dispatch(viewCabal({ addr, channel: settings.currentChannel }))
-          client.focusCabal(addr)     
-        }, 2000) 
+          client.focusCabal(addr)
+        }, 2000)
       }
     }, {
       name: 'new-channel',
@@ -567,7 +562,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
       action: (data) => {
         const channel = data.channel
         const message = data.message
-        dispatch(onIncomingMessage({ addr, channel, message }))        
+        dispatch(onIncomingMessage({ addr, channel, message }))
       }
     }, {
       name: 'publish-message',
@@ -628,7 +623,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
         // Update local user
         const cabal = client.getCurrentCabal()
         if (data.key === cabal.getLocalUser().key) {
-          const username = data.user?.name 
+          const username = data.user?.name
           dispatch({ type: 'UPDATE_CABAL', addr: cabalDetails.key, username })
           addStatusMessage({
             addr: cabalDetails.key,
@@ -688,7 +683,7 @@ const storeOnDisk = () => (dispatch, getState) => {
 const generateUniqueName = () => {
   const adjectives = ['ancient', 'whispering', 'hidden', 'emerald', 'occult', 'obscure', 'wandering', 'ephemeral', 'eccentric', 'singing']
   const nouns = ['lichen', 'moss', 'shadow', 'stone', 'ghost', 'friend', 'spore', 'fungi', 'mold', 'mountain', 'compost', 'conspirator']
-  
+
   const randomItem = (array) => array[Math.floor(Math.random() * array.length)]
   return `${randomItem(adjectives)}-${randomItem(nouns)}`
 }
