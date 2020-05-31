@@ -256,7 +256,6 @@ form {
 
 .client__cabals .switcher__item--active {
   background-color: #693AFA;
-  border: 2px solid #fff;
   color: #fff !important;
 }
 
@@ -1098,12 +1097,13 @@ form {
   .sigilContainer {
     .sigil {
       background-color: #c2c5cc;
-      border: 1px solid #22222247;
       border-radius: 1rem;
+      border: 1px solid #22222247;
       color: rgb(34, 34, 34);
       font-size: 0.8rem;
-      padding: 0.5rem;
       margin-top: 1rem;
+      padding: 0.5rem;
+      text-align: center;
 
       &.admin {
         background-color: #53ce53;
