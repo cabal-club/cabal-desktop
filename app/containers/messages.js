@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import moment from 'moment'
 
 import {
   getUsers,
@@ -29,13 +30,14 @@ function MessagesContainer (props) {
     return (
       <span>
         {time.short}
-        <span className='messages__item__metadata__date'>{time.full}</span>
+        <span className='messages__item__metadata__date'>{time.long}</span>
       </span>
     )
   }
 
   const messages = props.cabal.messages || []
-  let printDate, previousDate
+  let lastDividerDate = moment() // hold the time of the message for which divider was last added
+
   if (messages.length === 0 && props.cabal.channel !== '!status') {
     return (
       <div className='messages starterMessage'>
@@ -46,7 +48,7 @@ function MessagesContainer (props) {
     let prevMessage = {}
     return (
       <div className='messages'>
-        {messages.map((message, index) => {
+        {messages.map((message) => {
           const user = props.getUsers({ addr: props.addr })[message.key]
           // Hide messages from hidden users
           if (user && user.isHidden()) return null
@@ -55,11 +57,17 @@ function MessagesContainer (props) {
           // avoid comaprison with other types of message than chat/text
 
           const repeatedAuthor = message.key === prevMessage.key && prevMessage.type === 'chat/text'
-          previousDate = printDate
-          printDate = enriched.time.full
-          const nextMessageTime = messages[index + 1] && messages[index + 1].enriched.time.full
-          const showDivider = previousDate && previousDate !== printDate && nextMessageTime === printDate
-
+          const printDate = moment(enriched.time)
+          const formattedTime = {
+            short: printDate.format('h:mm A'),
+            long: printDate.format('LL')
+          }
+          // divider only needs to be added if its a normal message
+          // and if day has changed since the last divider
+          const showDivider = message.content && !lastDividerDate.isSame(printDate, 'day')
+          if (showDivider) {
+            lastDividerDate = printDate
+          }
           let item = (<div />)
           prevMessage = message
           if (message.type === 'status') {
@@ -72,7 +80,7 @@ function MessagesContainer (props) {
                   </div>
                 </div>
                 <div className='messages__item__metadata'>
-                  <div className='messages__item__metadata__name'>{message.name || defaultSystemName}{renderDate(enriched.time)}</div>
+                  <div className='messages__item__metadata__name'>{message.name || defaultSystemName}{renderDate(formattedTime)}</div>
                   <div className='text'>{enriched.content}</div>
                 </div>
               </div>
@@ -90,7 +98,7 @@ function MessagesContainer (props) {
                       {message.author || message.key.substr(0, 6)}
                       {user.isAdmin() && <span className='sigil admin' title='Admin'>@</span>}
                       {user.isModerator() && <span className='sigil moderator' title='Moderator'>%</span>}
-                      {renderDate(enriched.time)}
+                      {renderDate(formattedTime)}
                     </div>}
                   <div className={repeatedAuthor ? 'text indent' : 'text'}>
                     {enriched.content}
@@ -108,7 +116,7 @@ function MessagesContainer (props) {
                   </div>
                 </div>
                 <div className='messages__item__metadata'>
-                  {repeatedAuthor ? null : <div onClick={onClickProfile.bind(this, user)} className='messages__item__metadata__name'>{message.author}{renderDate(enriched.time)}</div>}
+                  {repeatedAuthor ? null : <div onClick={onClickProfile.bind(this, user)} className='messages__item__metadata__name'>{message.author}{renderDate(formattedTime)}</div>}
                   <div className={repeatedAuthor ? 'text indent' : 'text'}>{enriched.content}</div>
                 </div>
               </div>
@@ -118,7 +126,7 @@ function MessagesContainer (props) {
             <div key={message.time + message.key}>
               {showDivider && (
                 <div className='messages__date__divider'>
-                  <h2> {printDate} <span>({enriched.time.diff})</span> </h2>
+                  <h2> {formattedTime.long} <span>({printDate.fromNow()})</span> </h2>
                 </div>
               )}
               {item}
