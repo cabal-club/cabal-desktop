@@ -119,7 +119,7 @@ function MessagesContainer(props) {
             <div key={message.time + message.key}>
               {showDivider && (
                 <div className='messages__date__divider'>
-                  <h2> {printDate.format('LL')} <span>({printDate.fromNow()})</span> </h2>
+                  <h2> {formattedTime.long} <span>({printDate.fromNow()})</span> </h2>
                 </div>
               )}
               {item}

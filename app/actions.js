@@ -205,15 +205,9 @@ export const setUsername = ({ username, addr }) => dispatch => {
 }
 
 const enrichMessage = (message) => {
-  // const t = moment(message.time)
   return Object.assign({}, message, {
     enriched: {
       time: message.time,
-      // time: {
-      //   diff: t.fromNow(),
-      //   short: t.format('h:mm A'),
-      //   full: t.format('LL')
-      // },
       content: remark().use(remarkReact).use(remarkEmoji).processSync(message.content).result
     }
   })
@@ -228,7 +222,6 @@ export const getMessages = ({ addr, channel, amount }, callback) => dispatch => 
       messages = messages.map((message) => {
         const author = users[message.key] ? users[message.key].name : message.key.substr(0, 6)
         const { type, timestamp, content } = message.value
-        console.log("timestamp is ", moment(timestamp), moment(timestamp).fromNow(), content, message)
         return enrichMessage({
           author,
           content: content && content.text,
