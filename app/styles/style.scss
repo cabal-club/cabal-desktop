@@ -288,7 +288,6 @@ form {
   }
 
   .sidebar .sidebar__section {
-    width: 13.75rem;
     overflow-x: hidden;
     overflow-y: auto;
     height: 100%;
@@ -305,7 +304,7 @@ form {
     cursor: pointer;
     display: flex;
     padding: 1rem;
-    width: 13.75rem;
+    width: 15rem;
   }
 
   .session .session__avatar {
@@ -452,16 +451,36 @@ form {
     transition: all 0.05s ease-in-out;
     position: relative;
 
+    .name {
+
+    }
+
     .sigil {
-      color: rgba(255, 255, 255, 0.3);
+      background-color: #333;
+      border-radius: 1rem;
+      color: #fff;
+      font-size: 0.7rem;
       font-weight: 700;
       margin-left: 0.3rem;
-    }
-  }
+      opacity: 0;
+      padding: 0.1rem 0.5rem;
+      position: absolute;
+      right: 1rem;
+      transition: 0.5s all;
 
-  .collection .collection__item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    cursor: pointer;
+      &.hidden {
+        color: #fbff00;
+      }
+    }
+
+    &:hover {
+      background-color: #333;
+      cursor: pointer;
+
+      .sigil {
+        opacity: 1;
+      }
+    }
   }
 
   .collection .collection__item .collection__item__icon {
@@ -587,6 +606,7 @@ form {
 
   .channel-meta__data .channel-meta__data__details h2 {
     color: rgba(0, 0, 0, 0.5);
+    display: flex;
     font-size: 0.75rem;
     margin-top: 0.5rem;
   }
@@ -601,21 +621,23 @@ form {
     margin-left: 1rem;
   }
 
-  .channel-meta__other .channel-meta__other__members {
+  .channel-meta__members {
     align-items: center;
     color: #B497E7;
     cursor: pointer;
-    display: inline-block;
+    display: flex;
     flex-direction: row;
-    margin-left: 1rem;
     margin-right: 1rem;
     vertical-align: middle;
-  }
 
-  .channel-meta__other .channel-meta__other__members__count {
-    display: inline-block;
-    margin-top: 2px;
-    position: absolute;
+    img {
+      width: 0.7rem;
+    }
+
+    .channel-meta__members__count {
+      display: inline-block;
+      margin-left: 0.2rem;
+    }
   }
 
   .channel-meta__other .channel-meta__other__more {
@@ -861,6 +883,23 @@ form {
     width: 100%;
   }
 
+  .cabal-settings__item-input.cabalKey {
+    display: flex;
+    
+    input {
+      background-color: #6a3afa10;
+      border-bottom-right-radius: 0px;
+      border-right: 0;
+      border-top-right-radius: 0px;
+    }
+
+    .button {
+      border-bottom-left-radius: 0px;
+      border-top-left-radius: 0px;
+      width: 10rem;
+    }
+  }
+
   .composerContainer {
     margin: 0 1rem 1rem 1rem;
     cursor: text;
@@ -912,7 +951,7 @@ form {
     padding: .5rem 0;
     min-height: 48px;
 
-    &:hover {
+    &:hover, &:focus {
       border-color: rgba(0, 0, 0, 0.5);
     }
 
@@ -986,20 +1025,38 @@ form {
     font-weight: 600;
     height: 4.4rem;
     justify-content: space-between;
-    margin-bottom: 2rem;
     padding: 1.5rem;
   }
 
+  .close {
+    transform: rotate(45deg);
+    cursor: pointer;
+    img {
+      width: 3rem;
+      margin-top: -1rem;
+    }
+  }
+
   .panel__content {
-    padding: 1.5rem;
+    padding: 1.5rem 0;
+
+    .content__container {
+      padding: 0 1.5rem;
+    }
 
     .collection__item {
-      display: table;
-      width: 100%;
-      // padding: 0.25rem 1rem 0 1rem;
-      transition: all 0.05s ease-in-out;
-      position: relative;
+      align-items: center;
+      cursor: pointer;
+      display: flex;
       font-size: 3rem;
+      padding: 0.5rem 1.5rem;
+      position: relative;
+      transition: all 0.05s ease-in-out;
+      width: 100%;
+
+      &:hover {
+        background: #fafafa;
+      }
     }
 
     .collection__item__icon {
@@ -1037,7 +1094,6 @@ form {
     display: flex;
     font-weight: 600;
     justify-content: space-between;
-    margin-top: 2rem;
     padding: 1.5rem;
     padding-bottom: 0;
   }
@@ -1048,14 +1104,6 @@ form {
     align-items: center;
     display: flex;
     flex-direction: column;
-  }
-  .close {
-    transform: rotate(45deg);
-    cursor: pointer;
-    img {
-      width: 3rem;
-      margin-top: -1rem;
-    }
   }
   .avatar .identicon {
     width: 5rem;
@@ -1096,23 +1144,21 @@ form {
   }
   .sigilContainer {
     .sigil {
-      background-color: #c2c5cc;
+      background-color: #693afa;
       border-radius: 1rem;
-      border: 1px solid #22222247;
-      color: rgb(34, 34, 34);
+      color: #fff;
       font-size: 0.8rem;
       margin-top: 1rem;
       padding: 0.5rem;
       text-align: center;
 
       &.admin {
-        background-color: #53ce53;
-        color: #082b08;
-        border: 1px solid #082b084f;
+        background-color: #693afa;
       }
       &.hidden {
         background-color: #fbff00;
         border: 1px solid #00000052;
+        color: #000000;
       }
     }
   }

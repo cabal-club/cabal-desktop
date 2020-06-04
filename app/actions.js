@@ -51,11 +51,21 @@ export const viewCabal = ({ addr, channel, skipScreenHistory }) => dispatch => {
 }
 
 export const showProfilePanel = ({ addr, userKey }) => (dispatch) => {
+  dispatch(hideChannelPanel({ addr }))
   dispatch({ type: 'SHOW_PROFILE_PANEL', addr, userKey })
 }
 
 export const hideProfilePanel = ({ addr }) => (dispatch) => {
   dispatch({ type: 'HIDE_PROFILE_PANEL', addr })
+}
+
+export const showChannelPanel = ({ addr }) => (dispatch) => {
+  dispatch(hideProfilePanel({ addr }))
+  dispatch({ type: 'SHOW_CHANNEL_PANEL', addr })
+}
+
+export const hideChannelPanel = ({ addr }) => (dispatch) => {
+  dispatch({ type: 'HIDE_CHANNEL_PANEL', addr })
 }
 
 export const updateScreenViewHistory = ({ addr, channel }) => (dispatch) => {
@@ -578,7 +588,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
     }, {
       name: 'init',
       action: () => {
-        console.log('***** init', addr)
+        console.warn('***** init', addr)
         setTimeout(() => {
           const users = cabalDetails.getUsers()
           const userkey = cabalDetails.getLocalUser().key
@@ -683,7 +693,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
   cabalDetailsEvents.forEach((event) => {
     cabalDetails.on(event.name, throttle((data) => {
       event.action(data)
-    }), event.throttleDelay || 200)
+    }), event.throttleDelay || 200, { leading: true, trailing: true })
   })
 
   // if creating a new cabal, set a default username.

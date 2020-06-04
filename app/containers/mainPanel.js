@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { clipboard, ipcRenderer } from 'electron'
+import { ipcRenderer } from 'electron'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
 import debounce from 'lodash.debounce'
@@ -10,6 +10,7 @@ import {
   saveCabalSettings,
   setChannelTopic,
   showCabalSettings,
+  showChannelPanel,
   viewCabal
 } from '../actions'
 import CabalSettings from './cabalSettings'
@@ -41,6 +42,7 @@ const mapDispatchToProps = dispatch => ({
   setChannelTopic: ({ addr, channel, topic }) =>
     dispatch(setChannelTopic({ addr, channel, topic })),
   showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),
+  showChannelPanel: ({ addr }) => dispatch(showChannelPanel({ addr })),
   viewCabal: ({ addr }) => dispatch(viewCabal({ addr })),
 })
 
@@ -150,13 +152,6 @@ class MainPanel extends Component {
       })
   }
 
-  onClickLeaveChannel () {
-    this.props.leaveChannel({
-      addr: this.props.cabal.addr,
-      channel: this.props.cabal.channel
-    })
-  }
-
   onToggleFavoriteChannel (channelName) {
     const favorites = [...(this.props.settings['favorite-channels'] || [])]
     const index = favorites.indexOf(channelName)
@@ -206,11 +201,8 @@ class MainPanel extends Component {
     this.props.showCabalSettings({ addr })
   }
 
-  copyClick () {
-    clipboard.writeText('cabal://' + this.props.addr)
-    window.alert(
-      'Copied cabal:// link to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.'
-    )
+  showChannelPanel (addr) {
+    this.props.showChannelPanel({ addr })
   }
 
   render () {
@@ -250,39 +242,32 @@ class MainPanel extends Component {
                     </span>
                   </h1>
                   <h2>
+                    <div className='channel-meta__members' onClick={this.showChannelPanel.bind(this, this.props.addr)}>
+                      <img src='static/images/user-icon.svg' />
+                      <div 
+                        className='channel-meta__members__count'
+                        title={`Members in this channel: ${channelMemberCount}`}
+                      >
+                        {channelMemberCount}
+                      </div>
+                    </div>
                     <span
                       className='channel-meta__data__topic'
                       onClick={this.onClickTopic.bind(this)}
+                      title='Click to set the channel topic'
                     >
-                      {' '}
                       {cabal.topic || 'Add a topic'}
-                    </span>
-                    <span
-                      className='channel-meta__data__topic'
-                      onClick={this.onClickLeaveChannel.bind(this)}
-                    >
-                      {' '}
-                      | Leave Channel
                     </span>
                   </h2>
                 </div>
               </div>
               <div className='channel-meta__other'>
-                <div className='channel-meta__other__members' onClick={toggleMemberList}>
-                  <img src='static/images/user-icon.svg' />
-                  <div className='channel-meta__other__members__count'>{channelMemberCount}</div>
-                </div>
                 <div
-                  onClick={this.showCabalSettings.bind(this, this.props.addr)}
+                  onClick={this.showChannelPanel.bind(this, this.props.addr)}
                   className='channel-meta__other__more'
+                  title='Channel Details'
                 >
                   <img src='static/images/icon-channelother.svg' />
-                </div>
-                <div
-                  className='button channel-meta__other__share'
-                  onClick={self.copyClick.bind(self)}
-                >
-                  Share Cabal
                 </div>
               </div>
             </div>

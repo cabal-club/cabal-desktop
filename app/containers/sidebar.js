@@ -194,12 +194,11 @@ class SidebarScreen extends React.Component {
   }
 
   render () {
-    var self = this
     const { addr, cabal, settings } = this.props
     const cabalLabel = settings.alias || addr
-
-    const favorites = (settings['favorite-channels'] || []).sort()
-    const channels = cabal.channelsJoined.slice().sort().filter(x => !favorites.includes(x))
+    const channelsJoined = cabal.channelsJoined?.slice().sort() || []
+    const favorites = channelsJoined.filter(channel => (settings['favorite-channels'] || []).includes(channel))
+    const channels = channelsJoined.filter(channel => !favorites.includes(channel))
     const users = this.sortUsers(Object.values(cabal.users) || [])
     const deduplicatedNicks = this.deduplicatedNicks(users)
     const onlineCount = users.filter(i => !!i.online).length
@@ -211,7 +210,7 @@ class SidebarScreen extends React.Component {
     return (
       <div className='client__sidebar'>
         <div className='sidebar'>
-          <div className='session' onClick={self.onClickCabalSettings.bind(self, cabal.addr)}>
+          <div className='session' onClick={this.onClickCabalSettings.bind(this, cabal.addr)}>
             <div className='session__avatar'>
               <div className='session__avatar__img'>
                 <Avatar name={userkey} />
@@ -219,7 +218,7 @@ class SidebarScreen extends React.Component {
             </div>
             <div className='session__meta'>
               <h1>{cabalLabel}</h1>
-              <h2 onClick={self.onClickUsername.bind(self)}>
+              <h2 onClick={this.onClickUsername.bind(this)}>
                 {username}
               </h2>
             </div>
@@ -234,12 +233,12 @@ class SidebarScreen extends React.Component {
                   <div className='collection__heading__title__container'>
                     <span
                       className={`collection__toggle ${this.props.settings['sidebar-hide-favorites'] ? 'collection__toggle__off' : 'collection__toggle__on'}`}
-                      onClick={self.onToggleCollection.bind(self, 'favorites')}
+                      onClick={this.onToggleCollection.bind(this, 'favorites')}
                     >▼
                     </span>
                     <div
                       className='collection__heading__title'
-                      onClick={self.onToggleCollection.bind(self, 'favorites')}
+                      onClick={this.onToggleCollection.bind(this, 'favorites')}
                     >
                       Starred
                     </div>
@@ -260,12 +259,12 @@ class SidebarScreen extends React.Component {
                 <div className='collection__heading__title__container'>
                   <span
                     className={`collection__toggle ${this.props.settings['sidebar-hide-channels'] ? 'collection__toggle__off' : 'collection__toggle__on'}`}
-                    onClick={self.onToggleCollection.bind(self, 'channels')}
+                    onClick={this.onToggleCollection.bind(this, 'channels')}
                   >▼
                   </span>
                   <div
                     className='collection__heading__title collection__heading__title__channelBrowserButton'
-                    onClick={self.onToggleCollection.bind(self, 'channels')}
+                    onClick={this.onToggleCollection.bind(this, 'channels')}
                   >
                     Channels
                     {this.props.settings['sidebar-hide-channels'] && unreadNonFavoriteMessageCount > 0 &&
@@ -274,7 +273,7 @@ class SidebarScreen extends React.Component {
                 </div>
                 <div 
                   className='collection__heading__handle' 
-                  onClick={self.onClickChannelBrowser.bind(self, cabal.addr)}
+                  onClick={this.onClickChannelBrowser.bind(this, cabal.addr)}
                   title='Browse and join or create channels'
                 >
                   <img src='static/images/icon-newchannel.svg' />
@@ -295,12 +294,12 @@ class SidebarScreen extends React.Component {
                 <div className='collection__heading__title__container'>
                   <span
                     className={`collection__toggle ${this.props.settings['sidebar-hide-peers'] ? 'collection__toggle__off' : 'collection__toggle__on'}`}
-                    onClick={self.onToggleCollection.bind(self, 'peers')}
+                    onClick={this.onToggleCollection.bind(this, 'peers')}
                   >▼
                   </span>
                   <div
                     className='collection__heading__title'
-                    onClick={self.onToggleCollection.bind(self, 'peers')}
+                    onClick={this.onToggleCollection.bind(this, 'peers')}
                   >
                     Peers - {onlineCount} online
                   </div>
@@ -327,11 +326,13 @@ class SidebarScreen extends React.Component {
                         <img alt='Offline' src='static/images/icon-status-offline.svg' />}
                     </div>
                     <div className={`collection__item__content ${(peer.online && !isHidden) ? 'active' : ''}`}>
-                      {isHidden && <span>Hidden: </span>}
-                      {peer.name || peer.key.substring(0, 6)}
-                      {isModerator && <span className='sigil' title='Moderator'>%</span>}
-                      {isAdmin && <span className='sigil' title='Admin'>@</span>}
-                      {peer.users.length > 1 && <span className='collection__item__count'>({peer.users.length})</span>}
+                      <span className='name'>
+                        {peer.name || peer.key.substring(0, 6)}
+                        {peer.users.length > 1 && <span className='collection__item__count'>({peer.users.length})</span>}
+                      </span>
+                      {!isAdmin && !isModerator && isHidden && <span className='sigil hidden'>HIDDEN</span>}
+                      {!isAdmin && isModerator && <span className='sigil moderator' title='Moderator'>MOD</span>}
+                      {isAdmin && <span className='sigil admin' title='Admin'>ADMIN</span>}
                     </div>
                     <div className='collection__item__handle' />
                   </div>

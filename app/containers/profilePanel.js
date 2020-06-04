@@ -120,44 +120,46 @@ function ProfilePanel (props) {
         Moderation
       </div>
       <div className='panel__content'>
-        {/* <button className='button' onClick={onClickHideUserAll}>Mute this peer</button>
-        <div className='help__text'>Muting a peer hides all of their future messages, while preserving their messages prior to the mute.</div>
-        <br />
-        <br /> */}
-        {!user.isHidden() &&
-          <>
-            <button className='button' onClick={onClickHideUserAll}>Hide this peer</button>
-            <div className='help__text'>Hiding a peer hides all of their past and future messages in all channels.</div>
-          </>}
-        {user.isHidden() &&
-          <>
-            <button className='button' onClick={onClickUnhideUserAll}>Unhide this peer</button>
-            <div className='help__text'>Hiding a peer hides all of their past and future messages in all channels.</div>
-          </>}
-        {/* <br />
-        <br />
-        <button className='button' onClick={onClickHideUserAll}>Block this peer</button>
-        <div className='help__text'>Blocking a peer removes all of their messages from your computer. All past and future messages will not be visible, or even known about.</div> */}
-        {!user.isModerator() &&
-          <>
-            <button className='button' onClick={onClickAddModAll}>Add moderator</button>
-            <div className='help__text'>Adding another user as a moderator for you will apply their moderation settings to how you see this cabal.</div>
-          </>}
-        {user.isModerator() &&
-          <>
-            <button className='button' onClick={onClickRemoveModAll}>Remove moderator</button>
-            <div className='help__text'>Adding another user as a moderator for you will apply their moderation settings to how you see this cabal.</div>
-          </>}
-        {/* {!user.isAdmin() &&
-          <>
-            <button className='button' onClick={onClickAddAdminAll}>Add admin</button>
-            <div className='help__text'>Adding another user as an admin for you will apply their moderation settings to how you see this cabal.</div>
-          </>}
-        {user.isAdmin() &&
-          <>
-            <button className='button' onClick={onClickRemoveAdminAll}>Remove admin</button>
-            <div className='help__text'>Adding another user as an admin for you will apply their moderation settings to how you see this cabal.</div>
-          </>} */}
+        <div className='content__container'>
+          {/* <button className='button' onClick={onClickHideUserAll}>Mute this peer</button>
+          <div className='help__text'>Muting a peer hides all of their future messages, while preserving their messages prior to the mute.</div>
+          <br />
+          <br /> */}
+          {!user.isHidden() &&
+            <>
+              <button className='button' onClick={onClickHideUserAll}>Hide this peer</button>
+              <div className='help__text'>Hiding a peer hides all of their past and future messages in all channels.</div>
+            </>}
+          {user.isHidden() &&
+            <>
+              <button className='button' onClick={onClickUnhideUserAll}>Unhide this peer</button>
+              <div className='help__text'>Hiding a peer hides all of their past and future messages in all channels.</div>
+            </>}
+          {/* <br />
+          <br />
+          <button className='button' onClick={onClickHideUserAll}>Block this peer</button>
+          <div className='help__text'>Blocking a peer removes all of their messages from your computer. All past and future messages will not be visible, or even known about.</div> */}
+          {!user.isModerator() &&
+            <>
+              <button className='button' onClick={onClickAddModAll}>Add moderator</button>
+              <div className='help__text'>Adding another user as a moderator for you will apply their moderation settings to how you see this cabal.</div>
+            </>}
+          {user.isModerator() &&
+            <>
+              <button className='button' onClick={onClickRemoveModAll}>Remove moderator</button>
+              <div className='help__text'>Adding another user as a moderator for you will apply their moderation settings to how you see this cabal.</div>
+            </>}
+          {/* {!user.isAdmin() &&
+            <>
+              <button className='button' onClick={onClickAddAdminAll}>Add admin</button>
+              <div className='help__text'>Adding another user as an admin for you will apply their moderation settings to how you see this cabal.</div>
+            </>}
+          {user.isAdmin() &&
+            <>
+              <button className='button' onClick={onClickRemoveAdminAll}>Remove admin</button>
+              <div className='help__text'>Adding another user as an admin for you will apply their moderation settings to how you see this cabal.</div>
+            </>} */}
+        </div>
       </div>
     </div>
   )

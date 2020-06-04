@@ -1,17 +1,21 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { changeScreen, viewCabal } from '../actions'
+import {
+  changeScreen,
+  viewCabal
+} from '../actions'
 import CabalsList from './cabalsList'
-import Sidebar from './sidebar'
+import ChannelPanel from './channelPanel'
 import MainPanel from './mainPanel'
-import MemberList from './memberList'
 import ProfilePanel from './profilePanel'
+import Sidebar from './sidebar'
 
 const mapStateToProps = state => ({
   addr: state.currentCabal,
   cabal: state.cabals[state.currentCabal],
   cabals: state.cabals,
+  channelPanelVisible: state.channelPanelVisible[state.currentCabal],
   profilePanelVisible: state.profilePanelVisible[state.currentCabal],
   profilePanelUser: state.profilePanelUser[state.currentCabal]
 })
@@ -64,7 +68,7 @@ class LayoutScreen extends Component {
         <CabalsList />
         <Sidebar />
         <MainPanel toggleMemberList={this.toggleMemberList} />
-        {this.state.showMemberList && <MemberList />}
+        {this.props.channelPanelVisible && <ChannelPanel addr={this.props.addr} channel={cabal.channel} />}
         {this.props.profilePanelVisible && <ProfilePanel addr={this.props.addr} userKey={this.props.profilePanelUser} />}
       </div>
     )

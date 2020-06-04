@@ -11,6 +11,7 @@ const defaultState = {
   cabalSettings: {},
   cabalSettingsVisible: false,
   channelMembers: [],
+  channelPanelVisible: {},
   currentCabal: null,
   currentChannel: 'default',
   emojiPickerVisible: false,
@@ -82,6 +83,12 @@ const reducer = createReducer(defaultState, {
   },
   HIDE_PROFILE_PANEL: (state, { addr }) => {
     state.profilePanelVisible[addr] = false
+  },
+  SHOW_CHANNEL_PANEL: (state, { addr }) => {
+    state.channelPanelVisible[addr] = true
+  },
+  HIDE_CHANNEL_PANEL: (state, { addr }) => {
+    state.channelPanelVisible[addr] = false
   },
   UPDATE_SCREEN_VIEW_HISTORY: (state, { addr, channel }) => {
     state.screenViewHistory.push({ addr, channel })
