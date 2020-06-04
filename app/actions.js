@@ -43,6 +43,13 @@ removedCommands.forEach((command) => {
   client.removeCommand(command)
 })
 
+// On exit, close the cabals to cleanly leave the hyperswarms
+window.onbeforeunload = (e) => {
+  for (let cabal of client.cabals.values()) {
+    cabal._destroy(() => {})
+  }
+}
+
 export const viewCabal = ({ addr, channel, skipScreenHistory }) => dispatch => {
   client.focusCabal(addr)
   channel = channel || client.getCurrentChannel()
