@@ -181,7 +181,7 @@ form {
 .client__cabals {
   align-items: center;
   background-color: #16161d;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid #444;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -303,7 +303,7 @@ form {
     align-items: center;    
     cursor: pointer;
     display: flex;
-    padding: 1rem;
+    padding: 0.97rem;
     width: 15rem;
   }
 
@@ -574,7 +574,8 @@ form {
   .channel-meta {
     display: table;
     width: 100%;
-    padding: 1rem;
+    height: 70px;
+    padding: 0.94rem 1rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   }
 
@@ -608,7 +609,7 @@ form {
     color: rgba(0, 0, 0, 0.5);
     display: flex;
     font-size: 0.75rem;
-    margin-top: 0.5rem;
+    margin-top: 0.6rem;
   }
 
   .channel-meta__other {
@@ -618,7 +619,7 @@ form {
   }
 
   .channel-meta__other .channel-meta__other__share {
-    margin-left: 1rem;
+    margin-left: 0.5rem;
   }
 
   .channel-meta__members {

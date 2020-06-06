@@ -1,0 +1,338 @@
+/*
+  ------------------------------------------------------
+  DARKMODE
+  ------------------------------------------------------
+
+  This is a temporary hack so we can enjoy darkmode in the short term until we finish 
+  a better approach for customizing styles in `cabal-ui` :D
+*/
+
+$backgroundColor: #16161d;
+$backgroundColor2: #222;
+$backgroundColor3: #333;
+$borderColor: #444;
+$borderColor2: #888;
+$borderColor3: #ddd;
+$borderColor4: #fff;
+$buttonTextColor: #ccc;
+$buttonBackgroundColor: #1f0f50;
+$highlightColor: #693AFA;
+$linkColor: #4393e6;
+$textColor: #fff;
+$textColor2: #aaa;
+
+
+.client.darkmode {
+  color: $textColor2;
+
+  a {
+    color: $linkColor;
+  }
+
+  .button {
+    background-color: $buttonBackgroundColor;
+    border-color: $highlightColor;
+    color: $highlightColor;
+  }
+  .button:hover {
+    border-color: $highlightColor;
+    color: $buttonTextColor;
+  }
+
+  // .client__cabals {
+  //   background-color: $backgroundColor;
+  //   border-right: 1px solid $borderColor;
+  //   color: $textColor;
+  // }
+
+  // .client__cabals .switcher__item {
+  //   border: 2px solid $borderColor3;
+  //   color: $textColor;
+  // }
+
+  // .client__cabals .switcher__item:hover {
+  //   border: 2px solid rgba(255, 255, 255, 0.5);
+  //   color: $textColor2;
+  // }
+
+  // .client__cabals .switcher__item--active {
+  //   background-color: $highlightColor;
+  //   border: 2px solid $highlightColor;
+  //   color: $textColor !important;
+  // }
+
+  // .client__cabals .unreadIndicator {
+  //   background: $highlightColor;
+  // }
+
+  // .client__cabals .client__cabals__footer {
+  //   .settingsButton {
+  //     &:hover {
+  //       color: $textColor;
+  //     }
+  //   }
+  // }
+
+  .client__sidebar {
+    background-color: $backgroundColor;
+    color: $textColor;
+
+    .session .session__meta h2 {
+      color: $textColor2;
+    }
+
+    .session .session__configuration {
+      // background-color: rgba(255, 255, 255, 0);
+    }
+
+    .collection {
+      border-top-color: $borderColor;
+    }
+
+    .collection .collection__heading .collection__heading__title {
+      color: $textColor2;
+    }
+
+    .collection .collection__item:hover {
+      background-color: $backgroundColor2;
+    }
+
+    .collection .collection__item .collection__item__content {
+      color: $textColor2;
+    }
+
+    .collection .collection__item .collection__item__messagesUnreadCount {
+      color: $textColor;
+      background-color: $highlightColor;
+    }
+
+    .collection .collection__item.active .collection__item__content,
+    .collection .collection__item .collection__item__content.active {
+      color: $textColor;
+    }
+  }
+
+  .client__main {
+    background-color: $backgroundColor;
+
+    .window {
+      border-left: 1px solid $borderColor;
+    }
+
+    .window__header {
+      background-color: $backgroundColor;
+    }
+
+    .channel-meta {
+      border-bottom: 1px solid $borderColor;
+    
+      .channel-meta__data__details h1 {
+        color: $textColor;
+      }
+
+      .channel-meta__data__details h2 {
+        color: $textColor2;
+      }
+
+      .channel-meta__other .channel-meta__other__more {
+        filter: invert(100%);
+      }
+    }
+    .messages__item {
+      &:hover {
+        background-color: $backgroundColor2;
+      }
+    }
+
+    .messages__item--system {
+      background: $backgroundColor;
+    }
+
+    .messages__item__metadata {
+      .messages__item__metadata__name {
+        color: $textColor;
+      }
+
+      span {
+        color: $textColor2;
+      }
+
+      div.text {
+        pre {
+          background-color: $backgroundColor3;
+        }
+
+        p code {
+          background-color: $backgroundColor3;
+        }
+
+        blockquote {
+          background: $backgroundColor3;
+        }
+      }
+
+      a.link {
+        color: $linkColor;
+
+        &:hover {
+          color: $linkColor;
+        }
+      }
+
+      .cabal-settings__close {
+        filter: invert(100%);
+      }
+    }
+
+    .cabal-settings__item {
+      border-bottom: 1px solid $borderColor;
+
+      .cabal-settings__item-input {
+        input {
+          color: $textColor;
+          background-color: $backgroundColor3;
+
+          &.cabalKey {
+
+          }
+        }
+      }
+    }
+
+    .cabal-settings__item-label-description {
+      color: $textColor2;
+    }
+
+    .composer {
+      background-color: $backgroundColor3;
+      border: 2px solid $borderColor;
+
+      .composer__input textarea {
+        color: $textColor;
+        background-color: $backgroundColor3;
+      }
+
+      &:hover, &:active {
+        border-color: $borderColor2;
+      }
+
+      .composer__meta {
+        border-right: 2px solid $borderColor;
+      }
+
+      .composer__other {
+        filter: invert(100%)
+      }
+    }
+  }
+
+  .modalScreen {
+    background: $backgroundColor;
+
+    .modalScreen__header {
+      .modalScreen__close {
+        background-color: $backgroundColor;
+        color: $textColor2;
+
+        &:hover {
+          color: $textColor;
+        }
+      }
+    }
+  }
+
+  .modal-overlay {
+    background-color: $backgroundColor;
+  }
+
+  .modal-overlay .modal {
+    background-color: $backgroundColor;
+    color: $textColor;
+  }
+
+  .modal-overlay .modal li a,
+  .modal-overlay .modal li button {
+    color: $textColor2;
+    background: none;
+  }
+
+  .modal-overlay .modal li a:hover,
+  .modal-overlay .modal li button:hover {
+    background-color: $backgroundColor3;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: $backgroundColor3;
+  }
+
+  .sidebar ::-webkit-scrollbar-thumb {
+    background-color: $backgroundColor3;
+  }
+
+  .messages__date__divider {
+    h2 {
+      color: $borderColor;
+    }
+
+    h2:before,
+    h2:after {
+      background-color: $borderColor;
+    }
+  }
+
+  .channelBrowser__sectionTitle {
+    border-bottom: 1px solid $borderColor;
+  }
+
+  .channelBrowser__row {
+    border-bottom: 1px solid $borderColor;
+
+    &:hover {
+      background-color: $backgroundColor2;
+    }
+
+    .topic {
+      color: $highlightColor;
+    }
+
+    .members {
+      color: $textColor2;
+    }
+  }
+
+
+  .panel {
+    background-color: $backgroundColor;
+    border-left-color: $borderColor;
+  
+    .panel__header {
+      border-bottom-color: $borderColor;
+
+      .close {
+        filter: invert(100%);
+      }
+    }
+  
+    .panel__content {
+      .collection__item {
+        &:hover {
+          background: $backgroundColor3;
+        }
+      }
+    }
+  
+    .section__header {
+      border-top-color: $borderColor;
+    }
+  }
+
+  .profilePanel {
+    .avatar__online__indicator {
+      border-color: $backgroundColor;
+    }
+
+    .help__text {
+      color: $textColor2;
+    }
+  }
+}

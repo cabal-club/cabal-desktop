@@ -11,14 +11,18 @@ import MainPanel from './mainPanel'
 import ProfilePanel from './profilePanel'
 import Sidebar from './sidebar'
 
-const mapStateToProps = state => ({
-  addr: state.currentCabal,
-  cabal: state.cabals[state.currentCabal],
-  cabals: state.cabals,
-  channelPanelVisible: state.channelPanelVisible[state.currentCabal],
-  profilePanelVisible: state.profilePanelVisible[state.currentCabal],
-  profilePanelUser: state.profilePanelUser[state.currentCabal]
-})
+const mapStateToProps = state => {
+  const cabal = state.cabals[state.currentCabal]
+  return {
+    addr: state.currentCabal,
+    cabal,
+    cabals: state.cabals,
+    channelPanelVisible: state.channelPanelVisible[state.currentCabal],
+    profilePanelVisible: state.profilePanelVisible[state.currentCabal],
+    profilePanelUser: state.profilePanelUser[state.currentCabal],
+    settings: state.cabalSettings[cabal?.addr] || {}
+  }
+}
 
 const mapDispatchToProps = dispatch => ({
   changeScreen: ({ screen, addr }) => dispatch(changeScreen({ screen, addr })),
@@ -52,6 +56,7 @@ class LayoutScreen extends Component {
 
   render () {
     const { cabal, cabals, addr } = this.props
+    const { enableDarkmode } = this.props.settings || {}
     // console.log('render', { cabal, cabals, addr })
     // if (!cabal || !this.cabalsInitialized()) {
     if (!cabal) {
@@ -64,7 +69,7 @@ class LayoutScreen extends Component {
       )
     }
     return (
-      <div className='client'>
+      <div className={`client ${enableDarkmode ? 'darkmode' : ''}`}>
         <CabalsList />
         <Sidebar />
         <MainPanel toggleMemberList={this.toggleMemberList} />

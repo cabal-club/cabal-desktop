@@ -121,10 +121,6 @@ function ProfilePanel (props) {
       </div>
       <div className='panel__content'>
         <div className='content__container'>
-          {/* <button className='button' onClick={onClickHideUserAll}>Mute this peer</button>
-          <div className='help__text'>Muting a peer hides all of their future messages, while preserving their messages prior to the mute.</div>
-          <br />
-          <br /> */}
           {!user.isHidden() &&
             <>
               <button className='button' onClick={onClickHideUserAll}>Hide this peer</button>
@@ -149,7 +145,7 @@ function ProfilePanel (props) {
               <button className='button' onClick={onClickRemoveModAll}>Remove moderator</button>
               <div className='help__text'>Adding another user as a moderator for you will apply their moderation settings to how you see this cabal.</div>
             </>}
-          {/* {!user.isAdmin() &&
+          {!user.isAdmin() &&
             <>
               <button className='button' onClick={onClickAddAdminAll}>Add admin</button>
               <div className='help__text'>Adding another user as an admin for you will apply their moderation settings to how you see this cabal.</div>
@@ -158,7 +154,7 @@ function ProfilePanel (props) {
             <>
               <button className='button' onClick={onClickRemoveAdminAll}>Remove admin</button>
               <div className='help__text'>Adding another user as an admin for you will apply their moderation settings to how you see this cabal.</div>
-            </>} */}
+            </>}
         </div>
       </div>
     </div>
