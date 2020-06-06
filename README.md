@@ -2,7 +2,7 @@
 
 > Desktop client for cabal, the p2p/decentralized/offline-first chat platform.
 
-<center><img src="screenshot.png"/></center>
+<center><img width="1552" alt="Screen Shot 2020-06-05 at 10 29 00 AM" src="https://user-images.githubusercontent.com/40796/83952659-2314ec80-a808-11ea-8074-619ece6201e3.png"></center>
 
 ## Install
 
