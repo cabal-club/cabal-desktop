@@ -2,11 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [5.0.6] - 2020-05-29
+## [5.1.0] - 2020-06-06
 ### Added
-- Added basic moderation features for hiding other user's activity.
+- Added basic moderation features for hiding users and setting moderators and admins.
 - Added indicator for unread messages in collapsed channels list.
 - Optimized incoming message handling.
+- Added a dark mode theme.
 ### Fixed
 - Fixed desktop notifications appearing from channels you have not joined. 
 
