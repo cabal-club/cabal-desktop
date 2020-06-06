@@ -8,6 +8,7 @@ import { loadFromDisk } from './actions'
 
 import './styles/react-contexify.css'
 import './styles/style.scss'
+import './styles/darkmode.scss'
 
 const mapStateToProps = state => ({
   screen: state.screen

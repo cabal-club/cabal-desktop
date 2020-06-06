@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { clipboard } from 'electron'
 
 import { hideCabalSettings, removeCabal, saveCabalSettings } from '../actions'
 
@@ -28,12 +29,19 @@ class CabalSettingsContainer extends React.Component {
     this.props.saveCabalSettings({ addr: this.props.cabal.addr, settings })
   }
 
+  onClickCopyCode () {
+    clipboard.writeText('cabal://' + this.props.cabal.addr)
+    window.alert(
+      'Copied code to clipboard! Now give it to people you want to join your Cabal. Only people with the link can join.'
+    )
+  }
+
   removeCabal (addr) {
     this.props.removeCabal({ addr })
   }
 
   render () {
-    const { enableNotifications, alias } = this.props.settings || {}
+    const { enableDarkmode, enableNotifications, alias } = this.props.settings || {}
 
     return (
       <div className='client__main'>
@@ -51,14 +59,20 @@ class CabalSettingsContainer extends React.Component {
             </div>
           </div>
           <div className='window__main'>
-            <div className='window__main__content'>              
+            <div className='window__main__content'>
               <div className='cabal-settings__item'>
                 <div className='cabal-settings__item-label'>
-                  <div className='cabal-settings__item-label-title'>Cabal Key</div>
+                  <div className='cabal-settings__item-label-title'>Invite People</div>
                   <div className='cabal-settings__item-label-description'>Share this key with others to let them join the cabal.</div>
                 </div>
-                <div className='cabal-settings__item-input'>
+                <div className='cabal-settings__item-input cabalKey'>
                   <input type='text' value={`cabal://${this.props.cabal.addr}`} readOnly />
+                  <button
+                    className='button invite'
+                    onClick={this.onClickCopyCode.bind(this)}
+                  >
+                    Copy Key
+                  </button>
                 </div>
               </div>
               <div className='cabal-settings__item'>
@@ -78,6 +92,17 @@ class CabalSettingsContainer extends React.Component {
                   <div className='cabal-settings__item-label'>
                     <div className='cabal-settings__item-label-title'>Enable desktop notifications</div>
                     <div className='cabal-settings__item-label-description'>Display a notification for new messages for this cabal when a channel is in the background.</div>
+                  </div>
+                </div>
+              </div>
+              <div className='cabal-settings__item' onClick={this.onToggleOption.bind(this, 'enableDarkmode')}>
+                <div className='cabal-settings__item-row'>
+                  <div className='cabal-settings__item-checkbox'>
+                    <input type='checkbox' checked={this.props.settings && !!enableDarkmode} onChange={() => { }} />
+                  </div>
+                  <div className='cabal-settings__item-label'>
+                    <div className='cabal-settings__item-label-title'>Enable dark mode</div>
+                    <div className='cabal-settings__item-label-description'>Use a dark theme for this cabal.</div>
                   </div>
                 </div>
               </div>

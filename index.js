@@ -161,6 +161,9 @@ app.on('ready', () => {
       event.preventDefault()
       win.hide()
     }
+    if (os.platform() !== 'darwin') {
+      app.quit()
+    }
   })
 
   app.on('activate', () => {

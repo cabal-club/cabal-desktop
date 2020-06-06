@@ -8,7 +8,7 @@ export default class Avatar extends Component {
         <Identicon
           bgColor='#fff'
           scale={this.props.scale}
-          seed={this.props.name}
+          seed={this.props.name || ''}
         />
       </span>
     )

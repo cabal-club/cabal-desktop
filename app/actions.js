@@ -43,6 +43,13 @@ removedCommands.forEach((command) => {
   client.removeCommand(command)
 })
 
+// On exit, close the cabals to cleanly leave the hyperswarms
+window.onbeforeunload = (e) => {
+  for (let cabal of client.cabals.values()) {
+    cabal._destroy(() => {})
+  }
+}
+
 export const viewCabal = ({ addr, channel, skipScreenHistory }) => dispatch => {
   client.focusCabal(addr)
   channel = channel || client.getCurrentChannel()
@@ -50,12 +57,22 @@ export const viewCabal = ({ addr, channel, skipScreenHistory }) => dispatch => {
   dispatch(viewChannel({ addr, channel, skipScreenHistory }))
 }
 
-export const showProfilePanel = ({ addr, user }) => (dispatch) => {
-  dispatch({ type: 'SHOW_PROFILE_PANEL', addr, user })
+export const showProfilePanel = ({ addr, userKey }) => (dispatch) => {
+  dispatch(hideChannelPanel({ addr }))
+  dispatch({ type: 'SHOW_PROFILE_PANEL', addr, userKey })
 }
 
 export const hideProfilePanel = ({ addr }) => (dispatch) => {
   dispatch({ type: 'HIDE_PROFILE_PANEL', addr })
+}
+
+export const showChannelPanel = ({ addr }) => (dispatch) => {
+  dispatch(hideProfilePanel({ addr }))
+  dispatch({ type: 'SHOW_CHANNEL_PANEL', addr })
+}
+
+export const hideChannelPanel = ({ addr }) => (dispatch) => {
+  dispatch({ type: 'HIDE_CHANNEL_PANEL', addr })
 }
 
 export const updateScreenViewHistory = ({ addr, channel }) => (dispatch) => {
@@ -240,10 +257,20 @@ export const getMessages = ({ addr, channel, amount }, callback) => dispatch => 
 
 export const onIncomingMessage = ({ addr, channel, message }, callback) => (dispatch, getState) => {
   const cabalDetails = client.getDetails(addr)
+
+  // Ignore incoming message from channels you're not in
+  if (!cabalDetails.getJoinedChannels().includes(channel)) return
+
+  const users = cabalDetails.getUsers()
+  const user = users[message.key]
+
+  // Ignore incoming messages from hidden users
+  if (user && user.isHidden()) return
+
+  // Add incoming message to message list if you're viewing that channel
   const currentChannel = cabalDetails.getCurrentChannel()
   if ((channel === currentChannel) && (addr === client.getCurrentCabal().key)) {
-    const users = cabalDetails.getUsers()
-    const author = users[message.key] ? users[message.key].name : message.key.substr(0, 6)
+    const author = user ? user.name : message.key.substr(0, 6)
     const { type, timestamp, content } = message.value
     const enrichedMessage = enrichMessage({
       author,
@@ -258,6 +285,7 @@ export const onIncomingMessage = ({ addr, channel, message }, callback) => (disp
     ]
     dispatch({ type: 'UPDATE_CABAL', addr, messages })
   } else {
+    // Skip adding to message list if not viewing that channel, instead update unread count
     dispatch(updateUnreadCounts({ addr }))
   }
 
@@ -272,6 +300,11 @@ export const onIncomingMessage = ({ addr, channel, message }, callback) => (disp
       content: message.value.content
     }))
   }
+}
+
+export const getUsers = ({ addr }) => (dispatch) => {
+  const cabalDetails = client.getCurrentCabal()
+  return cabalDetails.getUsers()
 }
 
 export const viewChannel = ({ addr, channel, skipScreenHistory }) => (dispatch, getState) => {
@@ -344,7 +377,7 @@ export const addCabal = ({ addr, input, username, settings }) => dispatch => {
     currentChannel: DEFAULT_CHANNEL,
     ...settings
   }
-  dispatch(initializeCabal({ addr, username, dispatch, settings }))
+  dispatch(initializeCabal({ addr, username, settings }))
 }
 
 export const sendDesktopNotification = throttle(({ addr, author, channel, content }) => (dispatch) => {
@@ -487,10 +520,39 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
   const cabalDetails = isNew ? await client.createCabal() : await client.addCabal(addr)
   addr = cabalDetails.key
 
+  console.log('---> initializeCabal', addr)
+
+  setTimeout(() => {
+    const users = cabalDetails.getUsers()
+    const userkey = cabalDetails.getLocalUser().key
+    const username = cabalDetails.getLocalName()
+    const channels = cabalDetails.getChannels()
+    const channelsJoined = cabalDetails.getJoinedChannels() || []
+    const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
+    const currentChannel = cabalDetails.getCurrentChannel()
+    const channelMembers = cabalDetails.getChannelMembers()
+    dispatch({ type: 'UPDATE_CABAL', initialized: true, addr, channelMessagesUnread, users, userkey, username, channels, channelsJoined, currentChannel, channelMembers })
+    dispatch(getMessages({ addr, amount: 1000, channel: currentChannel }))
+    dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
+    client.focusCabal(addr)
+    dispatch(viewCabal({ addr, channel: settings.currentChannel }))
+  }, 2000) 
+
   const cabalDetailsEvents = [
+    {
+      name: 'update',
+      action: (data) => {
+        // console.log('update event', data)
+      }
+    }, 
     {
       name: 'cabal-focus',
       action: () => { }
+    }, {
+      name: 'command',
+      action: (data) => {
+        console.log('COMMAND', data)
+      }
     }, {
       name: 'channel-focus',
       action: () => {
@@ -533,6 +595,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
     }, {
       name: 'init',
       action: () => {
+        console.warn('***** init', addr)
         setTimeout(() => {
           const users = cabalDetails.getUsers()
           const userkey = cabalDetails.getLocalUser().key
@@ -637,7 +700,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
   cabalDetailsEvents.forEach((event) => {
     cabalDetails.on(event.name, throttle((data) => {
       event.action(data)
-    }), event.throttleDelay || 200)
+    }), event.throttleDelay || 200, { leading: true, trailing: true })
   })
 
   // if creating a new cabal, set a default username.
@@ -664,6 +727,13 @@ export const loadFromDisk = () => async dispatch => {
     const { addr, settings } = JSON.parse(state[key])
     dispatch(addCabal({ addr, settings }))
   })
+  if (stateKeys.length) {
+    setTimeout(() => {
+      const firstCabal = JSON.parse(state[stateKeys[0]])
+      dispatch(viewCabal({ addr: firstCabal.addr, channel: firstCabal.settings.currentChannel }))
+      client.focusCabal(firstCabal.addr)  
+    }, 5000)
+  }
   dispatch({ type: 'CHANGE_SCREEN', screen: stateKeys.length ? 'main' : 'addCabal' })
 }
 
@@ -686,4 +756,44 @@ const generateUniqueName = () => {
 
   const randomItem = (array) => array[Math.floor(Math.random() * array.length)]
   return `${randomItem(adjectives)}-${randomItem(nouns)}`
+}
+
+export const moderationHide = ({ addr, channel, reason, userKey }) => async dispatch => {
+  const cabalDetails = client.getDetails(addr)
+  cabalDetails.moderation.hide([[userKey, reason]], { channel, reason } )
+}
+
+export const moderationUnhide = ({ addr, channel, reason, userKey }) => async dispatch => {
+  const cabalDetails = client.getDetails(addr)
+  cabalDetails.moderation.unhide([[userKey, reason]], { channel, reason } )
+}
+
+export const moderationBlock = ({ addr, channel, reason, userKey }) => async dispatch => {
+  const cabalDetails = client.getDetails(addr)
+  cabalDetails.moderation.block([[userKey, reason]], { channel, reason } )
+}
+
+export const moderationUnblock = ({ addr, channel, reason, userKey }) => async dispatch => {
+  const cabalDetails = client.getDetails(addr)
+  cabalDetails.moderation.unblock([[userKey, reason]], { channel, reason } )
+}
+
+export const moderationAddMod = ({ addr, channel, reason, userKey }) => async dispatch => {
+  const cabalDetails = client.getDetails(addr)
+  cabalDetails.moderation.addMod([[userKey, reason]], { channel, reason } )
+}
+
+export const moderationRemoveMod = ({ addr, channel, reason, userKey }) => async dispatch => {
+  const cabalDetails = client.getDetails(addr)
+  cabalDetails.moderation.removeMod([[userKey, reason]], { channel, reason } )
+}
+
+export const moderationAddAdmin = ({ addr, channel, reason, userKey }) => async dispatch => {
+  const cabalDetails = client.getDetails(addr)
+  cabalDetails.moderation.addAdmin([[userKey, reason]], { channel, reason } )
+}
+
+export const moderationRemoveAdmin = ({ addr, channel, reason, userKey }) => async dispatch => {
+  const cabalDetails = client.getDetails(addr)
+  cabalDetails.moderation.removeAdmin([[userKey, reason]], { channel, reason } )
 }

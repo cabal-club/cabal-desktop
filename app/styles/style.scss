@@ -181,7 +181,7 @@ form {
 .client__cabals {
   align-items: center;
   background-color: #16161d;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid #444;
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -210,19 +210,26 @@ form {
 }
 
 .client__cabals .switcher__item {
-  position: relative;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  border: 2px solid rgba(255, 255, 255, 0.25);
-  width: 2rem;
-  height: 2rem;
-  margin: 0 0 0.75rem 0;
-  border-radius: 100rem;
-  transition: all 0.05s ease-in-out;
-  font-size: 0.75rem;
+  background: rgba(255,255,255,0.2);
+  border-radius: 0.5rem;
+  color: #16161d;
+  display: flex;
+  font-size: 0.9rem;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.25);
+  height: 2rem;
+  justify-content: center;
+  margin: 0 0 0.75rem 0;
+  position: relative;
+  text-align: center;
+  text-transform: uppercase;
+  transition: all 0.05s ease-in-out;
+  width: 2rem;
+
+  &:hover {
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+  }
 }
 
 .client__cabals .unreadIndicator {
@@ -239,21 +246,17 @@ form {
   animation-direction: alternate;
 }
 
-.client__cabals .switcher__item.--addnew img {
-  opacity: 0.25;
-}
+.client__cabals .switcher__item.--addnew {
+  background: transparent;
 
-.client__cabals .switcher__item:hover {
-  border: 2px solid rgba(255, 255, 255, 0.5);
-  color: rgba(255, 255, 255, 0.5);
-  cursor: pointer;
+  & img {
+    opacity: 0.25;
+  }
 }
 
 .client__cabals .switcher__item--active {
-  background-color: rgba(255, 255, 255, 0.25);
   background-color: #693AFA;
-  border: 2px solid #693AFA;
-  color: white !important;
+  color: #fff !important;
 }
 
 .client__cabals .client__cabals__footer {
@@ -285,7 +288,6 @@ form {
   }
 
   .sidebar .sidebar__section {
-    width: 13.75rem;
     overflow-x: hidden;
     overflow-y: auto;
     height: 100%;
@@ -301,8 +303,8 @@ form {
     align-items: center;    
     cursor: pointer;
     display: flex;
-    padding: 1.15rem 1rem;
-    width: 13.75rem;
+    padding: 0.97rem;
+    width: 15rem;
   }
 
   .session .session__avatar {
@@ -324,15 +326,19 @@ form {
 
   .session .session__meta h1,
   .sidebar .session .session__meta h2 {
-    white-space: nowrap;
-    text-overflow: ellipsis;
+    line-height: 1rem;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 7rem;
   }
 
   .session .session__meta h1 {
     font-size: 0.875rem;
     font-weight: 700;
+    line-height: 1rem;
     margin-bottom: 0.35rem;
+    overflow: hidden;
     width: 7rem;
   }
 
@@ -387,11 +393,11 @@ form {
   .collection .collection__heading .collection__toggle {
     color: rgba(255,255,255,0.5);
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     transform: scaleY(0.7);
 
     &.collection__toggle__off {
-      transform: rotate(-90deg);
+      transform: rotate(-90deg) scaleY(0.7);
     }
   }
 
@@ -403,6 +409,18 @@ form {
     margin-left: 0.5rem;
     text-transform: uppercase;
     vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    
+    .messagesUnreadCount {
+      background-color: #693AFA;
+      border-radius: 5rem;
+      color: #fff;
+      font-weight: 100;
+      line-height: 1.4;
+      margin-left: 1rem;
+      padding: 0 0.5rem;
+    }
   }
 
   .collection .collection__heading .collection__heading__title.collection__heading__title__channelBrowserButton {
@@ -432,11 +450,37 @@ form {
     padding: 0.25rem 1rem 0.25rem 1rem;
     transition: all 0.05s ease-in-out;
     position: relative;
-  }
 
-  .collection .collection__item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    cursor: pointer;
+    .name {
+
+    }
+
+    .sigil {
+      background-color: #333;
+      border-radius: 1rem;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-left: 0.3rem;
+      opacity: 0;
+      padding: 0.1rem 0.5rem;
+      position: absolute;
+      right: 1rem;
+      transition: 0.5s all;
+
+      &.hidden {
+        color: #fbff00;
+      }
+    }
+
+    &:hover {
+      background-color: #333;
+      cursor: pointer;
+
+      .sigil {
+        opacity: 1;
+      }
+    }
   }
 
   .collection .collection__item .collection__item__icon {
@@ -530,7 +574,8 @@ form {
   .channel-meta {
     display: table;
     width: 100%;
-    padding: 1rem;
+    height: 70px;
+    padding: 0.94rem 1rem;
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   }
 
@@ -562,8 +607,9 @@ form {
 
   .channel-meta__data .channel-meta__data__details h2 {
     color: rgba(0, 0, 0, 0.5);
+    display: flex;
     font-size: 0.75rem;
-    margin-top: 0.5rem;
+    margin-top: 0.6rem;
   }
 
   .channel-meta__other {
@@ -573,24 +619,26 @@ form {
   }
 
   .channel-meta__other .channel-meta__other__share {
-    margin-left: 1rem;
+    margin-left: 0.5rem;
   }
 
-  .channel-meta__other .channel-meta__other__members {
+  .channel-meta__members {
     align-items: center;
     color: #B497E7;
     cursor: pointer;
-    display: inline-block;
+    display: flex;
     flex-direction: row;
-    margin-left: 1rem;
     margin-right: 1rem;
     vertical-align: middle;
-  }
 
-  .channel-meta__other .channel-meta__other__members__count {
-    display: inline-block;
-    margin-top: 2px;
-    position: absolute;
+    img {
+      width: 0.7rem;
+    }
+
+    .channel-meta__members__count {
+      display: inline-block;
+      margin-left: 0.2rem;
+    }
   }
 
   .channel-meta__other .channel-meta__other__more {
@@ -632,8 +680,11 @@ form {
     display: flex;
     width: 100%;
     padding-top: 0.3rem;
-    margin-bottom: 0.6rem;
     margin-left: 0.125rem;
+
+    &:hover {
+      background: #fafafa;
+    }
   }
 
   // .messages__item--emote {
@@ -644,9 +695,10 @@ form {
   }
 
   .messages__item__avatar {
-    display: flex;
-    padding: 0 0.7rem 0 1rem;
     cursor: pointer;
+    display: flex;
+    margin-top: 0.8rem;
+    padding: 0 0.7rem 0 1rem;
   }
 
   .messages__item__avatar .identicon {
@@ -664,15 +716,19 @@ form {
 
   .messages__item__metadata .text.indent {
     margin-left: 32px;
-    margin-top: -12px; // HACK!!
+    // margin-top: -12px; // HACK!!
   }
 
   .messages__item__metadata .messages__item__metadata__name {
-    font-weight: 700;
-    margin-top: -5px;
-    display: flex;
-    align-items: flex-end;
+    align-items: center;
     cursor: pointer;
+    display: flex;
+    font-weight: 700;
+    margin-top: 0.5rem;
+
+    .sigil {
+      font-weight: 700;
+    }
   }
 
   .messages__item__metadata .messages__item__metadata__name .messages__item__metadata__date {
@@ -828,6 +884,23 @@ form {
     width: 100%;
   }
 
+  .cabal-settings__item-input.cabalKey {
+    display: flex;
+    
+    input {
+      background-color: #6a3afa10;
+      border-bottom-right-radius: 0px;
+      border-right: 0;
+      border-top-right-radius: 0px;
+    }
+
+    .button {
+      border-bottom-left-radius: 0px;
+      border-top-left-radius: 0px;
+      width: 10rem;
+    }
+  }
+
   .composerContainer {
     margin: 0 1rem 1rem 1rem;
     cursor: text;
@@ -879,7 +952,7 @@ form {
     padding: .5rem 0;
     min-height: 48px;
 
-    &:hover {
+    &:hover, &:focus {
       border-color: rgba(0, 0, 0, 0.5);
     }
 
@@ -953,20 +1026,38 @@ form {
     font-weight: 600;
     height: 4.4rem;
     justify-content: space-between;
-    margin-bottom: 2rem;
     padding: 1.5rem;
   }
 
+  .close {
+    transform: rotate(45deg);
+    cursor: pointer;
+    img {
+      width: 3rem;
+      margin-top: -1rem;
+    }
+  }
+
   .panel__content {
-    padding: 1.5rem;
+    padding: 1.5rem 0;
+
+    .content__container {
+      padding: 0 1.5rem;
+    }
 
     .collection__item {
-      display: table;
-      width: 100%;
-      // padding: 0.25rem 1rem 0 1rem;
-      transition: all 0.05s ease-in-out;
-      position: relative;
+      align-items: center;
+      cursor: pointer;
+      display: flex;
       font-size: 3rem;
+      padding: 0.5rem 1.5rem;
+      position: relative;
+      transition: all 0.05s ease-in-out;
+      width: 100%;
+
+      &:hover {
+        background: #fafafa;
+      }
     }
 
     .collection__item__icon {
@@ -1004,7 +1095,6 @@ form {
     display: flex;
     font-weight: 600;
     justify-content: space-between;
-    margin-top: 2rem;
     padding: 1.5rem;
     padding-bottom: 0;
   }
@@ -1015,14 +1105,6 @@ form {
     align-items: center;
     display: flex;
     flex-direction: column;
-  }
-  .close {
-    transform: rotate(45deg);
-    cursor: pointer;
-    img {
-      width: 3rem;
-      margin-top: -1rem;
-    }
   }
   .avatar .identicon {
     width: 5rem;
@@ -1061,10 +1143,31 @@ form {
     width: 55%;
     word-break: break-word;
   }
+  .sigilContainer {
+    .sigil {
+      background-color: #693afa;
+      border-radius: 1rem;
+      color: #fff;
+      font-size: 0.8rem;
+      margin-top: 1rem;
+      padding: 0.5rem;
+      text-align: center;
+
+      &.admin {
+        background-color: #693afa;
+      }
+      &.hidden {
+        background-color: #fbff00;
+        border: 1px solid #00000052;
+        color: #000000;
+      }
+    }
+  }
   .help__text {
     color: rgba(0,0,0,0.5);
     font-size: 0.8rem;
     line-height: 1rem;
+    margin-bottom: 1rem;
   }
 
   .button {
