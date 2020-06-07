@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.0.0] - 2020-06-07
+### Fixed
+- Update to latest `cabal-client` to fix connections to peers who require holepunching.
+
 ## [5.1.0] - 2020-06-06
 ### Added
 - Added basic moderation features for hiding users and setting moderators and admins.
