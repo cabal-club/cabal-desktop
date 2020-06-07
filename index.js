@@ -1,11 +1,13 @@
 'use strict'
 
 const { app, BrowserWindow, shell, Menu, ipcMain } = require('electron')
+const isDev = require('electron-is-dev')
 const windowStateKeeper = require('electron-window-state')
 const os = require('os')
 const path = require('path')
+const { autoUpdater } = require('electron-updater')
 
-if (process.env.NODE_ENV === 'development') {
+if (isDev) {
   require('electron-reload')(__dirname, {
     electron: path.join(__dirname, 'node_modules', '.bin', 'electron'),
     hardResetMethod: 'exit'
@@ -114,6 +116,7 @@ app.on('second-instance', (event, argv, cwd) => {
 app.setAsDefaultProtocolClient('cabal')
 
 app.on('ready', () => {
+  if (!isDev) startAutoUpdater() 
   const mainWindowState = windowStateKeeper({
     defaultWidth: 800,
     defaultHeight: 600
@@ -180,3 +183,15 @@ app.on('window-all-closed', () => {
 app.on('before-quit', () => {
   app.quitting = true
 })
+
+
+function startAutoUpdater () {
+  const FOUR_HOURS = 60 * 60 * 1000
+  try {
+    setInterval(() => autoUpdater.checkForUpdatesAndNotify(), FOUR_HOURS)
+    autoUpdater.checkForUpdatesAndNotify()
+  } catch (err) {
+    // If offline, the auto updater will throw an error.
+    console.error(err)
+  }
+}

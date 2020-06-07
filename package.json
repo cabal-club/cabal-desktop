@@ -9,7 +9,7 @@
     "watch": "webpack --watch",
     "start": "cross-env NODE_ENV=development npm-run-all --parallel start:*",
     "pack": "electron-builder --dir",
-    "dist": "yarn run build && electron-builder",
+    "dist": "yarn run build && electron-builder --publish=onTagOrDraft",
     "dist:multi": "electron-builder -mlw",
     "postinstall": "electron-builder install-app-deps",
     "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 jest --passWithNoTests"
@@ -57,8 +57,10 @@
     "debug": "^4.1.1",
     "del": "^5.1.0",
     "electron-default-menu": "^1.0.1",
+    "electron-is-dev": "^1.2.0",
     "electron-prompt": "^1.5.1",
     "electron-reload": "^1.5.0",
+    "electron-updater": "^4.3.1",
     "electron-window-state": "^5.0.3",
     "emoji-mart": "^3.0.0",
     "get-form-data": "^3.0.0",
@@ -86,6 +88,9 @@
     "appId": "club.cabal.desktop",
     "afterSign": "scripts/notarize.js",
     "productName": "Cabal",
+    "publish": [
+      "github"
+    ],
     "protocols": [
       {
         "name": "cabal",
