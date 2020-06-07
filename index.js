@@ -5,7 +5,10 @@ const isDev = require('electron-is-dev')
 const windowStateKeeper = require('electron-window-state')
 const os = require('os')
 const path = require('path')
-const { autoUpdater } = require('electron-updater')
+const settings = require('./app/settings')
+const AutoUpdater = require('./app/updater')
+
+const updater = new AutoUpdater()
 
 if (isDev) {
   require('electron-reload')(__dirname, {
@@ -60,7 +63,16 @@ const template = [
       {
         label: 'Report Issue',
         click () { require('electron').shell.openExternal('https://github.com/cabal-club/cabal-desktop/issues/new') }
-      }
+      },
+      {
+        label: 'Automatically Check for Updates',
+        type: 'checkbox',
+        checked: settings.get('auto-update'),
+        click (menuItem) { 
+          settings.set('auto-update', menuItem.checked)
+          menuItem.checked ? updater.start() : updater.stop()
+        }
+      },
     ]
   }
 ]
@@ -116,7 +128,7 @@ app.on('second-instance', (event, argv, cwd) => {
 app.setAsDefaultProtocolClient('cabal')
 
 app.on('ready', () => {
-  if (!isDev) startAutoUpdater() 
+  updater.start() 
   const mainWindowState = windowStateKeeper({
     defaultWidth: 800,
     defaultHeight: 600
@@ -184,14 +196,3 @@ app.on('before-quit', () => {
   app.quitting = true
 })
 
-
-function startAutoUpdater () {
-  const FOUR_HOURS = 60 * 60 * 1000
-  try {
-    setInterval(() => autoUpdater.checkForUpdatesAndNotify(), FOUR_HOURS)
-    autoUpdater.checkForUpdatesAndNotify()
-  } catch (err) {
-    // If offline, the auto updater will throw an error.
-    console.error(err)
-  }
-}
