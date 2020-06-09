@@ -1,11 +1,16 @@
 'use strict'
 
 const { app, BrowserWindow, shell, Menu, ipcMain } = require('electron')
+const isDev = require('electron-is-dev')
 const windowStateKeeper = require('electron-window-state')
 const os = require('os')
 const path = require('path')
+const settings = require('./app/settings')
+const AutoUpdater = require('./app/updater')
 
-if (process.env.NODE_ENV === 'development') {
+const updater = new AutoUpdater()
+
+if (isDev) {
   require('electron-reload')(__dirname, {
     electron: path.join(__dirname, 'node_modules', '.bin', 'electron'),
     hardResetMethod: 'exit'
@@ -58,7 +63,16 @@ const template = [
       {
         label: 'Report Issue',
         click () { require('electron').shell.openExternal('https://github.com/cabal-club/cabal-desktop/issues/new') }
-      }
+      },
+      {
+        label: 'Automatically Check for Updates',
+        type: 'checkbox',
+        checked: settings.get('auto-update'),
+        click (menuItem) { 
+          settings.set('auto-update', menuItem.checked)
+          menuItem.checked ? updater.start() : updater.stop()
+        }
+      },
     ]
   }
 ]
@@ -114,6 +128,7 @@ app.on('second-instance', (event, argv, cwd) => {
 app.setAsDefaultProtocolClient('cabal')
 
 app.on('ready', () => {
+  updater.start() 
   const mainWindowState = windowStateKeeper({
     defaultWidth: 800,
     defaultHeight: 600
@@ -180,3 +195,4 @@ app.on('window-all-closed', () => {
 app.on('before-quit', () => {
   app.quitting = true
 })
+

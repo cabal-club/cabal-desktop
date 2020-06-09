@@ -30,7 +30,26 @@ tiffutil -cathidpicheck cabal-desktop-dmg-background.jpg cabal-desktop-dmg-backg
 
 ## Distribute
 
-build for current platform:
+TravisCI will automatically create and upload the appropriate release packages
+for you when you're ready to release. Here's the process for distributing 
+production builds.
+
+1. Draft a new release. Set the “Tag version” to the value of version in your
+application package.json, and prefix it with v. “Release title” can be anything
+you want. For example, if your application package.json version is 1.0, your draft’s
+“Tag version” would be v1.0.
+
+2. Push some commits. Every CI build will update the artifacts attached to this
+   draft.
+
+3. Once you are done, create the tag (e.g., `git tag v6.0.0`) and publish the release (`git push --tags && npm publish`). GitHub will tag
+   the latest commit for you.
+
+The benefit of this workflow is that it allows you to always have the latest
+artifacts, and the release can be published once it is ready.
+
+
+Build for current platform:
 
 ```
 $ yarn run dist
