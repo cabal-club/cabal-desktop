@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.0.0] - 2020-06-08
+### Added
+- Added autoupdate feature to automatically install new releases.
+
 ## [6.0.0] - 2020-06-07
 ### Fixed
 - Update to latest `cabal-client` to fix connections to peers who require holepunching.
