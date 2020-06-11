@@ -354,30 +354,28 @@ export const viewChannel = ({ addr, channel, skipScreenHistory }) => (dispatch, 
 
 export const changeScreen = ({ screen, addr }) => ({ type: 'CHANGE_SCREEN', screen, addr })
 
-export const addCabal = ({ addr, input, username, settings }) => dispatch => {
-  if (!addr) {
-    try {
-      const key = decode(input)
-      addr = encode(key)
-    } catch (err) {
-    }
+export const addCabal = ({ addr, username, settings }) => async (dispatch) => {
+  if (addr) {
+    // Convert domain keys to cabal keys
+    addr = await client.resolveName(addr)
   }
-  if (client.getDetails(addr)) {
+  if (client._keyToCabal[addr]) {
     // Show cabal if already added to client
     dispatch(viewCabal({ addr }))
     if (username) {
       dispatch(setUsername({ addr, username }))
     }
     return
+  } else {
+    // Add the cabal to the client using the default per cabal user settings
+    settings = {
+      alias: '',
+      enableNotifications: false,
+      currentChannel: DEFAULT_CHANNEL,
+      ...settings
+    }
+    dispatch(initializeCabal({ addr, username, settings }))
   }
-  // Default per cabal user settings
-  settings = {
-    alias: '',
-    enableNotifications: false,
-    currentChannel: DEFAULT_CHANNEL,
-    ...settings
-  }
-  dispatch(initializeCabal({ addr, username, settings }))
 }
 
 export const sendDesktopNotification = throttle(({ addr, author, channel, content }) => (dispatch) => {
@@ -727,14 +725,14 @@ export const loadFromDisk = () => async dispatch => {
     const { addr, settings } = JSON.parse(state[key])
     dispatch(addCabal({ addr, settings }))
   })
-  if (stateKeys.length) {
-    setTimeout(() => {
-      const firstCabal = JSON.parse(state[stateKeys[0]])
-      dispatch(viewCabal({ addr: firstCabal.addr, channel: firstCabal.settings.currentChannel }))
-      client.focusCabal(firstCabal.addr)  
-    }, 5000)
-  }
-  dispatch({ type: 'CHANGE_SCREEN', screen: stateKeys.length ? 'main' : 'addCabal' })
+  // if (stateKeys.length) {
+  //   setTimeout(() => {
+  //     const firstCabal = JSON.parse(state[stateKeys[0]])
+  //     dispatch(viewCabal({ addr: firstCabal.addr, channel: firstCabal.settings.currentChannel }))
+  //     client.focusCabal(firstCabal.addr)  
+  //   }, 5000)
+  // }
+  // dispatch({ type: 'CHANGE_SCREEN', screen: stateKeys.length ? 'main' : 'addCabal' })
 }
 
 const storeOnDisk = () => (dispatch, getState) => {
