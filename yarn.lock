@@ -2359,10 +2359,10 @@ bulk-write-stream@^1.1.3:
     inherits "^2.0.1"
     readable-stream "^2.1.4"
 
-cabal-client@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/cabal-client/-/cabal-client-6.0.0.tgz#081f64f839116e681447dbeb5ac72ee5c649945a"
-  integrity sha512-Fb357yv3TzcEH0fX1crtx2m4Ua+WF0HqFznnu9mEZUaGk8BCKv9Sk+g2QXc2BdqJ59mjlTRvflFio1UzFzfqJw==
+cabal-client@6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/cabal-client/-/cabal-client-6.1.0.tgz#5e350c836d5c46bbf55ef032897ed8dd948531e7"
+  integrity sha512-y/8CJBR4+f8MIdwXCfKevYzkV7Jdnb19WDixFValn6U180zKIA4dWkoWaD0B1Kr9PNy2bKLT1/ixG2Tsn76e/g==
   dependencies:
     cabal-core "^13.0.0"
     collect-stream "^1.2.1"
