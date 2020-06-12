@@ -2,7 +2,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import {
-  getUsers,
   hideChannelPanel,
   leaveChannel,
   moderationAddAdmin,
@@ -14,7 +13,6 @@ import {
   moderationUnblock,
   moderationUnhide
 } from '../actions'
-import Avatar from './avatar'
 import MemberList from './memberList'
 
 const mapStateToProps = state => ({
@@ -23,7 +21,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getUsers: ({ addr }) => dispatch(getUsers({ addr })),
   hideChannelPanel: ({ addr }) => dispatch(hideChannelPanel({ addr })),
   leaveChannel: ({ addr, channel }) => dispatch(leaveChannel({ addr, channel })),
   moderationAddAdmin: ({ addr, channel, reason, userKey }) => dispatch(moderationAddAdmin({ addr, channel, reason, userKey })),
@@ -37,8 +34,6 @@ const mapDispatchToProps = dispatch => ({
 })
 
 function ChannelPanel (props) {
-  const user = props.getUsers({ addr: props.addr })[props.userKey]
-
   function onClickLeaveChannel () {
     props.leaveChannel({
       addr: props.cabal.addr,
