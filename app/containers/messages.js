@@ -45,6 +45,7 @@ function MessagesContainer (props) {
       </div>
     )
   } else {
+    const defaultSystemName = 'Cabalbot'
     let prevMessage = {}
     return (
       <div className='messages'>
@@ -71,7 +72,6 @@ function MessagesContainer (props) {
           let item = (<div />)
           prevMessage = message
           if (message.type === 'status') {
-            const defaultSystemName = 'Cabalbot'
             item = (
               <div className='messages__item messages__item--system'>
                 <div className='messages__item__avatar'>
@@ -82,6 +82,35 @@ function MessagesContainer (props) {
                 <div className='messages__item__metadata'>
                   <div className='messages__item__metadata__name'>{message.name || defaultSystemName}{renderDate(formattedTime)}</div>
                   <div className='text'>{enriched.content}</div>
+                </div>
+              </div>
+            )
+          }
+          if (message.type === 'chat/moderation') {
+            const { role, type, issuerid, receiverid, reason } = message.content
+            const issuer = props.getUsers({ addr: props.addr })[issuerid]
+            const receiver = props.getUsers({ addr: props.addr })[receiverid]
+            const issuerName = issuer && issuer.name ? issuer.name : issuerid.slice(0, 8)
+            const receiverName = receiver && receiver.name ? receiver.name : receiverid.slice(0, 8)
+            item = (
+              <div className='messages__item messages__item--system'>
+                <div className='messages__item__avatar'>
+                  <div className='messages__item__avatar__img'>
+                    <Avatar name={message.key || defaultSystemName} />
+                  </div>
+                </div>
+                <div className='messages__item__metadata'>
+                  <div className='messages__item__metadata__name'>{message.name || defaultSystemName}{renderDate(formattedTime)}</div>
+                  <div className='text'>
+                    Moderation:
+                    {role === 'hide' &&
+                      <span><span onClick={onClickProfile.bind(this, issuer)}>{issuerName}</span> {(type === 'add' ? 'hid' : 'unhid')} <span onClick={onClickProfile.bind(this, receiver)}>{receiverName}</span></span>}
+                    {role !== 'hide' &&
+                      <span><span onClick={onClickProfile.bind(this, issuer)}>{issuerName}</span> {(type === 'add' ? 'added' : 'removed')} <span onClick={onClickProfile.bind(this, receiver)}>{receiverName}</span> as {role}</span>}
+                    {!!reason &&
+                      <span>({reason})</span>
+                    }
+                  </div>
                 </div>
               </div>
             )
