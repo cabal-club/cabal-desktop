@@ -949,8 +949,6 @@ form {
     border: 2px solid rgba(0, 0, 0, 0.25);
     border-radius: 3px;
     transition: all 0.1s ease-in-out;
-    padding: .5rem 0;
-    min-height: 48px;
 
     &:hover, &:focus {
       border-color: rgba(0, 0, 0, 0.5);
@@ -967,13 +965,13 @@ form {
 
     .composer__input {
       width: 100%;
-      padding: 0 1rem;
     }
 
     .composer__input form {
       width: 100%;
       display: flex;
       align-content: center;
+      padding: 0.5rem;
     }
 
     .composer__input textarea {
@@ -995,7 +993,7 @@ form {
     }
 
     .composer__other {
-      align-self: flex-end;
+      align-self: center;
       display: table-cell;
       width: 3rem;
       height: 1.5rem;

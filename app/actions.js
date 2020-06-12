@@ -697,6 +697,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
   ]
   cabalDetailsEvents.forEach((event) => {
     cabalDetails.on(event.name, throttle((data) => {
+      // console.log('Event', event.name, data)
       event.action(data)
     }), event.throttleDelay || 200, { leading: true, trailing: true })
   })
@@ -756,42 +757,43 @@ const generateUniqueName = () => {
   return `${randomItem(adjectives)}-${randomItem(nouns)}`
 }
 
-export const moderationHide = ({ addr, channel, reason, userKey }) => async dispatch => {
-  const cabalDetails = client.getDetails(addr)
-  cabalDetails.moderation.hide([[userKey, reason]], { channel, reason } )
+export const moderationHide = (props) => async dispatch => {
+  dispatch(moderationAction('hide', props))
 }
 
-export const moderationUnhide = ({ addr, channel, reason, userKey }) => async dispatch => {
-  const cabalDetails = client.getDetails(addr)
-  cabalDetails.moderation.unhide([[userKey, reason]], { channel, reason } )
+export const moderationUnhide = (props) => async dispatch => {
+  dispatch(moderationAction('unhide', props))
 }
 
-export const moderationBlock = ({ addr, channel, reason, userKey }) => async dispatch => {
-  const cabalDetails = client.getDetails(addr)
-  cabalDetails.moderation.block([[userKey, reason]], { channel, reason } )
+export const moderationBlock = (props) => async dispatch => {
+  dispatch(moderationAction('block', props))
 }
 
-export const moderationUnblock = ({ addr, channel, reason, userKey }) => async dispatch => {
-  const cabalDetails = client.getDetails(addr)
-  cabalDetails.moderation.unblock([[userKey, reason]], { channel, reason } )
+export const moderationUnblock = (props) => async dispatch => {
+  dispatch(moderationAction('unblock', props))
 }
 
-export const moderationAddMod = ({ addr, channel, reason, userKey }) => async dispatch => {
-  const cabalDetails = client.getDetails(addr)
-  cabalDetails.moderation.addMod([[userKey, reason]], { channel, reason } )
+export const moderationAddMod = (props) => async dispatch => {
+  dispatch(moderationAction('addMod', props))
 }
 
-export const moderationRemoveMod = ({ addr, channel, reason, userKey }) => async dispatch => {
-  const cabalDetails = client.getDetails(addr)
-  cabalDetails.moderation.removeMod([[userKey, reason]], { channel, reason } )
+export const moderationRemoveMod = (props) => async dispatch => {
+  dispatch(moderationAction('removeMod', props))
 }
 
-export const moderationAddAdmin = ({ addr, channel, reason, userKey }) => async dispatch => {
-  const cabalDetails = client.getDetails(addr)
-  cabalDetails.moderation.addAdmin([[userKey, reason]], { channel, reason } )
+export const moderationAddAdmin = (props) => async dispatch => {
+  dispatch(moderationAction('addAdmin', props))
+} 
+
+export const moderationRemoveAdmin = (props) => async dispatch => {
+  dispatch(moderationAction('removeAdmin', props))
 }
 
-export const moderationRemoveAdmin = ({ addr, channel, reason, userKey }) => async dispatch => {
+export const moderationAction = (action, { addr, channel, reason, userKey}) => async dispatch => {
   const cabalDetails = client.getDetails(addr)
-  cabalDetails.moderation.removeAdmin([[userKey, reason]], { channel, reason } )
+  await cabalDetails.moderation[action](userKey, { channel, reason })
+  setTimeout(() => {
+    const users = cabalDetails.getUsers()
+    dispatch({ type: 'UPDATE_CABAL', addr, users })
+  }, 500)
 }

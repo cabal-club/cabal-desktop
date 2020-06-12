@@ -181,7 +181,8 @@ class SidebarScreen extends React.Component {
     const deduplicatedNicks = []
     users && users.forEach((user) => {
       const userIndex = deduplicatedNicks.findIndex((u) => u.name === user.name)
-      if (user.name && userIndex > -1) {
+      const moderated = user.isHidden || user.isAdmin || user.isModerator
+      if (user.name && userIndex > -1 && !moderated) {
         deduplicatedNicks[userIndex].users.push(user)
       } else {
         deduplicatedNicks.push({
@@ -311,6 +312,7 @@ class SidebarScreen extends React.Component {
                 const isAdmin = peer.users.some((u) => u.isAdmin())
                 const isModerator = peer.users.some((u) => u.isModerator())
                 const isHidden = peer.users.some((u) => u.isHidden())
+                const name = isHidden ? peer.name.substring(0, 3) + peer.key.substring(0, 6) : peer.name
                 return (
                   <div
                     key={index}
@@ -327,7 +329,7 @@ class SidebarScreen extends React.Component {
                     </div>
                     <div className={`collection__item__content ${(peer.online && !isHidden) ? 'active' : ''}`}>
                       <span className='name'>
-                        {peer.name || peer.key.substring(0, 6)}
+                        {peer.name ? name : peer.key.substring(0, 6)}
                         {peer.users.length > 1 && <span className='collection__item__count'>({peer.users.length})</span>}
                       </span>
                       {!isAdmin && !isModerator && isHidden && <span className='sigil hidden'>HIDDEN</span>}
