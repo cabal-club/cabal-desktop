@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import {
-  getUsers,
+  getUser,
   hideProfilePanel,
   moderationAddAdmin,
   moderationAddMod,
@@ -21,7 +21,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getUsers: ({ addr }) => dispatch(getUsers({ addr })),
+  getUser: ({ key }) => dispatch(getUser({ key })),
   hideProfilePanel: ({ addr }) => dispatch(hideProfilePanel({ addr })),
   moderationAddAdmin: ({ addr, channel, reason, userKey }) => dispatch(moderationAddAdmin({ addr, channel, reason, userKey })),
   moderationAddMod: ({ addr, channel, reason, userKey }) => dispatch(moderationAddMod({ addr, channel, reason, userKey })),
@@ -34,7 +34,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 function ProfilePanel (props) {
-  const user = props.getUsers({ addr: props.addr })[props.userKey]
+  const user = props.getUser({ key: props.userKey })
 
   function onClickHideUserAll () {
     props.moderationHide({

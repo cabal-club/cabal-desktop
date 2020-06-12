@@ -10,6 +10,7 @@ import remarkEmoji from 'remark-emoji'
 import remarkReact from 'remark-react'
 import throttle from 'lodash.throttle'
 const { dialog } = require('electron').remote
+const User = require('cabal-client/src/user')
 
 const DEFAULT_CHANNEL = 'default'
 const HOME_DIR = homedir()
@@ -233,14 +234,13 @@ const enrichMessage = (message) => {
 export const getMessages = ({ addr, channel, amount }, callback) => dispatch => {
   client.focusCabal(addr)
   const cabalDetails = client.getDetails(addr)
-  const users = cabalDetails.getUsers()
   if (client.getChannels().includes(channel)) {
     client.getMessages({ amount, channel }, (messages) => {
       messages = messages.map((message) => {
-        const author = users[message.key] ? users[message.key].name : message.key.substr(0, 6)
+        const user = dispatch(getUser({ key: message.key }))
         const { type, timestamp, content } = message.value
         return enrichMessage({
-          author,
+          user: user,
           content: content && content.text,
           key: message.key,
           time: timestamp,
@@ -261,8 +261,7 @@ export const onIncomingMessage = ({ addr, channel, message }, callback) => (disp
   // Ignore incoming message from channels you're not in
   if (!cabalDetails.getJoinedChannels().includes(channel)) return
 
-  const users = cabalDetails.getUsers()
-  const user = users[message.key]
+  const user = dispatch(getUser({ key: message.key }))
 
   // Ignore incoming messages from hidden users
   if (user && user.isHidden()) return
@@ -270,10 +269,9 @@ export const onIncomingMessage = ({ addr, channel, message }, callback) => (disp
   // Add incoming message to message list if you're viewing that channel
   const currentChannel = cabalDetails.getCurrentChannel()
   if ((channel === currentChannel) && (addr === client.getCurrentCabal().key)) {
-    const author = user ? user.name : message.key.substr(0, 6)
     const { type, timestamp, content } = message.value
     const enrichedMessage = enrichMessage({
-      author,
+      user,
       content: content && content.text,
       key: message.key,
       time: timestamp,
@@ -291,20 +289,28 @@ export const onIncomingMessage = ({ addr, channel, message }, callback) => (disp
 
   const settings = getState().cabalSettings[addr]
   if (!!settings.enableNotifications && !document.hasFocus()) {
-    const users = cabalDetails.getUsers()
-    const author = users[message.key] ? users[message.key].name : message.key.substr(0, 6)
     dispatch(sendDesktopNotification({
       addr,
-      author,
+      user,
       channel,
       content: message.value.content
     }))
   }
 }
 
-export const getUsers = ({ addr }) => (dispatch) => {
+export const getUsers = () => (dispatch) => {
   const cabalDetails = client.getCurrentCabal()
   return cabalDetails.getUsers()
+}
+
+export const getUser = ({ key }) => (dispatch) => {
+  const cabalDetails = client.getCurrentCabal()
+  const users = cabalDetails.getUsers()
+  // TODO: This should be inside cabalDetails.getUser(...)
+  return users[key] ? users[key] : new User({
+    name: key.substr(0, 6),
+    key: key
+  })
 }
 
 export const viewChannel = ({ addr, channel, skipScreenHistory }) => (dispatch, getState) => {
@@ -343,7 +349,7 @@ export const viewChannel = ({ addr, channel, skipScreenHistory }) => (dispatch, 
   dispatch(updateChannelMessagesUnread({ addr, channel, unreadCount: 0 }))
 
   // When a user is walking through history by using screen history navigation commands,
-  // `skipScreenHistory=true` does not add that navigation event to the end of the history 
+  // `skipScreenHistory=true` does not add that navigation event to the end of the history
   // stack so that navigating again forward through history works.
   if (!skipScreenHistory) {
     dispatch(updateScreenViewHistory({ addr, channel }))
@@ -378,9 +384,9 @@ export const addCabal = ({ addr, username, settings }) => async (dispatch) => {
   }
 }
 
-export const sendDesktopNotification = throttle(({ addr, author, channel, content }) => (dispatch) => {
+export const sendDesktopNotification = throttle(({ addr, user, channel, content }) => (dispatch) => {
   window.Notification.requestPermission()
-  const notification = new window.Notification(author, {
+  const notification = new window.Notification(user.name, {
     body: content.text
   })
   notification.onclick = () => {
@@ -394,7 +400,6 @@ export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
 
   client.focusChannel(channel)
   const topic = cabalDetails.getTopic()
-  const users = cabalDetails.getUsers()
 
   const opts = {}
   opts.newerThan = opts.newerThan || null
@@ -404,15 +409,15 @@ export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
   client.getMessages(opts, (messages) => {
     messages = messages.map((message) => {
       const { type, timestamp, content = {} } = message.value
-      const author = users[message.key] ? users[message.key].name : message.key.substr(0, 6)
+      const user = dispatch(getUser({ key: message.key }))
 
       const settings = getState().cabalSettings[addr]
       if (!!settings.enableNotifications && !document.hasFocus()) {
-        dispatch(sendDesktopNotification({ addr, author, channel, content }))
+        dispatch(sendDesktopNotification({ addr, user, channel, content }))
       }
 
       return enrichMessage({
-        author,
+        user,
         content: content.text,
         key: message.key,
         time: timestamp,
@@ -534,7 +539,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
     dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
     client.focusCabal(addr)
     dispatch(viewCabal({ addr, channel: settings.currentChannel }))
-  }, 2000) 
+  }, 2000)
 
   const cabalDetailsEvents = [
     {
@@ -542,7 +547,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
       action: (data) => {
         // console.log('update event', data)
       }
-    }, 
+    },
     {
       name: 'cabal-focus',
       action: () => { }
@@ -730,7 +735,7 @@ export const loadFromDisk = () => async dispatch => {
   //   setTimeout(() => {
   //     const firstCabal = JSON.parse(state[stateKeys[0]])
   //     dispatch(viewCabal({ addr: firstCabal.addr, channel: firstCabal.settings.currentChannel }))
-  //     client.focusCabal(firstCabal.addr)  
+  //     client.focusCabal(firstCabal.addr)
   //   }, 5000)
   // }
   // dispatch({ type: 'CHANGE_SCREEN', screen: stateKeys.length ? 'main' : 'addCabal' })
@@ -783,7 +788,7 @@ export const moderationRemoveMod = (props) => async dispatch => {
 
 export const moderationAddAdmin = (props) => async dispatch => {
   dispatch(moderationAction('addAdmin', props))
-} 
+}
 
 export const moderationRemoveAdmin = (props) => async dispatch => {
   dispatch(moderationAction('removeAdmin', props))

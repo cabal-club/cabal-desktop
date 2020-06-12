@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 
 import {
-  getUsers,
+  getUser,
   showProfilePanel
 } from '../actions'
 import Avatar from './avatar'
@@ -14,7 +14,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  getUsers: ({ addr }) => dispatch(getUsers({ addr })),
+  getUser: ({ key }) => dispatch(getUser({ key })),
   showProfilePanel: ({ addr, userKey }) => dispatch(showProfilePanel({ addr, userKey }))
 })
 
@@ -50,8 +50,8 @@ function MessagesContainer (props) {
     return (
       <div className='messages'>
         {messages.map((message) => {
-          const user = props.getUsers({ addr: props.addr })[message.key]
           // Hide messages from hidden users
+          const user = message.user
           if (user && user.isHidden()) return null
 
           const enriched = message.enriched
@@ -88,8 +88,8 @@ function MessagesContainer (props) {
           }
           if (message.type === 'chat/moderation') {
             const { role, type, issuerid, receiverid, reason } = message.content
-            const issuer = props.getUsers({ addr: props.addr })[issuerid]
-            const receiver = props.getUsers({ addr: props.addr })[receiverid]
+            const issuer = props.getUser({ key: issuerid })
+            const receiver = props.getUser({ key: receiverid })
             const issuerName = issuer && issuer.name ? issuer.name : issuerid.slice(0, 8)
             const receiverName = receiver && receiver.name ? receiver.name : receiverid.slice(0, 8)
             item = (
@@ -124,7 +124,7 @@ function MessagesContainer (props) {
                 <div className='messages__item__metadata'>
                   {!repeatedAuthor &&
                     <div onClick={onClickProfile.bind(this, user)} className='messages__item__metadata__name'>
-                      {message.author || message.key.substr(0, 6)}
+                      {user.name}
                       {user.isAdmin() && <span className='sigil admin' title='Admin'>@</span>}
                       {user.isModerator() && <span className='sigil moderator' title='Moderator'>%</span>}
                       {renderDate(formattedTime)}
@@ -145,7 +145,7 @@ function MessagesContainer (props) {
                   </div>
                 </div>
                 <div className='messages__item__metadata'>
-                  {repeatedAuthor ? null : <div onClick={onClickProfile.bind(this, user)} className='messages__item__metadata__name'>{message.author}{renderDate(formattedTime)}</div>}
+                  {repeatedAuthor ? null : <div onClick={onClickProfile.bind(this, user)} className='messages__item__metadata__name'>{user.name}{renderDate(formattedTime)}</div>}
                   <div className={repeatedAuthor ? 'text indent' : 'text'}>{enriched.content}</div>
                 </div>
               </div>
