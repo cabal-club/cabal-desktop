@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [6.0.0] - 2020-06-08
+## [6.0.2] - 2020-06-11
+### Added
+- Added support for adding cabals using domain names.
+### Fixed
+- Fixed bug related to adding new cabals.
+
+## [6.0.1] - 2020-06-08
 ### Added
 - Added autoupdate feature to automatically install new releases.
 
