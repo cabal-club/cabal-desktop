@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.0.3] - 2020-06-12
+### Added
+- Optimized newly adding cabal sync and reduced overall boot time.
+### Fixed
+- Fixed crash related to moderation.
+- Fixed initialization crash.
+
 ## [6.0.2] - 2020-06-11
 ### Added
 - Added support for adding cabals using domain names.
