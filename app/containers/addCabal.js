@@ -5,7 +5,7 @@ import { addCabal } from '../actions'
 const mapStateToProps = state => state
 
 const mapDispatchToProps = dispatch => ({
-  addCabal: ({ addr, username }) => dispatch(addCabal({ addr, username })),
+  addCabal: ({ addr, isNewlyAdded, username }) => dispatch(addCabal({ addr, isNewlyAdded, username })),
   newCabal: (username) => dispatch(addCabal({ username })),
   hide: () => dispatch({ type: 'CHANGE_SCREEN', screen: 'main' })
 })
@@ -26,6 +26,7 @@ class addCabalScreen extends Component {
     if (cabal.value) {
       this.props.addCabal({
         addr: cabal.value,
+        isNewlyAdded: true,
         username: nickname.value
       })
       this.props.hide()
