@@ -57,9 +57,7 @@ class LayoutScreen extends Component {
   render () {
     const { cabal, cabals, addr } = this.props
     const { enableDarkmode } = this.props.settings || {}
-    // console.log('render', { cabal, cabals, addr })
-    // if (!cabal || !this.cabalsInitialized()) {
-    if (!cabal) {
+    if (!cabal || !this.cabalsInitialized()) {
       return (
         <div className='loading'>
           <div className='status'> </div>

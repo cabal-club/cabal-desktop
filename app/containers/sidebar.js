@@ -181,8 +181,8 @@ class SidebarScreen extends React.Component {
     const deduplicatedNicks = []
     users && users.forEach((user) => {
       const userIndex = deduplicatedNicks.findIndex((u) => u.name === user.name)
-      const moderated = user.isHidden || user.isAdmin || user.isModerator
-      if (user.name && userIndex > -1 && !moderated) {
+      const moderated = user.isHidden() || user.isAdmin() || user.isModerator()
+      if (user.name && !moderated && userIndex > -1) {
         deduplicatedNicks[userIndex].users.push(user)
       } else {
         deduplicatedNicks.push({

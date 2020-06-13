@@ -360,7 +360,7 @@ export const viewChannel = ({ addr, channel, skipScreenHistory }) => (dispatch, 
 
 export const changeScreen = ({ screen, addr }) => ({ type: 'CHANGE_SCREEN', screen, addr })
 
-export const addCabal = ({ addr, username, settings }) => async (dispatch) => {
+export const addCabal = ({ addr, isNewlyAdded, settings, username }) => async (dispatch) => {
   if (addr) {
     // Convert domain keys to cabal keys
     addr = await client.resolveName(addr)
@@ -380,7 +380,7 @@ export const addCabal = ({ addr, username, settings }) => async (dispatch) => {
       currentChannel: DEFAULT_CHANNEL,
       ...settings
     }
-    dispatch(initializeCabal({ addr, username, settings }))
+    dispatch(initializeCabal({ addr, isNewlyAdded, settings, username }))
   }
 }
 
@@ -518,14 +518,14 @@ const getCabalUnreadMessagesCount = (cabalDetails) => {
   return channelMessagesUnread
 }
 
-const initializeCabal = ({ addr, username, settings }) => async dispatch => {
+const initializeCabal = ({ addr, isNewlyAdded, username, settings }) => async dispatch => {
   const isNew = !addr
   const cabalDetails = isNew ? await client.createCabal() : await client.addCabal(addr)
   addr = cabalDetails.key
 
-  console.log('---> initializeCabal', addr)
+  console.log('---> initializeCabal', { addr, settings })
 
-  setTimeout(() => {
+  function initialize () {
     const users = cabalDetails.getUsers()
     const userkey = cabalDetails.getLocalUser().key
     const username = cabalDetails.getLocalName()
@@ -534,12 +534,12 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
     const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
     const currentChannel = cabalDetails.getCurrentChannel()
     const channelMembers = cabalDetails.getChannelMembers()
-    dispatch({ type: 'UPDATE_CABAL', initialized: true, addr, channelMessagesUnread, users, userkey, username, channels, channelsJoined, currentChannel, channelMembers })
+    dispatch({ type: 'UPDATE_CABAL', initialized: false, addr, channelMessagesUnread, users, userkey, username, channels, channelsJoined, currentChannel, channelMembers })
     dispatch(getMessages({ addr, amount: 1000, channel: currentChannel }))
     dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
     client.focusCabal(addr)
     dispatch(viewCabal({ addr, channel: settings.currentChannel }))
-  }, 2000)
+  }
 
   const cabalDetailsEvents = [
     {
@@ -597,25 +597,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
       }
     }, {
       name: 'init',
-      action: () => {
-        console.warn('***** init', addr)
-        setTimeout(() => {
-          const users = cabalDetails.getUsers()
-          const userkey = cabalDetails.getLocalUser().key
-          const username = cabalDetails.getLocalName()
-          const channels = cabalDetails.getChannels()
-          const channelsJoined = cabalDetails.getJoinedChannels() || []
-          const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
-          const currentChannel = cabalDetails.getCurrentChannel()
-          const channelMembers = cabalDetails.getChannelMembers()
-          dispatch({ type: 'UPDATE_CABAL', initialized: true, addr, channelMessagesUnread, users, userkey, username, channels, channelsJoined, currentChannel, channelMembers })
-          dispatch(getMessages({ addr, amount: 1000, channel: currentChannel }))
-          dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
-
-          dispatch(viewCabal({ addr, channel: settings.currentChannel }))
-          client.focusCabal(addr)
-        }, 2000)
-      }
+      action: initialize
     }, {
       name: 'new-channel',
       action: () => {
@@ -625,6 +607,7 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
       }
     }, {
       name: 'new-message',
+      throttleDelay: 500,
       action: (data) => {
         const channel = data.channel
         const message = data.message
@@ -700,12 +683,18 @@ const initializeCabal = ({ addr, username, settings }) => async dispatch => {
       }
     }
   ]
-  cabalDetailsEvents.forEach((event) => {
-    cabalDetails.on(event.name, throttle((data) => {
-      // console.log('Event', event.name, data)
-      event.action(data)
-    }), event.throttleDelay || 200, { leading: true, trailing: true })
-  })
+  setTimeout(() => {
+    cabalDetailsEvents.forEach((event) => {
+      const action = throttle((data) => {
+        // console.log('Event:', event.name, data)
+        event.action(data)
+      }, event.throttleDelay, { leading: true, trailing: true })
+      cabalDetails.on(event.name, action)
+    })
+    
+    initialize()
+    dispatch({ type: 'UPDATE_CABAL', initialized: true, addr })
+  }, isNewlyAdded ? 10000 : 0)
 
   // if creating a new cabal, set a default username.
   if (isNew || username) {
@@ -738,7 +727,7 @@ export const loadFromDisk = () => async dispatch => {
   //     client.focusCabal(firstCabal.addr)
   //   }, 5000)
   // }
-  // dispatch({ type: 'CHANGE_SCREEN', screen: stateKeys.length ? 'main' : 'addCabal' })
+  dispatch({ type: 'CHANGE_SCREEN', screen: stateKeys.length ? 'main' : 'addCabal' })
 }
 
 const storeOnDisk = () => (dispatch, getState) => {
