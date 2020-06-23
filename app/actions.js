@@ -307,10 +307,14 @@ export const getUser = ({ key }) => (dispatch) => {
   const cabalDetails = client.getCurrentCabal()
   const users = cabalDetails.getUsers()
   // TODO: This should be inside cabalDetails.getUser(...)
-  return users[key] ? users[key] : new User({
+  var user = users[key]
+  if (!user) user = new User({
     name: key.substr(0, 6),
     key: key
   })
+  if (!user.name) user.name = key.substr(0,6)
+
+  return user
 }
 
 export const viewChannel = ({ addr, channel, skipScreenHistory }) => (dispatch, getState) => {
@@ -691,7 +695,7 @@ const initializeCabal = ({ addr, isNewlyAdded, username, settings }) => async di
       }, event.throttleDelay, { leading: true, trailing: true })
       cabalDetails.on(event.name, action)
     })
-    
+
     initialize()
     dispatch({ type: 'UPDATE_CABAL', initialized: true, addr })
   }, isNewlyAdded ? 10000 : 0)
