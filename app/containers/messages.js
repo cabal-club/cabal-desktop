@@ -87,7 +87,7 @@ function MessagesContainer (props) {
             )
           }
           if (message.type === 'chat/moderation') {
-            const { role, type, issuerid, receiverid, reason } = message.content
+            const { role, type, issuerid, receiverid, reason } = message.message.value.content
             const issuer = props.getUser({ key: issuerid })
             const receiver = props.getUser({ key: receiverid })
             const issuerName = issuer && issuer.name ? issuer.name : issuerid.slice(0, 8)
@@ -102,14 +102,16 @@ function MessagesContainer (props) {
                 <div className='messages__item__metadata'>
                   <div className='messages__item__metadata__name'>{message.name || defaultSystemName}{renderDate(formattedTime)}</div>
                   <div className='text'>
-                    Moderation:
                     {role === 'hide' &&
-                      <span><span onClick={onClickProfile.bind(this, issuer)}>{issuerName}</span> {(type === 'add' ? 'hid' : 'unhid')} <span onClick={onClickProfile.bind(this, receiver)}>{receiverName}</span></span>}
+                      <div>
+                        <a className='name' onClick={onClickProfile.bind(this, issuer)}>{issuerName}</a> {(type === 'add' ? 'hid' : 'unhid')} <a className='name' onClick={onClickProfile.bind(this, receiver)}>{receiverName}</a>
+                      </div>}
                     {role !== 'hide' &&
-                      <span><span onClick={onClickProfile.bind(this, issuer)}>{issuerName}</span> {(type === 'add' ? 'added' : 'removed')} <span onClick={onClickProfile.bind(this, receiver)}>{receiverName}</span> as {role}</span>}
+                      <div>
+                        <a className='name' onClick={onClickProfile.bind(this, issuer)}>{issuerName}</a> {(type === 'add' ? 'added' : 'removed')} <a className='name' onClick={onClickProfile.bind(this, receiver)}>{receiverName}</a> as {role}
+                      </div>}
                     {!!reason &&
-                      <span>({reason})</span>
-                    }
+                      <div>({reason})</div>}
                   </div>
                 </div>
               </div>

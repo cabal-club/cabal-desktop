@@ -712,6 +712,11 @@ form {
     padding: 0 1.5rem 0 0;
     font-size: 0.875rem;
     line-height: 1.5;
+
+    .name {
+      cursor: pointer;
+      text-decoration: underline;
+    }
   }
 
   .messages__item__metadata .text.indent {
