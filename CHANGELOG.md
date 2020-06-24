@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.0.4] - 2020-06-23
+### Fixed
+- Fixed crashes related to new moderation features.
+
 ## [6.0.3] - 2020-06-12
 ### Added
 - Optimized newly adding cabal sync and reduced overall boot time.

@@ -2359,19 +2359,19 @@ bulk-write-stream@^1.1.3:
     inherits "^2.0.1"
     readable-stream "^2.1.4"
 
-cabal-client@6.1.2:
-  version "6.1.2"
-  resolved "https://registry.yarnpkg.com/cabal-client/-/cabal-client-6.1.2.tgz#ceca6343317baa313d7e9763c115032a48f7200d"
-  integrity sha512-jHr4PFoVb99RNoxWWuYK6tq3yo6suizFXb+c4CWx5gJCQ5qQran8VYMCp+SKwbUX22ESMoU+4wVokBirX4xrHg==
+cabal-client@6.1.3:
+  version "6.1.3"
+  resolved "https://registry.yarnpkg.com/cabal-client/-/cabal-client-6.1.3.tgz#dd31c85785cae98fc2a8de27e843af31cc56b439"
+  integrity sha512-27u3ncjf5ebppfiKH308FW+T+SepEaYvq4xEL1+mLUciwEWnGEQViLRYFeRawyHLl13pzLG1M/l3NJM11n6WeQ==
   dependencies:
-    cabal-core "^13.0.0"
+    cabal-core "^13.0.1"
     collect-stream "^1.2.1"
-    dat-dns "^4.0.1"
+    dat-dns "^4.1.2"
     debug "^4.1.1"
-    hypercore-crypto "^1.0.0"
-    level "^6.0.0"
+    hypercore-crypto "^2.1.0"
+    level "^6.0.1"
     memdb "^1.3.1"
-    mkdirp "^0.5.1"
+    mkdirp "^1.0.4"
     monotonic-timestamp "0.0.9"
     pump "^3.0.0"
     qrcode "^1.4.4"
@@ -2379,7 +2379,7 @@ cabal-client@6.1.2:
     strftime "^0.10.0"
     to2 "^1.0.0"
 
-cabal-core@^13.0.0:
+cabal-core@^13.0.1:
   version "13.0.1"
   resolved "https://registry.yarnpkg.com/cabal-core/-/cabal-core-13.0.1.tgz#f5ca90bb4e87d063550ae9cf26b6a112421cf466"
   integrity sha512-pTnRl2j0WfX4+ol3BAcCa+OjSxZHs7ie3JACc4oyjTQL+wNAV5N1h4NNS1uc6cnGI5oOCHd6OkF0OG/icMeuzw==
@@ -2532,6 +2532,13 @@ ccount@^1.0.0:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/ccount/-/ccount-1.0.5.tgz#ac82a944905a65ce204eb03023157edf29425c17"
   integrity sha512-MOli1W+nfbPLlKEhInaxhRdp7KVLFxLN5ykwzHgLsLI3H3gs5jjFAK4Eoj3OzzcxCtumDaI8onoVDeQyWaNTkw==
+
+chacha20-universal@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/chacha20-universal/-/chacha20-universal-1.0.4.tgz#e8a33a386500b1ce5361b811ec5e81f1797883f5"
+  integrity sha512-/IOxdWWNa7nRabfe7+oF+jVkGjlr2xUL4J8l/OvzZhj+c9RpMqoo3Dq+5nU1j/BflRV4BKnaQ4+4oH1yBpQG1Q==
+  dependencies:
+    nanoassert "^2.0.0"
 
 chalk@2.4.2, chalk@^2.0.0, chalk@^2.0.1, chalk@^2.1.0, chalk@^2.4.1, chalk@^2.4.2:
   version "2.4.2"
@@ -3174,7 +3181,7 @@ dashify@2.0.0:
   resolved "https://registry.yarnpkg.com/dashify/-/dashify-2.0.0.tgz#fff270ca2868ca427fee571de35691d6e437a648"
   integrity sha512-hpA5C/YrPjucXypHPPc0oJ1l9Hf6wWbiOL7Ik42cxnsUOhWiCB/fylKbKqqJalW9FgkNQCw16YO8uW9Hs0Iy1A==
 
-dat-dns@^4.0.1:
+dat-dns@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/dat-dns/-/dat-dns-4.1.2.tgz#873283ed6b73b2edb0d894dcbb9535917cca63e6"
   integrity sha512-D5iuV0z24cuugqh3ZW5cO9hKBefpKZcCEP78b5woRVnDqCnAOvYDSc2w82S9xwCfTvXT1DI9aimTHa9YdD8e0Q==
@@ -5101,6 +5108,14 @@ hypercore-crypto@^1.0.0:
     sodium-universal "^2.0.0"
     uint64be "^2.0.2"
 
+hypercore-crypto@^2.1.0:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/hypercore-crypto/-/hypercore-crypto-2.1.1.tgz#39d195e3aa80b0635f5b7d466e577c963ab47170"
+  integrity sha512-KIA25GiFJXieB7Oa0HSDNtXrPH41VJY5j2xWmIjBqREt3quKOFxL7ceOLz7zBMoWkoYeF2m67RhtDE1C4XfoNA==
+  dependencies:
+    sodium-universal "^3.0.0"
+    uint64be "^3.0.0"
+
 hypercore-protocol@^7.7.1, hypercore-protocol@^7.9.0:
   version "7.10.0"
   resolved "https://registry.yarnpkg.com/hypercore-protocol/-/hypercore-protocol-7.10.0.tgz#34858414aae5cd8dfbf1c3bb77cc723a67e4d3f1"
@@ -6528,7 +6543,7 @@ level-supports@~1.0.0:
   dependencies:
     xtend "^4.0.2"
 
-level@^6.0.0:
+level@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/level/-/level-6.0.1.tgz#dc34c5edb81846a6de5079eac15706334b0d7cd6"
   integrity sha512-psRSqJZCsC/irNhfHzrVZbmPYXDcEYhA5TVNwr+V92jF44rbf86hqGp8fiT702FyiArScYIlPSBTDUASCVNSpw==
@@ -9277,6 +9292,13 @@ resolve@^1.10.0, resolve@^1.10.1, resolve@^1.11.0, resolve@^1.13.1, resolve@^1.1
   dependencies:
     path-parse "^1.0.6"
 
+resolve@^1.17.0:
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.17.0.tgz#b25941b54968231cc2d1bb76a79cb7f2c0bf8444"
+  integrity sha512-ic+7JYiV8Vi2yzQGFWOkiZD5Z9z7O2Zhm9XMaTxdJExKasieFCr+yXZ/WmXsckHiKl12ar0y6XiXDx3m4RHn1w==
+  dependencies:
+    path-parse "^1.0.6"
+
 responselike@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/responselike/-/responselike-1.0.2.tgz#918720ef3b631c5642be068f15ade5a46f4ba1e7"
@@ -9579,6 +9601,20 @@ sha.js@^2.4.0, sha.js@^2.4.8:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
+sha256-wasm@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/sha256-wasm/-/sha256-wasm-1.3.0.tgz#5cdb7d54a9833840277c1cf1e30876e6819ded91"
+  integrity sha512-/bPoRjEXqbSpsA9MDdjy3J3GWQWiZG+tjJbWYqhK+Ap4JWNJBxqSMJnIIzkZOA89UFqQMdKSoioNKXqXAkDyWQ==
+  dependencies:
+    nanoassert "^2.0.0"
+
+sha512-wasm@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/sha512-wasm/-/sha512-wasm-1.2.0.tgz#e4e8ffccaa131fbdff25d4e3c1bbe57a74d4308c"
+  integrity sha512-EPphV7XDTefQZw/fXQLfLjfqMCjLKbalgjiDmkMxMk3tjJB4qpjB0w/GEervpLLf0zwLg8EfddJ29PO6s5ec2A==
+  dependencies:
+    nanoassert "^2.0.0"
+
 shallow-clone@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/shallow-clone/-/shallow-clone-3.0.1.tgz#8f2981ad92531f55035b01fb230769a40e02efa3"
@@ -9746,6 +9782,19 @@ sodium-javascript@~0.5.0:
     siphash24 "^1.0.1"
     xsalsa20 "^1.0.0"
 
+sodium-javascript@~0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/sodium-javascript/-/sodium-javascript-0.6.0.tgz#9fd6d6f761ccedbdac59093ca9280670d3407407"
+  integrity sha512-GuVvpOY2ipJIxjCi9SRDcSOk+YRIUE2qgBjvgkyqyNTB+mglx1HkJpPqWhKfBHEAktMbHb21qYBTUy9VLhwvGg==
+  dependencies:
+    blake2b "^2.1.1"
+    chacha20-universal "^1.0.4"
+    nanoassert "^1.0.0"
+    sha256-wasm "^1.3.0"
+    sha512-wasm "^1.2.0"
+    siphash24 "^1.0.1"
+    xsalsa20 "^1.0.0"
+
 sodium-native@^2.0.0, sodium-native@^2.2.1:
   version "2.4.9"
   resolved "https://registry.yarnpkg.com/sodium-native/-/sodium-native-2.4.9.tgz#7a7beb997efdbd2c773a385fb959f0cead5f5162"
@@ -9763,6 +9812,14 @@ sodium-native@^3.0.1, sodium-native@^3.1.1:
     ini "^1.3.5"
     node-gyp-build "^4.2.0"
 
+sodium-native@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/sodium-native/-/sodium-native-3.2.0.tgz#68a9469b96edadffef320cbce51294ad5f72a37f"
+  integrity sha512-8aq/vQSegLwsRch8Sb/Bpf9aAqlNe5dp0+NVhb9UjHv42zDZ0D5zX3wBRUbXK9Ejum9uZE6DUgT4vVLlUFRBWg==
+  dependencies:
+    ini "^1.3.5"
+    node-gyp-build "^4.2.0"
+
 sodium-universal@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/sodium-universal/-/sodium-universal-2.0.0.tgz#cfb4e1a9c4afece4382b2c23c53439b443bd2af3"
@@ -9771,6 +9828,22 @@ sodium-universal@^2.0.0:
     sodium-javascript "~0.5.0"
   optionalDependencies:
     sodium-native "^2.0.0"
+
+sodium-universal@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/sodium-universal/-/sodium-universal-3.0.0.tgz#a362823fe604b00c91a5fe772f6a927eb23607b2"
+  integrity sha512-soOIjM0qETvz+Zuu2//IbUvX2miHDHbNtqBe9Q1Gu1fWP2J2YEebvxTPl7ESf0cOM/DLt9/JhBq1qELLH+y9Zw==
+  dependencies:
+    blake2b "^2.1.1"
+    chacha20-universal "^1.0.4"
+    nanoassert "^1.0.0"
+    resolve "^1.17.0"
+    sha256-wasm "^1.3.0"
+    sha512-wasm "^1.2.0"
+    siphash24 "^1.0.1"
+    sodium-javascript "~0.6.0"
+    sodium-native "^3.2.0"
+    xsalsa20 "^1.0.0"
 
 source-list-map@^2.0.0:
   version "2.0.1"
@@ -10698,6 +10771,11 @@ uint64be@^2.0.1, uint64be@^2.0.2:
   integrity sha512-9QqdvpGQTXgxthP+lY4e/gIBy+RuqcBaC6JVwT5I3bDLgT/btL6twZMR0pI3/Fgah9G/pdwzIprE5gL6v9UvyQ==
   dependencies:
     buffer-alloc "^1.1.0"
+
+uint64be@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/uint64be/-/uint64be-3.0.0.tgz#2e9037689817b3714fb86034e05c25f5c3141604"
+  integrity sha512-mliiCSrsE29aNBI7O9W5gGv6WmA9kBR8PtTt6Apaxns076IRdYrrtFhXHEWMj5CSum3U7cv7/pi4xmi4XsIOqg==
 
 unherit@^1.0.4:
   version "1.1.3"
