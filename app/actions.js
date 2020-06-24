@@ -240,11 +240,12 @@ export const getMessages = ({ addr, channel, amount }, callback) => dispatch => 
         const user = dispatch(getUser({ key: message.key }))
         const { type, timestamp, content } = message.value
         return enrichMessage({
-          user: user,
           content: content && content.text,
           key: message.key,
+          message,
           time: timestamp,
-          type
+          type,
+          user
         })
       })
       dispatch({ type: 'UPDATE_CABAL', addr, messages })
@@ -271,11 +272,12 @@ export const onIncomingMessage = ({ addr, channel, message }, callback) => (disp
   if ((channel === currentChannel) && (addr === client.getCurrentCabal().key)) {
     const { type, timestamp, content } = message.value
     const enrichedMessage = enrichMessage({
-      user,
       content: content && content.text,
       key: message.key,
+      message,
       time: timestamp,
-      type
+      type,
+      user
     })
     const messages = [
       ...getState()?.cabals[addr].messages,
@@ -421,11 +423,12 @@ export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
       }
 
       return enrichMessage({
-        user,
         content: content.text,
         key: message.key,
+        message,
         time: timestamp,
-        type
+        type,
+        user
       })
     })
     if (cabalDetails.getCurrentChannel() === channel) {
