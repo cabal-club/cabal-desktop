@@ -7347,9 +7347,9 @@ multifeed-index@^3.3.2:
     inherits "^2.0.3"
 
 multifeed@^5.0.0:
-  version "5.2.2"
-  resolved "https://registry.yarnpkg.com/multifeed/-/multifeed-5.2.2.tgz#7e32bac1a228388892832f35dc97cc560f0d65d0"
-  integrity sha512-bBeDssUNGr5zaN+N8iMQGx3b6pa8YUTveZ2BxFnoc6mt0vvMwCFjp3qnFCCBJOluPjPQM4T7j27KRk/NO4h4ZA==
+  version "5.2.4"
+  resolved "https://registry.yarnpkg.com/multifeed/-/multifeed-5.2.4.tgz#ba507bf23afbd4e99f2f99c29e9e78e424a367e4"
+  integrity sha512-HgwX0NaaIfcwmImzRrdclVskLhu5lHSB/YgvUZ58+EWyC4qJwSfk4ZGnJ3PKMhAyageRCmTxUTPBshhV8t07wg==
   dependencies:
     debug "^4.1.0"
     hypercore "^8.3.0"
