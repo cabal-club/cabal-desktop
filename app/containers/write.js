@@ -177,7 +177,11 @@ class writeScreen extends Component {
       e.stopPropagation()
       el.focus()
     } else if (e.keyCode === 13 && e.shiftKey) {
-      this.textInput.value = this.textInput.value + '\n'
+      const cursorPosition = this.textInput.selectionStart
+      const beforeCursor = this.textInput.value.slice(0, cursorPosition)
+      const afterCursor = this.textInput.value.slice(cursorPosition)
+      this.textInput.value = beforeCursor + '\n' + afterCursor
+      this.textInput.setSelectionRange(cursorPosition + 1, cursorPosition + 1)
       e.preventDefault()
       e.stopPropagation()
     } else if (e.keyCode === 13 && !e.shiftKey) {
