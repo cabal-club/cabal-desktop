@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.0.5] - 2020-08-27
+### Added
+- Added support for whisperlinks (ephemeral user-defined aliases for cabal keys, see /whisper). Thanks @cblgh!
+- Pressing Shift+Enter inserts a newline after cursor position. Thanks @josephmturner!
+### Fixed
+- Fixed some memory leaks. Still plenty more to find though! 
+
 ## [6.0.4] - 2020-06-23
 ### Fixed
 - Fixed crashes related to new moderation features.
