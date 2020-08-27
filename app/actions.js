@@ -603,6 +603,15 @@ const initializeCabal = ({ addr, isNewlyAdded, username, settings }) => async di
         console.warn('command', { arg, command, data })
       }
     }, {
+      name: 'info',
+      action: (text) => {
+        console.log('info', text)
+        if (text.startsWith('whispering on')) {
+          const currentChannel = client.getCurrentChannel()
+          client.addStatusMessage({ text }, currentChannel, cabalDetails._cabal)
+        }
+      }
+    }, {
       name: 'init',
       action: initialize
     }, {
