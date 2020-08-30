@@ -12,6 +12,13 @@ import throttle from 'lodash.throttle'
 const { dialog } = require('electron').remote
 const User = require('cabal-client/src/user')
 
+var remarkAltProt = require('remark-altprot')
+var merge = require('deepmerge')
+var gh = require('hast-util-sanitize/lib/github')
+var cabalSanitize = {
+  sanitize: merge(gh, { protocols: { href: ['hyper', 'dat', 'cabal'] } })
+}
+
 const DEFAULT_CHANNEL = 'default'
 const HOME_DIR = homedir()
 const DATA_DIR = path.join(HOME_DIR, '.cabal-desktop', `v${Client.getDatabaseVersion()}`)
@@ -226,7 +233,7 @@ const enrichMessage = (message) => {
   return Object.assign({}, message, {
     enriched: {
       time: message.time,
-      content: remark().use(remarkReact).use(remarkEmoji).processSync(message.content).result
+      content: remark().use(remarkAltProt).use(remarkReact, cabalSanitize).use(remarkEmoji).processSync(message.content).result
     }
   })
 }
