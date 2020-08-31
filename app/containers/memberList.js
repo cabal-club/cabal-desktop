@@ -21,7 +21,7 @@ function MemberList (props) {
 
   return (
     <>
-      {props.members.map((user) =>
+      {props.members && props.members.map((user) =>
         <div key={user.key} className='collection__item' onClick={() => onClickUser(user)} title={user.key}>
           <div className='collection__item__icon'>
             {!!user.online &&
