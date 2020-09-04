@@ -41,25 +41,32 @@ function ChannelPanel (props) {
     })
   }
 
+  const canLeave = props.cabal.channel !== '!status'
+  const hasMembers = props.cabal.channel !== '!status'
+
   return (
     <div className='panel ChannelPanel'>
       <div className='panel__header'>
         Channel Details
         <span onClick={() => props.hideChannelPanel({ addr: props.addr })} className='close'><img src='static/images/icon-composermeta.svg' /></span>
       </div>
-      <div className='panel__content'>
-        <div className='content__container'>
-          <button className='button' onClick={onClickLeaveChannel}>
-            Leave Channel
-          </button>
-        </div>
-      </div>
-      <div className='section__header'>
-        Channel Members
-      </div>
-      <div className='panel__content'>
-        <MemberList addr={props.addr} />
-      </div>
+      {canLeave &&
+        <div className='panel__content'>
+          <div className='content__container'>
+            <button className='button' onClick={onClickLeaveChannel}>
+              Leave Channel
+            </button>
+          </div>
+        </div>}
+      {hasMembers &&
+        <>
+          <div className='section__header'>
+            Channel Members
+          </div>
+          <div className='panel__content'>
+            <MemberList addr={props.addr} />
+          </div>
+        </>}
     </div>
   )
 }

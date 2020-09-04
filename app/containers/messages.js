@@ -18,7 +18,7 @@ const mapDispatchToProps = dispatch => ({
   showProfilePanel: ({ addr, userKey }) => dispatch(showProfilePanel({ addr, userKey }))
 })
 
-function MessagesContainer (props) {
+function MessagesContainer(props) {
   const onClickProfile = (user) => {
     props.showProfilePanel({
       addr: props.addr,
@@ -128,7 +128,7 @@ function MessagesContainer (props) {
                     <div onClick={onClickProfile.bind(this, user)} className='messages__item__metadata__name'>
                       {user.name}
                       {user.isAdmin() && <span className='sigil admin' title='Admin'>@</span>}
-                      {user.isModerator() && <span className='sigil moderator' title='Moderator'>%</span>}
+                      {!user.isAdmin() && user.isModerator() && <span className='sigil moderator' title='Moderator'>%</span>}
                       {renderDate(formattedTime)}
                     </div>}
                   <div className={repeatedAuthor ? 'text indent' : 'text'}>

@@ -61,7 +61,7 @@ class LayoutScreen extends Component {
       return (
         <div className='loading'>
           <div className='status'> </div>
-          <img src='static/images/cabal-logo-black.svg' />
+          <img src='static/images/cabal-logo-white.svg' />
           <div className='status'>Loading hypercores and swarming...</div>
         </div>
       )
