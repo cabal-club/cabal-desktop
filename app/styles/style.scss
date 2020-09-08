@@ -285,16 +285,22 @@ form {
     height: 100%;
     display: flex;
     flex-direction: column;
+
+    .sidebar__section::-webkit-scrollbar {
+      display: none;
+    }
+
+    &:hover {
+      .sidebar__section::-webkit-scrollbar {
+        display: block;
+      }
+    }
   }
 
   .sidebar .sidebar__section {
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: overlay;
     height: 100%;
-  }
-
-  .sidebar .sidebar__section::-webkit-scrollbar {
-    display: none;
   }
 
   /* Session */
