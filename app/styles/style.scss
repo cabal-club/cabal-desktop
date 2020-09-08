@@ -211,7 +211,7 @@ form {
 
 .client__cabals .switcher__item {
   align-items: center;
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 0.5rem;
   color: #16161d;
   display: flex;
@@ -306,7 +306,7 @@ form {
   /* Session */
   .session {
     -webkit-app-region: drag;
-    align-items: center;    
+    align-items: center;
     cursor: pointer;
     display: flex;
     padding: 0.97rem;
@@ -375,19 +375,19 @@ form {
 
   /* Collection */
   .collection {
-    border-top: 1px solid rgba(255,255,255,0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     margin-bottom: 1.2rem;
     padding-top: 1.2em;
   }
 
   /* Collection heading */
   .collection .collection__heading {
-      align-items: center;
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.25rem;
-      padding: 0 1rem;
-      width: 100%;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.25rem;
+    padding: 0 1rem;
+    width: 100%;
   }
 
   .collection .collection__heading .collection__heading__title__container {
@@ -397,7 +397,7 @@ form {
   }
 
   .collection .collection__heading .collection__toggle {
-    color: rgba(255,255,255,0.5);
+    color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
     font-size: 0.7rem;
     transform: scaleY(0.7);
@@ -417,7 +417,7 @@ form {
     vertical-align: middle;
     cursor: pointer;
     user-select: none;
-    
+
     .messagesUnreadCount {
       background-color: #693AFA;
       border-radius: 5rem;
@@ -457,9 +457,7 @@ form {
     transition: all 0.05s ease-in-out;
     position: relative;
 
-    .name {
-
-    }
+    .name {}
 
     .sigil {
       background-color: #333;
@@ -888,7 +886,7 @@ form {
 
   .cabal-settings__item-input input {
     border-radius: 3px;
-    border: 2px solid rgba(0,0,0,0.25);
+    border: 2px solid rgba(0, 0, 0, 0.25);
     font-size: 100%;
     height: 2rem;
     padding: 1.2rem 1rem;
@@ -897,7 +895,7 @@ form {
 
   .cabal-settings__item-input.cabalKey {
     display: flex;
-    
+
     input {
       background-color: #6a3afa10;
       border-bottom-right-radius: 0px;
@@ -937,8 +935,8 @@ form {
       color: white;
       cursor: pointer;
       font-size: .8rem;
-      margin-bottom: 1rem;  
-      margin-top: -2rem;      
+      margin-bottom: 1rem;
+      margin-top: -2rem;
       padding: 7px;
       position: absolute;
       text-align: center;
@@ -961,7 +959,8 @@ form {
     border-radius: 3px;
     transition: all 0.1s ease-in-out;
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       border-color: rgba(0, 0, 0, 0.5);
     }
 
@@ -1024,13 +1023,13 @@ form {
 
 .panel {
   background-color: #fff;
-  border-left: 1px solid rgba(0,0,0,0.1);
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
   flex: 0 0 23rem;
   height: 100%;
   overflow-x: hidden;
 
   .panel__header {
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     display: flex;
     font-size: 1.1rem;
     font-weight: 600;
@@ -1042,6 +1041,7 @@ form {
   .close {
     transform: rotate(45deg);
     cursor: pointer;
+
     img {
       width: 3rem;
       margin-top: -1rem;
@@ -1101,7 +1101,7 @@ form {
   }
 
   .section__header {
-    border-top: 1px solid rgba(0,0,0,0.1);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
     display: flex;
     font-weight: 600;
     justify-content: space-between;
@@ -1116,11 +1116,13 @@ form {
     display: flex;
     flex-direction: column;
   }
+
   .avatar .identicon {
     width: 5rem;
     height: 5rem;
     border-radius: 3px;
   }
+
   .avatar__online__indicator {
     border-radius: 10rem;
     border: 0.3rem solid white;
@@ -1142,17 +1144,20 @@ form {
       background-color: #c2c5cc;
     }
   }
+
   .name {
     font-size: 1.3rem;
     font-weight: 700;
     margin-bottom: 1rem;
   }
+
   .key {
     color: #693afa;
     font-size: 0.8rem;
     width: 55%;
     word-break: break-word;
   }
+
   .sigilContainer {
     .sigil {
       background-color: #693afa;
@@ -1166,6 +1171,7 @@ form {
       &.admin {
         background-color: #693afa;
       }
+
       &.hidden {
         background-color: #fbff00;
         border: 1px solid #00000052;
@@ -1173,8 +1179,9 @@ form {
       }
     }
   }
+
   .help__text {
-    color: rgba(0,0,0,0.5);
+    color: rgba(0, 0, 0, 0.5);
     font-size: 0.8rem;
     line-height: 1rem;
     margin-bottom: 1rem;
@@ -1454,18 +1461,28 @@ form {
 }
 
 @keyframes loading {
-  from { transform: scale(1); }
-  50% { transform: scale(0.6); }
-  to { transform: scale(1); }
+  from {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.6);
+  }
+
+  to {
+    transform: scale(1);
+  }
 }
 
 @keyframes fadein {
   0% {
     opacity: 0;
   }
+
   50% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
@@ -1476,6 +1493,7 @@ form {
     opacity: 0;
     margin-top: -1.5rem;
   }
+
   100% {
     opacity: 1;
     margin-top: -2rem
@@ -1486,6 +1504,7 @@ form {
   from {
     opacity: 0.5;
   }
+
   to {
     opacity: 1;
   }
