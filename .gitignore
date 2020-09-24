@@ -6,4 +6,8 @@ dist
 .idea
 yarn-error.log
 .env
+<<<<<<< Updated upstream
 .nvmrc
+=======
+*.code-workspace
+>>>>>>> Stashed changes
