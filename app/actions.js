@@ -16,7 +16,7 @@ var remarkAltProt = require('remark-altprot')
 var merge = require('deepmerge')
 var gh = require('hast-util-sanitize/lib/github')
 var cabalSanitize = {
-  sanitize: merge(gh, { protocols: { href: ['hyper', 'dat', 'cabal'] } })
+  sanitize: merge(gh, { protocols: { href: ['hyper', 'dat', 'cabal','hypergraph','hypermerge'] } })
 }
 
 const DEFAULT_CHANNEL = 'default'

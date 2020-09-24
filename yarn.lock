@@ -9371,10 +9371,10 @@ rehype-stringify@^8.0.0:
   dependencies:
     hast-util-to-html "^7.1.1"
 
-remark-altprot@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/remark-altprot/-/remark-altprot-1.0.3.tgz#a7003dbcbc518398a415e336b53ecb4411c8a3d5"
-  integrity sha512-xZICX85ccgMuKnNMskCzmkxj5/gxY5fVh/tVlR4OQ8cbgvLbpHpiDsVkFcFdl5Eo75rZii/aU9dTZ7JEObrD4g==
+remark-altprot@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/remark-altprot/-/remark-altprot-1.1.0.tgz#d3d6030c5f4113b7e5b92dcd9f78160d58feb153"
+  integrity sha512-CP7qpHJv79narz/R01A2UHjZ1HEF2UmjSlXwAF/sjvBO2bEQk/YlnUsuGfQbHUbeK4O6uio85yhmC8Nq8GU0Qw==
   dependencies:
     pump "^3.0.0"
     react "^16.13.1"

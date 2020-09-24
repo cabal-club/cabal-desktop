@@ -7,3 +7,5 @@ dist
 yarn-error.log
 .env
 .nvmrc
+*.code-workspace
+
