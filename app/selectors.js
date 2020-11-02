@@ -47,7 +47,7 @@ export const isCabalsInitializedSelector = createSelector(
 
 // current cabals settings
 export const cabalSettingsSelector = createSelector(
-  state => state?.currentCabal?.addr || "",
+  state => state?.currentCabal || "",
   state => state.cabalSettings,
   (addr, settings) => settings[addr] || {}
 )

@@ -43,16 +43,6 @@ class LayoutScreen extends Component {
     }))
   }
 
-  cabalsInitialized () {
-    if (this.props.cabals) {
-      return Object.values(this.props.cabals).every((cabal) => {
-        return cabal.initialized
-      })
-    } else {
-      return false
-    }
-  }
-
   render () {
     const { enableDarkmode } = this.props.settings || {}
     if (!this.props.cabalInitialized) {
