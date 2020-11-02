@@ -1,12 +1,12 @@
 import { createSelector } from '@reduxjs/toolkit'
-
+import { prop } from 'lodash/fp'
 export const currentCabalSelector = createSelector(
   state => state.currentCabal,
   state => state.cabals,
   (currentCabal, cabals) => cabals[currentCabal]
 )
 
-function sortUsers (users = []) {
+function sortUsers(users = []) {
   if (Array.isArray(users)) {
     return users.sort((a, b) => {
       if (a.isHidden() && !b.isHidden()) return 1
@@ -33,4 +33,21 @@ export const currentChannelMembersSelector = createSelector(
 export const currentChannelMemberCountSelector = createSelector(
   currentChannelMembersSelector,
   (members = []) => members.length
+)
+
+// check if all cabals are initialized and current one is set
+export const isCabalsInitializedSelector = createSelector(
+  state => state.currentCabal,
+  state => state.cabals || {},
+  (current, cabals) => {
+    const cabalsInitialized = Object.values(cabals).every(prop('initialized'))
+    return cabalsInitialized && !!current
+  }
+)
+
+// current cabals settings
+export const cabalSettingsSelector = createSelector(
+  state => state?.currentCabal?.addr || "",
+  state => state.cabalSettings,
+  (addr, settings) => settings[addr] || {}
 )

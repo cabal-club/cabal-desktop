@@ -10,17 +10,16 @@ import ChannelPanel from './channelPanel'
 import MainPanel from './mainPanel'
 import ProfilePanel from './profilePanel'
 import Sidebar from './sidebar'
+import { cabalSettingsSelector, isCabalsInitializedSelector } from '../selectors'
 
 const mapStateToProps = state => {
-  const cabal = state.cabals[state.currentCabal]
   return {
     addr: state.currentCabal,
-    cabal,
-    cabals: state.cabals,
+    cabalInitialized: isCabalsInitializedSelector(state),
     channelPanelVisible: state.channelPanelVisible[state.currentCabal],
     profilePanelVisible: state.profilePanelVisible[state.currentCabal],
     profilePanelUser: state.profilePanelUser[state.currentCabal],
-    settings: state.cabalSettings[cabal?.addr] || {}
+    settings: cabalSettingsSelector(state)
   }
 }
 
@@ -55,9 +54,8 @@ class LayoutScreen extends Component {
   }
 
   render () {
-    const { cabal, cabals, addr } = this.props
     const { enableDarkmode } = this.props.settings || {}
-    if (!cabal || !this.cabalsInitialized()) {
+    if (!this.props.cabalInitialized) {
       return (
         <div className='loading'>
           <div className='status'> </div>
@@ -66,6 +64,7 @@ class LayoutScreen extends Component {
         </div>
       )
     }
+
     return (
       <div className={`client ${enableDarkmode ? 'darkmode' : ''}`}>
         <CabalsList />
