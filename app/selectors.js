@@ -2,8 +2,8 @@ import { createSelector } from '@reduxjs/toolkit'
 import { prop } from 'lodash/fp'
 export const currentCabalSelector = createSelector(
   state => state.currentCabal,
-  state => state.cabals,
-  (currentCabal, cabals) => cabals[currentCabal]
+  state => state.cabals || {},
+  (currentCabal, cabals) => cabals[currentCabal] || {}
 )
 
 function sortUsers(users = []) {
@@ -45,9 +45,23 @@ export const isCabalsInitializedSelector = createSelector(
   }
 )
 
+
 // current cabals settings
 export const cabalSettingsSelector = createSelector(
   state => state?.currentCabal || "",
   state => state.cabalSettings,
   (addr, settings) => settings[addr] || {}
+)
+
+// messages of current cabal
+export const currentChannelMessagesSelector = createSelector(
+  currentCabalSelector,
+  cabal => cabal?.messages || []
+)
+
+
+// select current channel
+export const currentChannelSelector = createSelector(
+  currentCabalSelector,
+  cabal => cabal?.channel
 )

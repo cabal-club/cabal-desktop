@@ -7,10 +7,12 @@ import {
   showProfilePanel
 } from '../actions'
 import Avatar from './avatar'
+import { currentChannelMessagesSelector, currentChannelSelector } from '../selectors'
 
 const mapStateToProps = state => ({
   addr: state.currentCabal,
-  cabal: state.cabals[state.currentCabal]
+  messages: currentChannelMessagesSelector(state),
+  channel: currentChannelSelector(state)
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -18,7 +20,7 @@ const mapDispatchToProps = dispatch => ({
   showProfilePanel: ({ addr, userKey }) => dispatch(showProfilePanel({ addr, userKey }))
 })
 
-function MessagesContainer(props) {
+function MessagesContainer (props) {
   const onClickProfile = (user) => {
     props.showProfilePanel({
       addr: props.addr,
@@ -35,10 +37,10 @@ function MessagesContainer(props) {
     )
   }
 
-  const messages = props.cabal.messages || []
+  const messages = props.messages || []
   let lastDividerDate = moment() // hold the time of the message for which divider was last added
 
-  if (messages.length === 0 && props.cabal.channel !== '!status') {
+  if (messages.length === 0 && props.channel !== '!status') {
     return (
       <div className='messages starterMessage'>
         This is a new channel. Send a message to start things off!
