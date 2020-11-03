@@ -29,7 +29,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class LayoutScreen extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       showMemberList: false
@@ -37,13 +37,13 @@ class LayoutScreen extends Component {
     this.toggleMemberList = this.toggleMemberList.bind(this)
   }
 
-  toggleMemberList () {
+  toggleMemberList() {
     this.setState((state) => ({
       showMemberList: !state.showMemberList
     }))
   }
 
-  render () {
+  render() {
     const { enableDarkmode } = this.props.settings || {}
     if (!this.props.cabalInitialized) {
       return (
@@ -60,7 +60,7 @@ class LayoutScreen extends Component {
         <CabalsList />
         <Sidebar />
         <MainPanel toggleMemberList={this.toggleMemberList} />
-        {this.props.channelPanelVisible && <ChannelPanel addr={this.props.addr} channel={cabal.channel} />}
+        {this.props.channelPanelVisible && <ChannelPanel addr={this.props.addr} />}
         {this.props.profilePanelVisible && <ProfilePanel addr={this.props.addr} userKey={this.props.profilePanelUser} />}
       </div>
     )
