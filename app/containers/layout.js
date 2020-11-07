@@ -10,17 +10,16 @@ import ChannelPanel from './channelPanel'
 import MainPanel from './mainPanel'
 import ProfilePanel from './profilePanel'
 import Sidebar from './sidebar'
+import { cabalSettingsSelector, isCabalsInitializedSelector } from '../selectors'
 
 const mapStateToProps = state => {
-  const cabal = state.cabals[state.currentCabal]
   return {
     addr: state.currentCabal,
-    cabal,
-    cabals: state.cabals,
+    cabalInitialized: isCabalsInitializedSelector(state),
     channelPanelVisible: state.channelPanelVisible[state.currentCabal],
     profilePanelVisible: state.profilePanelVisible[state.currentCabal],
     profilePanelUser: state.profilePanelUser[state.currentCabal],
-    settings: state.cabalSettings[cabal?.addr] || {}
+    settings: cabalSettingsSelector(state)
   }
 }
 
@@ -30,7 +29,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 class LayoutScreen extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       showMemberList: false
@@ -38,26 +37,15 @@ class LayoutScreen extends Component {
     this.toggleMemberList = this.toggleMemberList.bind(this)
   }
 
-  toggleMemberList () {
+  toggleMemberList() {
     this.setState((state) => ({
       showMemberList: !state.showMemberList
     }))
   }
 
-  cabalsInitialized () {
-    if (this.props.cabals) {
-      return Object.values(this.props.cabals).every((cabal) => {
-        return cabal.initialized
-      })
-    } else {
-      return false
-    }
-  }
-
-  render () {
-    const { cabal, cabals, addr } = this.props
+  render() {
     const { enableDarkmode } = this.props.settings || {}
-    if (!cabal || !this.cabalsInitialized()) {
+    if (!this.props.cabalInitialized) {
       return (
         <div className='loading'>
           <div className='status'> </div>
@@ -66,12 +54,13 @@ class LayoutScreen extends Component {
         </div>
       )
     }
+
     return (
       <div className={`client ${enableDarkmode ? 'darkmode' : ''}`}>
         <CabalsList />
         <Sidebar />
         <MainPanel toggleMemberList={this.toggleMemberList} />
-        {this.props.channelPanelVisible && <ChannelPanel addr={this.props.addr} channel={cabal.channel} />}
+        {this.props.channelPanelVisible && <ChannelPanel addr={this.props.addr} />}
         {this.props.profilePanelVisible && <ProfilePanel addr={this.props.addr} userKey={this.props.profilePanelUser} />}
       </div>
     )
