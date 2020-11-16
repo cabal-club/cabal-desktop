@@ -174,6 +174,7 @@ function MessagesContainer(props) {
             )
           })}
         </div>
+        {/* placeholder div for scrolling down to the bottom */}
         <div
           style={{ float: 'left', clear: 'both' }}
           ref={msgContainerRef}
