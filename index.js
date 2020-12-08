@@ -43,7 +43,13 @@ const template = [
       { role: 'zoomin' },
       { role: 'zoomout' },
       { type: 'separator' },
-      { role: 'togglefullscreen' }
+      { role: 'togglefullscreen' },
+      {
+        label: 'Night Mode',
+        type: 'checkbox',
+        checked: settings.get('darkMode'),
+        click (menuItem) { settings.set('darkMode', menuItem.checked) }
+      }
     ]
   },
   {
@@ -68,11 +74,11 @@ const template = [
         label: 'Automatically Check for Updates',
         type: 'checkbox',
         checked: settings.get('auto-update'),
-        click (menuItem) { 
+        click (menuItem) {
           settings.set('auto-update', menuItem.checked)
           menuItem.checked ? updater.start() : updater.stop()
         }
-      },
+      }
     ]
   }
 ]
@@ -128,7 +134,7 @@ app.on('second-instance', (event, argv, cwd) => {
 app.setAsDefaultProtocolClient('cabal')
 
 app.on('ready', () => {
-  updater.start() 
+  updater.start()
   const mainWindowState = windowStateKeeper({
     defaultWidth: 800,
     defaultHeight: 600
@@ -195,4 +201,3 @@ app.on('window-all-closed', () => {
 app.on('before-quit', () => {
   app.quitting = true
 })
-
