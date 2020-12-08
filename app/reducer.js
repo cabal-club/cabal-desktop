@@ -1,5 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit'
 import { setAutoFreeze } from 'immer'
+import settings from './settings'
 
 // set auto freeze to false to prevent freezing the object.
 // currently data is shared between cabal-client lib and redux.
@@ -19,10 +20,16 @@ const defaultState = {
   profilePanelVisible: {},
   screen: 'main',
   screenViewHistory: [],
-  screenViewHistoryPosition: 0
+  screenViewHistoryPosition: 0,
+  globalSettings: {
+    darkMode: settings.get('darkMode')
+  }
 }
 
 const reducer = createReducer(defaultState, {
+  CHANGE_DARK_MODE: (state, { darkMode }) => {
+    state.globalSettings.darkMode = darkMode
+  },
   CHANGE_SCREEN: (state, { screen, addr }) => {
     state.screen = screen
     state.addr = addr

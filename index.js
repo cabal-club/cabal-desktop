@@ -10,6 +10,9 @@ const AutoUpdater = require('./app/updater')
 
 const updater = new AutoUpdater()
 
+// the window object
+let win
+
 if (isDev) {
   require('electron-reload')(__dirname, {
     electron: path.join(__dirname, 'node_modules', '.bin', 'electron'),
@@ -48,7 +51,7 @@ const template = [
         label: 'Night Mode',
         type: 'checkbox',
         checked: settings.get('darkMode'),
-        click (menuItem) { settings.set('darkMode', menuItem.checked) }
+        click (menuItem) { settings.set('darkMode', menuItem.checked); win.webContents.send('darkMode', menuItem.checked) }
       }
     ]
   },
@@ -123,8 +126,6 @@ if (process.platform === 'darwin') {
 
 const menu = Menu.buildFromTemplate(template)
 Menu.setApplicationMenu(menu)
-
-let win
 
 app.requestSingleInstanceLock()
 app.on('second-instance', (event, argv, cwd) => {
