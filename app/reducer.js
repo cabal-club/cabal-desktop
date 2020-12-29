@@ -7,6 +7,10 @@ import settings from './settings'
 // so if frozen, it will cause issues since lib is mutating some code.-
 setAutoFreeze(false)
 
+let darkMode = settings.get('darkMode')
+// if its not explicitly set, set it in darkMode
+if (typeof darkMode === 'undefined') darkMode = true
+
 const defaultState = {
   cabals: {},
   cabalSettings: {},
@@ -22,7 +26,7 @@ const defaultState = {
   screenViewHistory: [],
   screenViewHistoryPosition: 0,
   globalSettings: {
-    darkMode: settings.get('darkMode')
+    darkMode
   }
 }
 
