@@ -1,6 +1,7 @@
 import React from 'react'
 import { config } from 'dotenv'
 import { render } from 'react-dom'
+import { ipcRenderer } from 'electron'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose } from 'redux'
 import reducer from './reducer'
@@ -24,6 +25,13 @@ const store = createStore(
   reducer,
   compose(applyMiddleware(...middlewares))
 )
+
+ipcRenderer.on('darkMode', (event, darkMode) => {
+  store.dispatch({
+    type: 'CHANGE_DARK_MODE',
+    darkMode
+  })
+})
 
 render(
   <Provider store={store}>

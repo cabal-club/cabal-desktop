@@ -10,4 +10,3 @@ for (var key in store_defaults) {
 }
 
 module.exports = store
-

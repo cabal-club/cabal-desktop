@@ -41,7 +41,7 @@ class CabalSettingsContainer extends React.Component {
   }
 
   render () {
-    const { enableDarkmode, enableNotifications, alias } = this.props.settings || {}
+    const { enableNotifications, alias } = this.props.settings || {}
 
     return (
       <div className='client__main'>
@@ -92,17 +92,6 @@ class CabalSettingsContainer extends React.Component {
                   <div className='cabal-settings__item-label'>
                     <div className='cabal-settings__item-label-title'>Enable desktop notifications</div>
                     <div className='cabal-settings__item-label-description'>Display a notification for new messages for this cabal when a channel is in the background.</div>
-                  </div>
-                </div>
-              </div>
-              <div className='cabal-settings__item' onClick={this.onToggleOption.bind(this, 'enableDarkmode')}>
-                <div className='cabal-settings__item-row'>
-                  <div className='cabal-settings__item-checkbox'>
-                    <input type='checkbox' checked={this.props.settings && !!enableDarkmode} onChange={() => { }} />
-                  </div>
-                  <div className='cabal-settings__item-label'>
-                    <div className='cabal-settings__item-label-title'>Enable dark mode</div>
-                    <div className='cabal-settings__item-label-description'>Use a dark theme for this cabal.</div>
                   </div>
                 </div>
               </div>
