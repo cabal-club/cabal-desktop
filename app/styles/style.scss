@@ -1436,6 +1436,50 @@ form {
   }
 }
 
+.tooltip {
+  $tooltip-background-color: black;
+  $tooltip-border-color: rgba(170, 170, 170, 0.6);
+
+  position: absolute;
+  
+  margin: 0 0 10px;
+  padding: 10px 10px;
+  max-width: 400px;
+
+  border-radius: 6px;
+  background-color: $tooltip-background-color;
+  
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+
+  transform: translate(-50%, calc(-100% - 5px));
+  overflow-wrap: break-word;
+
+  border: solid 1px $tooltip-border-color;
+
+  &::after,
+  &::before {
+    position: absolute;
+    left: 50%;
+    height: 0;
+    width: 0;
+    margin-left: -6px;
+    border: 6px solid transparent;
+    content: "";
+  }
+
+  &::after {
+    top: 100%;
+    border-top-color: $tooltip-background-color;
+  }
+
+  &::before {
+    top: calc(100% + 1px);
+    border-top-color: $tooltip-border-color;
+  }
+}
+
 .loading {
   align-items: center;
   background-color: #1e1e1e;
