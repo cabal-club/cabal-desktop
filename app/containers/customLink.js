@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Portal from './portal'
 
 const CustomLink = ({ href = '', children, ...props }) => {
   const [isTooltipDisplayed, setIsTooltipDisplayed] = useState(false)
@@ -27,9 +28,11 @@ const CustomLink = ({ href = '', children, ...props }) => {
     >
       {children}
       {isTooltipDisplayed &&
-        <span className='tooltip' style={coordinates}>
-          {tooltipText}
-        </span>}
+        <Portal>
+          <span className='tooltip' style={coordinates}>
+            {tooltipText}
+          </span>
+        </Portal>}
     </a>
   )
 }
