@@ -8,9 +8,16 @@ import moment from 'moment'
 import remark from 'remark'
 import remarkEmoji from 'remark-emoji'
 import remarkReact from 'remark-react'
+import CustomLink from './containers/customLink'
 import throttle from 'lodash.throttle'
 const { dialog } = require('electron').remote
 const User = require('cabal-client/src/user')
+
+const cabalComponents = {
+  remarkReactComponents: {
+    a: CustomLink
+  }
+}
 
 var remarkAltProt = require('remark-altprot')
 var merge = require('deepmerge')
@@ -233,7 +240,11 @@ const enrichMessage = (message) => {
   return Object.assign({}, message, {
     enriched: {
       time: message.time,
-      content: remark().use(remarkAltProt).use(remarkReact, cabalSanitize).use(remarkEmoji).processSync(message.content).result
+      content: remark()
+        .use(remarkAltProt)
+        .use(remarkReact, {...cabalSanitize, ...cabalComponents})
+        .use(remarkEmoji).processSync(message.content)
+        .result
     }
   })
 }
