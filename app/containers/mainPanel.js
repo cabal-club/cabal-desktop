@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { ipcRenderer } from 'electron'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
-import debounce from 'lodash.debounce'
+import { debounce } from 'lodash'
 import {
   changeScreen,
   hideEmojiPicker,

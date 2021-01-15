@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [6.0.6] - 2021-01-15
+### Added
+- Added dark mode as application menu setting. Thanks @khubo!
+- Added clickable links in messages for hyper/dat/cabal urls. Thanks @leeclarke!
+- Added a scrollbar to the channel/peer list on hover. Thanks @nikolaiwarner!
+- UI style improvements. Thanks @cblgh!
+- Rendering performance improvements. Thanks @khubo!
+- Added tooltips to links in messages to reveal the url. Thanks @sylvainDNS!
+### Fixed
+- Fixed a crash on the channel/user detail pane when on status channel. Thanks @nikolaiwarner!
+- Fixed scrolling to bottom issues when switching channels. Thanks @khubo!
+
 ## [6.0.5] - 2020-08-27
 ### Added
 - Added support for whisperlinks (ephemeral user-defined aliases for cabal keys, see /whisper). Thanks @cblgh!

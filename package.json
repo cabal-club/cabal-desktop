@@ -1,6 +1,6 @@
 {
   "name": "cabal-desktop",
-  "version": "6.0.5",
+  "version": "6.0.6",
   "description": "Cabal p2p offline-first desktop application",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
@@ -31,11 +31,10 @@
     "babel-loader": "^8.1.0",
     "cross-env": "^7.0.2",
     "css-loader": "^3.5.3",
-    "dotenv": "^8.2.0",
+    "dotenv-webpack": "^6.0.0",
     "electron": "7.1.13",
-    "electron-builder": "^22.6.1",
-    "electron-notarize": "^0.3.0",
-    "electron-rebuild": "^1.11.0",
+    "electron-builder": "^22.9.1",
+    "electron-notarize": "^1.0.0",
     "jest": "^25.4.0",
     "node-sass": "^4.14.0",
     "npm-run-all": "^4.1.5",
@@ -55,6 +54,7 @@
     "collect-stream": "^1.2.1",
     "dat-encoding": "^5.0.1",
     "debug": "^4.1.1",
+    "deepmerge": "^4.2.2",
     "del": "^5.1.0",
     "electron-default-menu": "^1.0.1",
     "electron-is-dev": "^1.2.0",
@@ -65,8 +65,7 @@
     "electron-window-state": "^5.0.3",
     "emoji-mart": "^3.0.0",
     "get-form-data": "^3.0.0",
-    "lodash.debounce": "^4.0.8",
-    "lodash.throttle": "^4.1.1",
+    "lodash": "^4.17.20",
     "mkdirp": "^1.0.4",
     "moment": "^2.24.0",
     "mousetrap": "^1.6.5",
@@ -83,6 +82,7 @@
     "remark-altprot": "^1.1.0",
     "remark-emoji": "^2.1.0",
     "remark-react": "^7.0.1",
+    "sodium-native": "^3.2.0",
     "strftime": "^0.10.0",
     "to2": "^1.0.0"
   },
@@ -93,12 +93,14 @@
     "publish": [
       "github"
     ],
-    "protocols": [{
-      "name": "cabal",
-      "schemes": [
-        "cabal"
-      ]
-    }],
+    "protocols": [
+      {
+        "name": "cabal",
+        "schemes": [
+          "cabal"
+        ]
+      }
+    ],
     "mac": {
       "category": "public.app-category.utilities",
       "entitlements": "build/entitlements.mac.plist",
@@ -109,7 +111,8 @@
     "dmg": {
       "sign": false,
       "background": "static/images/dmg-background.tiff",
-      "contents": [{
+      "contents": [
+        {
           "x": 135,
           "y": 200
         },
