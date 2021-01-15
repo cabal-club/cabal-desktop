@@ -1,17 +1,19 @@
 import { homedir } from 'os'
-import { decode, encode } from 'dat-encoding'
 import { ipcRenderer } from 'electron'
 import Client from 'cabal-client'
+import CustomLink from './containers/customLink'
 import fs from 'fs'
+import githubSanitize from 'hast-util-sanitize/lib/github'
+import merge from 'deepmerge'
 import path from 'path'
-import moment from 'moment'
 import remark from 'remark'
+import remarkAltProt from 'remark-altprot'
 import remarkEmoji from 'remark-emoji'
 import remarkReact from 'remark-react'
-import CustomLink from './containers/customLink'
-import throttle from 'lodash.throttle'
+import { throttle } from 'lodash'
+import User from 'cabal-client/src/user'
+
 const { dialog } = require('electron').remote
-const User = require('cabal-client/src/user')
 
 const cabalComponents = {
   remarkReactComponents: {
@@ -19,11 +21,8 @@ const cabalComponents = {
   }
 }
 
-var remarkAltProt = require('remark-altprot')
-var merge = require('deepmerge')
-var gh = require('hast-util-sanitize/lib/github')
-var cabalSanitize = {
-  sanitize: merge(gh, { protocols: { href: ['hyper', 'dat', 'cabal','hypergraph','hypermerge'] } })
+const cabalSanitize = {
+  sanitize: merge(githubSanitize, { protocols: { href: ['hyper', 'dat', 'cabal','hypergraph','hypermerge'] } })
 }
 
 const DEFAULT_CHANNEL = 'default'

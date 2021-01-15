@@ -1,5 +1,4 @@
 import React from 'react'
-import { config } from 'dotenv'
 import { render } from 'react-dom'
 import { ipcRenderer } from 'electron'
 import { Provider } from 'react-redux'
@@ -8,9 +7,6 @@ import reducer from './reducer'
 import App from './app'
 import logger from 'redux-logger'
 import thunk from 'redux-thunk'
-
-// load env variables from .env
-config()
 
 // Disable debug console.log messages coming from dependencies
 window.localStorage.removeItem('debug')
