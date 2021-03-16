@@ -99,7 +99,6 @@ export const setScreenViewHistoryPostion = ({ index }) => (dispatch) => {
 
 export const showChannelBrowser = ({ addr }) => dispatch => {
   const cabalDetails = client.getDetails(addr)
-  console.log(cabalDetails.channels)
   const channelsData = Object.values(cabalDetails.channels).map((channel) => {
     return {
       ...channel,
