@@ -52,6 +52,8 @@ const client = new Client({
   }
 })
 // Disable a few slash commands for now
+// TODO: figure out why cabal-client's removeCommand doesn't work? 
+// tracked by: https://github.com/cabal-club/cabal-desktop/issues/306
 // const removedCommands = ['add', 'channels', 'clear', 'ids', 'names', 'new', 'qr', 'whoami', 'whois']
 // removedCommands.forEach((command) => {
 //   client.removeCommand(command)
