@@ -22,7 +22,7 @@ const cabalComponents = {
 }
 
 const cabalSanitize = {
-  sanitize: merge(githubSanitize, { protocols: { href: ['hyper', 'dat', 'cabal','hypergraph','hypermerge'] } })
+  sanitize: merge(githubSanitize, { protocols: { href: ['hyper', 'dat', 'cabal', 'hypergraph', 'hypermerge'] } })
 }
 
 const DEFAULT_CHANNEL = 'default'
@@ -52,10 +52,10 @@ const client = new Client({
   }
 })
 // Disable a few slash commands for now
-const removedCommands = ['add', 'channels', 'clear', 'ids', 'names', 'new', 'qr', 'whoami', 'whois']
-removedCommands.forEach((command) => {
-  client.removeCommand(command)
-})
+// const removedCommands = ['add', 'channels', 'clear', 'ids', 'names', 'new', 'qr', 'whoami', 'whois']
+// removedCommands.forEach((command) => {
+//   client.removeCommand(command)
+// })
 
 // On exit, close the cabals to cleanly leave the hyperswarms
 window.onbeforeunload = (e) => {
@@ -99,12 +99,11 @@ export const setScreenViewHistoryPostion = ({ index }) => (dispatch) => {
 
 export const showChannelBrowser = ({ addr }) => dispatch => {
   const cabalDetails = client.getDetails(addr)
+  console.log(cabalDetails.channels)
   const channelsData = Object.values(cabalDetails.channels).map((channel) => {
     return {
-      joined: channel.joined,
-      memberCount: channel.members.size,
-      name: channel.name,
-      topic: channel.topic
+      ...channel,
+      memberCount: channel.members.size
     }
   })
   dispatch({ type: 'UPDATE_CHANNEL_BROWSER', addr, channelsData })
@@ -149,7 +148,7 @@ export const removeCabal = ({ addr }) => dispatch => {
 // remove cabal
 export const confirmRemoveCabal = ({ addr }) => async dispatch => {
   client.removeCabal(addr)
-  dispatch({ type: 'DELETE_CABAL', addr })
+  // dispatch({ type: 'DELETE_CABAL', addr })
   // update the local file to reflect while restarting the app
   dispatch(storeOnDisk())
   const allCabals = client.getCabalKeys()
@@ -182,6 +181,44 @@ export const joinChannel = ({ addr, channel }) => dispatch => {
     dispatch(addChannel({ addr, channel }))
     dispatch(viewChannel({ addr, channel }))
   }
+}
+
+export const confirmArchiveChannel = ({ addr, channel }) => dispatch => {
+  dialog.showMessageBox({
+    type: 'question',
+    buttons: ['Cancel', 'Archive'],
+    message: `Are you sure you want to archive this channel, ${channel}?`
+  }).then((response) => {
+    if (response.response === 1) {
+      dispatch(archiveChannel({ addr }))
+    }
+  })
+}
+
+export const archiveChannel = ({ addr, channel }) => dispatch => {
+  const currentChannel = client.getCurrentChannel()
+  if (!channel || !channel.length) {
+    channel = currentChannel
+  }
+  if (channel === currentChannel) {
+    dispatch(viewNextChannel({ addr }))
+  }
+  const cabalDetails = client.getDetails(addr)
+  cabalDetails.leaveChannel(channel)
+  cabalDetails.archiveChannel(channel)
+  const channels = cabalDetails.getChannels()
+  const channelsJoined = cabalDetails.getJoinedChannels() || []
+  const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
+  dispatch({ type: 'UPDATE_CABAL', initialized: true, addr, channelMessagesUnread, channels, channelsJoined })
+}
+
+export const unarchiveChannel = ({ addr, channel }) => dispatch => {
+  const currentChannel = client.getCurrentChannel()
+  if (!channel || !channel.length) {
+    channel = currentChannel
+  }
+  const cabalDetails = client.getDetails(addr)
+  cabalDetails.unarchiveChannel(channel)
 }
 
 export const leaveChannel = ({ addr, channel }) => dispatch => {
@@ -241,7 +278,7 @@ const enrichMessage = (message) => {
       time: message.time,
       content: remark()
         .use(remarkAltProt)
-        .use(remarkReact, {...cabalSanitize, ...cabalComponents})
+        .use(remarkReact, { ...cabalSanitize, ...cabalComponents })
         .use(remarkEmoji).processSync(message.content)
         .result
     }
@@ -250,7 +287,6 @@ const enrichMessage = (message) => {
 
 export const getMessages = ({ addr, channel, amount }, callback) => dispatch => {
   client.focusCabal(addr)
-  const cabalDetails = client.getDetails(addr)
   if (client.getChannels().includes(channel)) {
     client.getMessages({ amount, channel }, (messages) => {
       messages = messages.map((message) => {
@@ -327,11 +363,13 @@ export const getUser = ({ key }) => (dispatch) => {
   const users = cabalDetails.getUsers()
   // TODO: This should be inside cabalDetails.getUser(...)
   var user = users[key]
-  if (!user) user = new User({
-    name: key.substr(0, 6),
-    key: key
-  })
-  if (!user.name) user.name = key.substr(0,6)
+  if (!user) {
+    user = new User({
+      name: key.substr(0, 6),
+      key: key
+    })
+  }
+  if (!user.name) user.name = key.substr(0, 6)
 
   return user
 }
@@ -343,7 +381,7 @@ export const viewChannel = ({ addr, channel, skipScreenHistory }) => (dispatch, 
     client.focusChannel(channel)
     client.markChannelRead(channel)
   } else {
-    dispatch(joinChannel({ addr, channel }))
+    // dispatch(joinChannel({ addr, channel }))
   }
 
   const cabalDetails = client.getCurrentCabal()
@@ -394,7 +432,6 @@ export const addCabal = ({ addr, isNewlyAdded, settings, username }) => async (d
     if (username) {
       dispatch(setUsername({ addr, username }))
     }
-    return
   } else {
     // Add the cabal to the client using the default per cabal user settings
     settings = {
@@ -724,7 +761,6 @@ const initializeCabal = ({ addr, isNewlyAdded, username, settings }) => async di
       }, event.throttleDelay, { leading: true, trailing: true })
       cabalDetails.on(event.name, action)
     })
-
     initialize()
     dispatch({ type: 'UPDATE_CABAL', initialized: true, addr })
   }, isNewlyAdded ? 10000 : 0)
@@ -766,7 +802,7 @@ export const loadFromDisk = () => async dispatch => {
 const storeOnDisk = () => (dispatch, getState) => {
   const cabalKeys = client.getCabalKeys()
   const { cabalSettings } = getState()
-  let state = {}
+  const state = {}
   cabalKeys.forEach((addr) => {
     state[addr] = JSON.stringify({
       addr,
@@ -816,7 +852,7 @@ export const moderationRemoveAdmin = (props) => async dispatch => {
   dispatch(moderationAction('removeAdmin', props))
 }
 
-export const moderationAction = (action, { addr, channel, reason, userKey}) => async dispatch => {
+export const moderationAction = (action, { addr, channel, reason, userKey }) => async dispatch => {
   const cabalDetails = client.getDetails(addr)
   await cabalDetails.moderation[action](userKey, { channel, reason })
   setTimeout(() => {
