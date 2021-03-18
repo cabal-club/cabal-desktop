@@ -382,6 +382,9 @@ export const viewChannel = ({ addr, channel, skipScreenHistory }) => (dispatch, 
     client.focusChannel(channel)
     client.markChannelRead(channel)
   } else {
+    // TODO: After the lastest cabal-client update, this line which throws the app into a loading loop. 
+    // But, it seems that joinChannel may not be needed here as things seem to work as expected without it. 
+    // Next step: investigate why this loops and if there's regression from removing this line:
     // dispatch(joinChannel({ addr, channel }))
   }
 

@@ -43,18 +43,14 @@ function ChannelPanel ({ addr, confirmArchiveChannel, currentChannel, hideChanne
         Channel Details
         <span onClick={() => hideChannelPanel({ addr })} className='close'><img src='static/images/icon-composermeta.svg' /></span>
       </div>
-      <div className='panel__content'>
-        <div className='content__container'>
-          <button className='button' onClick={onClickArchiveChannel}>
-            Archive Channel
-          </button>
-        </div>
-      </div>
       {canLeave &&
         <div className='panel__content'>
           <div className='content__container'>
             <button className='button' onClick={onClickLeaveChannel}>
               Leave Channel
+            </button>
+            <button className='button' onClick={onClickArchiveChannel}>
+              Archive Channel
             </button>
           </div>
         </div>}
