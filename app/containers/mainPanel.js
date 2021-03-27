@@ -58,28 +58,41 @@ class MainPanel extends Component {
     this.handleOpenCabalUrl = this.handleOpenCabalUrl.bind(this)
     this.setScrollToBottomButtonStatus = this.setScrollToBottomButtonStatus.bind(this)
     this.scrollToBottom = this.scrollToBottom.bind(this)
+    this.onScrollMessagesUpdateBottomStatus = debounce(this.setScrollToBottomButtonStatus, 500, {
+      leading: true,
+      trailing: true
+    })
+  }
+
+  addEventListeners () {
+    const self = this
+    this.scrollEl?.addEventListener(
+      'scroll',
+      self.onScrollMessages.bind(this)
+    )
+    this.scrollEl?.addEventListener(
+      'scroll',
+      self.onScrollMessagesUpdateBottomStatus.bind(this)
+    )
+  }
+
+  removeEventListeners () {
+    const self = this
+    this.scrollEl?.removeEventListener(
+      'scroll',
+      self.onScrollMessages.bind(this)
+    )
+    this.scrollEl?.removeEventListener(
+      'scroll',
+      self.onScrollMessagesUpdateBottomStatus.bind(this)
+    )
   }
 
   componentDidMount () {
-    const self = this
-    var messagesContainerDiv = document.querySelector('.window__main')
-    if (messagesContainerDiv) {
-      messagesContainerDiv.addEventListener(
-        'scroll',
-        self.onScrollMessages.bind(this)
-      )
-    }
+    this.addEventListeners();
     ipcRenderer.on('open-cabal-url', (event, arg) => {
       this.handleOpenCabalUrl(arg)
     })
-
-    this.scrollEl?.addEventListener(
-      'scroll',
-      debounce(this.setScrollToBottomButtonStatus, 500, {
-        leading: true,
-        trailing: true
-      })
-    )
   }
 
   setScrollToBottomButtonStatus () {
@@ -104,17 +117,12 @@ class MainPanel extends Component {
   }
 
   componentWillUnmount () {
-    const self = this
-    var messagesContainerDiv = document.querySelector('.window__main')
-    if (messagesContainerDiv) {
-      messagesContainerDiv.removeEventListener(
-        'scroll',
-        self.onScrollMessages.bind(this)
-      )
-    }
+    this.removeEventListeners();
   }
 
   componentDidUpdate (prevProps) {
+    this.removeEventListeners();
+    this.addEventListeners();
     if ((prevProps.channelBrowserVisible !== this.props.channelBrowserVisible) ||
       (prevProps.cabalSettingsVisible !== this.props.cabalSettingsVisible)) {
       this.scrollToBottom()
@@ -273,6 +281,7 @@ class MainPanel extends Component {
           <div
             className='window__main'
             ref={el => {
+              this.removeEventListeners();
               this.scrollEl = el
             }}
           >
