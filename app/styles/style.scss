@@ -189,7 +189,14 @@ form {
   height: 100%;
   justify-content: space-between;
   overflow-y: auto;
-  padding: 1rem;
+  padding: 1.0rem;
+}
+
+/* Specific layout for frameless window (MacOS) */
+.client__cabals__mac {
+  flex: 0 0 4.95rem;
+  padding: 1.45rem;
+  padding-top: 2.4rem;
 }
 
 .client__cabals.hidden {

@@ -7,6 +7,7 @@ const os = require('os')
 const path = require('path')
 const settings = require('./app/settings')
 const AutoUpdater = require('./app/updater')
+const platform = require('./app/platform')
 
 const updater = new AutoUpdater()
 
@@ -86,7 +87,7 @@ const template = [
   }
 ]
 
-if (process.platform === 'darwin') {
+if (platform.mac) {
   template.unshift({
     label: 'Cabal',
     submenu: [
@@ -141,7 +142,7 @@ app.on('ready', () => {
     defaultHeight: 600
   })
 
-  win = new BrowserWindow({
+  let windowOptions = {
     backgroundColor: '#1e1e1e',
     x: mainWindowState.x,
     y: mainWindowState.y,
@@ -152,7 +153,13 @@ app.on('ready', () => {
     webPreferences: {
       nodeIntegration: true
     }
-  })
+  }
+
+  if(platform.mac){
+    windowOptions.titleBarStyle = 'hiddenInset';
+  }
+
+  win = new BrowserWindow(windowOptions)
   mainWindowState.manage(win)
 
   win.loadURL('file://' + path.join(__dirname, 'index.html'))
@@ -170,7 +177,7 @@ app.on('ready', () => {
   })
 
   ipcMain.on('update-badge', (event, { badgeCount, showCount }) => {
-    if (os.platform() === 'darwin') {
+    if (platform.mac) {
       const badge = showCount ? badgeCount : '•'
       app.dock.setBadge(badgeCount > 0 ? ('' + badge) : '')
     } else {
@@ -183,7 +190,7 @@ app.on('ready', () => {
       event.preventDefault()
       win.hide()
     }
-    if (os.platform() !== 'darwin') {
+    if (!platform.mac) {
       app.quit()
     }
   })
@@ -194,7 +201,7 @@ app.on('ready', () => {
 })
 
 app.on('window-all-closed', () => {
-  if (os.platform() !== 'darwin') {
+  if (!platform.mac) {
     app.quit()
   }
 })
