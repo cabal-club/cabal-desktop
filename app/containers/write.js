@@ -204,6 +204,8 @@ class writeScreen extends Component {
       processLine({ addr, message })
       e.preventDefault()
       e.stopPropagation()
+      const { scrollToBottom } = this.props;
+      scrollToBottom(true);
     } else if (((e.keyCode === 78 || e.keyCode === 38) && (e.ctrlKey || e.metaKey)) && e.shiftKey) {
       if (line.length === 0) {
         this.goToNextCabal()

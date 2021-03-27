@@ -62,8 +62,6 @@ class MainPanel extends Component {
 
   componentDidMount () {
     const self = this
-    var messagesDiv = document.querySelector('.messages')
-    if (messagesDiv) messagesDiv.scrollTop = this.scrollTop
     var messagesContainerDiv = document.querySelector('.window__main')
     if (messagesContainerDiv) {
       messagesContainerDiv.addEventListener(
