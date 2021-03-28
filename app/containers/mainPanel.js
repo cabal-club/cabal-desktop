@@ -190,7 +190,6 @@ class MainPanel extends Component {
     this.setState({
       shouldAutoScroll: shouldAutoScroll
     })
-    console.log("scroll", this.state.shouldAutoScroll)
   }
 
   hideModals () {
