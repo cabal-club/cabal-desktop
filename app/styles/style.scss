@@ -1098,6 +1098,11 @@ form {
 
     .content__container {
       padding: 0 1.5rem;
+
+      .button:not(:first-of-type) {
+        display: block;
+        margin-top: 1rem;
+      }
     }
 
     .collection__item {

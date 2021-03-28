@@ -111,10 +111,6 @@ class MainPanel extends Component {
     this.scrollToBottom()
   }
 
-  scrollToBottom () {
-    this.refScrollContainer?.scrollBy(0, this.refScrollContainer?.scrollHeight)
-  }
-
   componentWillUnmount () {
     this.removeEventListeners();
   }

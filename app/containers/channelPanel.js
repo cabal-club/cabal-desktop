@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import {
+  confirmArchiveChannel,
   hideChannelPanel,
   leaveChannel
 } from '../actions'
@@ -13,13 +14,21 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  confirmArchiveChannel: ({ addr, channel }) => dispatch(confirmArchiveChannel({ addr, channel })),
   hideChannelPanel: ({ addr }) => dispatch(hideChannelPanel({ addr })),
   leaveChannel: ({ addr, channel }) => dispatch(leaveChannel({ addr, channel }))
 })
 
-function ChannelPanel ({ currentChannel, addr, hideChannelPanel, leaveChannel }) {
+function ChannelPanel ({ addr, confirmArchiveChannel, currentChannel, hideChannelPanel, leaveChannel }) {
   function onClickLeaveChannel () {
     leaveChannel({
+      addr,
+      channel: currentChannel
+    })
+  }
+
+  function onClickArchiveChannel () {
+    confirmArchiveChannel({
       addr,
       channel: currentChannel
     })
@@ -39,6 +48,9 @@ function ChannelPanel ({ currentChannel, addr, hideChannelPanel, leaveChannel })
           <div className='content__container'>
             <button className='button' onClick={onClickLeaveChannel}>
               Leave Channel
+            </button>
+            <button className='button' onClick={onClickArchiveChannel}>
+              Archive Channel
             </button>
           </div>
         </div>}
