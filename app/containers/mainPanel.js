@@ -50,11 +50,10 @@ class MainPanel extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      showScrollToBottom: false
+      showScrollToBottom: false,
+      shouldAutoScroll: true,
     }
-    this.shouldAutoScroll = true
-    this.scrollTop = 0
-    this.scrollEl = null
+    this.refScrollContainer = null
     this.handleOpenCabalUrl = this.handleOpenCabalUrl.bind(this)
     this.setScrollToBottomButtonStatus = this.setScrollToBottomButtonStatus.bind(this)
     this.scrollToBottom = this.scrollToBottom.bind(this)
@@ -66,11 +65,11 @@ class MainPanel extends Component {
 
   addEventListeners () {
     const self = this
-    this.scrollEl?.addEventListener(
+    this.refScrollContainer?.addEventListener(
       'scroll',
       self.onScrollMessages.bind(this)
     )
-    this.scrollEl?.addEventListener(
+    this.refScrollContainer?.addEventListener(
       'scroll',
       self.onScrollMessagesUpdateBottomStatus.bind(this)
     )
@@ -78,11 +77,11 @@ class MainPanel extends Component {
 
   removeEventListeners () {
     const self = this
-    this.scrollEl?.removeEventListener(
+    this.refScrollContainer?.removeEventListener(
       'scroll',
       self.onScrollMessages.bind(this)
     )
-    this.scrollEl?.removeEventListener(
+    this.refScrollContainer?.removeEventListener(
       'scroll',
       self.onScrollMessagesUpdateBottomStatus.bind(this)
     )
@@ -96,9 +95,9 @@ class MainPanel extends Component {
   }
 
   setScrollToBottomButtonStatus () {
-    const totalHeight = this.scrollEl?.scrollHeight
-    const scrolled = this.scrollEl?.scrollTop + 100
-    const containerHeight = this.scrollEl?.offsetHeight
+    const totalHeight = this.refScrollContainer?.scrollHeight
+    const scrolled = this.refScrollContainer?.scrollTop + 100
+    const containerHeight = this.refScrollContainer?.offsetHeight
     if (scrolled < totalHeight - containerHeight) {
       this.setState({
         showScrollToBottom: true
@@ -113,7 +112,7 @@ class MainPanel extends Component {
   }
 
   scrollToBottom () {
-    this.scrollEl?.scrollBy(0, this.scrollEl?.scrollHeight)
+    this.refScrollContainer?.scrollBy(0, this.refScrollContainer?.scrollHeight)
   }
 
   componentWillUnmount () {
@@ -121,10 +120,10 @@ class MainPanel extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    this.removeEventListeners();
-    this.addEventListeners();
     if ((prevProps.channelBrowserVisible !== this.props.channelBrowserVisible) ||
-      (prevProps.cabalSettingsVisible !== this.props.cabalSettingsVisible)) {
+    (prevProps.cabalSettingsVisible !== this.props.cabalSettingsVisible)) {
+      this.removeEventListeners();
+      this.addEventListeners();
       this.scrollToBottom()
     }
     if (prevProps.cabal !== this.props.cabal) {
@@ -182,11 +181,16 @@ class MainPanel extends Component {
 
   onScrollMessages (event) {
     var element = event.target
+    var shouldAutoScroll = this.state.shouldAutoScroll
     if (element.scrollHeight - element.scrollTop === element.clientHeight) {
-      this.shouldAutoScroll = true
+      shouldAutoScroll = true
     } else {
-      this.shouldAutoScroll = false
+      shouldAutoScroll = false
     }
+    this.setState({
+      shouldAutoScroll: shouldAutoScroll
+    })
+    console.log("scroll", this.state.shouldAutoScroll)
   }
 
   hideModals () {
@@ -196,10 +200,13 @@ class MainPanel extends Component {
   }
 
   scrollToBottom (force) {
-    if (!force && !this.shouldAutoScroll) return
-    var messagesDiv = document.querySelector('.window__main')
-    if (messagesDiv) {
-      messagesDiv.scrollTop = messagesDiv.scrollHeight
+    if (!force && !this.state.shouldAutoScroll) return
+    this.setState({
+      shouldAutoScroll: true
+    })
+    var refScrollContainer = document.querySelector('.window__main')
+    if (refScrollContainer) {
+      refScrollContainer.scrollTop = refScrollContainer.scrollHeight
     }
   }
 
@@ -282,7 +289,7 @@ class MainPanel extends Component {
             className='window__main'
             ref={el => {
               this.removeEventListeners();
-              this.scrollEl = el
+              this.refScrollContainer = el
             }}
           >
             <MessagesContainer cabal={cabal} />
