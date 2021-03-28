@@ -116,11 +116,15 @@ class MainPanel extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    if ((prevProps.channelBrowserVisible !== this.props.channelBrowserVisible) ||
-    (prevProps.cabalSettingsVisible !== this.props.cabalSettingsVisible)) {
+    const changedScreen = (
+      (prevProps.channelBrowserVisible !== this.props.channelBrowserVisible) ||
+      (prevProps.cabalSettingsVisible !== this.props.cabalSettingsVisible) ||
+      (prevProps.settings?.currentChannel !== this.props.settings?.currentChannel)
+    )
+    if (changedScreen) {
       this.removeEventListeners();
       this.addEventListeners();
-      this.scrollToBottom()
+      this.scrollToBottom(true)
     }
     if (prevProps.cabal !== this.props.cabal) {
       if (document.hasFocus()) {
