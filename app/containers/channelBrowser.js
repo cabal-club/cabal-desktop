@@ -2,7 +2,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
 
-import { hideAllModals, joinChannel } from '../actions'
+import {
+  hideAllModals,
+  joinChannel,
+  showChannelBrowser,
+  unarchiveChannel
+} from '../actions'
 
 const mapStateToProps = state => {
   var cabal = state.cabals[state.currentCabal]
@@ -15,7 +20,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   hideAllModals: () => dispatch(hideAllModals()),
-  joinChannel: ({ addr, channel }) => dispatch(joinChannel({ addr, channel }))
+  joinChannel: ({ addr, channel }) => dispatch(joinChannel({ addr, channel })),
+  showChannelBrowser: ({ addr }) => dispatch(showChannelBrowser({ addr })),
+  unarchiveChannel: ({ addr, channel }) => dispatch(unarchiveChannel({ addr, channel }))
 })
 
 class ChannelBrowserContainer extends React.Component {
@@ -25,6 +32,11 @@ class ChannelBrowserContainer extends React.Component {
 
   onClickJoinChannel (channel) {
     this.props.joinChannel({ addr: this.props.addr, channel })
+  }
+
+  onClickUnarchiveChannel (channel) {
+    this.props.unarchiveChannel({ addr: this.props.addr, channel })
+    this.props.showChannelBrowser({ addr: this.props.addr })
   }
 
   onClickNewChannel () {
@@ -54,8 +66,9 @@ class ChannelBrowserContainer extends React.Component {
 
   render () {
     const { channels } = this.props
-    const channelsJoined = this.sortChannelsByName(channels.filter(c => c.joined) || [])
-    const channelsNotJoined = this.sortChannelsByName(channels.filter(c => !c.joined) || [])
+    const channelsJoined = this.sortChannelsByName(channels.filter(c => c.joined && !c.archived) || [])
+    const channelsNotJoined = this.sortChannelsByName(channels.filter(c => !c.joined && !c.archived) || [])
+    const channelsArchived = this.sortChannelsByName(channels.filter(c => !c.joined && c.archived) || [])
     return (
       <div className='client__main'>
         <div className='window'>
@@ -109,6 +122,35 @@ class ChannelBrowserContainer extends React.Component {
                   )
                 })}
               </div>
+              {!!channelsArchived.length && (
+                <>
+                  <h2 className='channelBrowser__sectionTitle'>Archived Channels</h2>
+                  <div className='channelBrowser__list'>
+                    {channelsArchived.map((channel) => {
+                      return (
+                        <div
+                          className='channelBrowser__row'
+                          key={channel.name}
+                          style={{ display: 'flex', justifyContent: 'space-between' }}
+                        >
+                          <div>
+                            <div className='title'>{channel.name}</div>
+                            <div className='topic'>{channel.topic}</div>
+                            <div className='members'>{channel.memberCount} {channel.memberCount === 1 ? 'person' : 'people'}</div>                          
+                          </div>
+                          <button
+                            className='button'
+                            onClick={this.onClickUnarchiveChannel.bind(this, channel.name)}
+                            title='Unarchive channel'
+                          >
+                            Unarchive
+                          </button>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

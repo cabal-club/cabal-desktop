@@ -189,14 +189,6 @@ class MainPanel extends Component {
     }
   }
 
-  scrollToBottom (force) {
-    if (!force && !this.shouldAutoScroll) return
-    var messagesDiv = document.querySelector('.window__main')
-    if (messagesDiv) {
-      messagesDiv.scrollTop = messagesDiv.scrollHeight
-    }
-  }
-
   showCabalSettings (addr) {
     this.props.showCabalSettings({ addr })
   }
