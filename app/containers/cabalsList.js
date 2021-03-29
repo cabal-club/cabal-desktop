@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import platform from '../platform'
 
 import { viewCabal, changeScreen } from '../actions'
 
@@ -38,8 +39,12 @@ class CabalsListScreen extends React.Component {
     var { addr, cabals, settings } = this.props
     cabals = cabals || {}
     var cabalKeys = (Object.keys(cabals) || []).sort()
+    var className = [
+      'client__cabals', 
+      ...(platform.mac? ['client__cabals__mac'] : [])
+    ].join(' ')
     return (
-      <div className='client__cabals'>
+      <div className={className}>
         <div className='switcher'>
           {cabalKeys.map(function (key) {
             var cabal = cabals[key]
