@@ -1,6 +1,14 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [6.0.7] - 2021-03-30
+### Added
+- Added channel archiving feature. Thanks @nikolaiwarner!
+- Added frameless window style to MacOS client. Thanks @gronis!
+### Fixed
+- Fixed issues with message list scroll position! Thanks @gronis!
+- Fixed a crash when removing cabals. Thanks @nikolaiwarner!
+- Fixed close button visibility in dark mode. Thanks @gronis!
 
 ## [6.0.6] - 2021-01-15
 ### Added
