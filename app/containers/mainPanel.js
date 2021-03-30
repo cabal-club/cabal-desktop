@@ -50,44 +50,54 @@ class MainPanel extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      showScrollToBottom: false
+      showScrollToBottom: false,
+      shouldAutoScroll: true,
     }
-    this.shouldAutoScroll = true
-    this.scrollTop = 0
-    this.scrollEl = null
+    this.refScrollContainer = null
     this.handleOpenCabalUrl = this.handleOpenCabalUrl.bind(this)
     this.setScrollToBottomButtonStatus = this.setScrollToBottomButtonStatus.bind(this)
     this.scrollToBottom = this.scrollToBottom.bind(this)
+    this.onScrollMessagesUpdateBottomStatus = debounce(this.setScrollToBottomButtonStatus, 500, {
+      leading: true,
+      trailing: true
+    })
   }
 
-  componentDidMount () {
+  addEventListeners () {
     const self = this
-    var messagesDiv = document.querySelector('.messages')
-    if (messagesDiv) messagesDiv.scrollTop = this.scrollTop
-    var messagesContainerDiv = document.querySelector('.window__main')
-    if (messagesContainerDiv) {
-      messagesContainerDiv.addEventListener(
-        'scroll',
-        self.onScrollMessages.bind(this)
-      )
-    }
-    ipcRenderer.on('open-cabal-url', (event, arg) => {
-      this.handleOpenCabalUrl(arg)
-    })
-
-    this.scrollEl?.addEventListener(
+    this.refScrollContainer?.addEventListener(
       'scroll',
-      debounce(this.setScrollToBottomButtonStatus, 500, {
-        leading: true,
-        trailing: true
-      })
+      self.onScrollMessages.bind(this)
+    )
+    this.refScrollContainer?.addEventListener(
+      'scroll',
+      self.onScrollMessagesUpdateBottomStatus.bind(this)
     )
   }
 
+  removeEventListeners () {
+    const self = this
+    this.refScrollContainer?.removeEventListener(
+      'scroll',
+      self.onScrollMessages.bind(this)
+    )
+    this.refScrollContainer?.removeEventListener(
+      'scroll',
+      self.onScrollMessagesUpdateBottomStatus.bind(this)
+    )
+  }
+
+  componentDidMount () {
+    this.addEventListeners();
+    ipcRenderer.on('open-cabal-url', (event, arg) => {
+      this.handleOpenCabalUrl(arg)
+    })
+  }
+
   setScrollToBottomButtonStatus () {
-    const totalHeight = this.scrollEl?.scrollHeight
-    const scrolled = this.scrollEl?.scrollTop + 100
-    const containerHeight = this.scrollEl?.offsetHeight
+    const totalHeight = this.refScrollContainer?.scrollHeight
+    const scrolled = this.refScrollContainer?.scrollTop + 100
+    const containerHeight = this.refScrollContainer?.offsetHeight
     if (scrolled < totalHeight - containerHeight) {
       this.setState({
         showScrollToBottom: true
@@ -101,25 +111,20 @@ class MainPanel extends Component {
     this.scrollToBottom()
   }
 
-  scrollToBottom () {
-    this.scrollEl?.scrollBy(0, this.scrollEl?.scrollHeight)
-  }
-
   componentWillUnmount () {
-    const self = this
-    var messagesContainerDiv = document.querySelector('.window__main')
-    if (messagesContainerDiv) {
-      messagesContainerDiv.removeEventListener(
-        'scroll',
-        self.onScrollMessages.bind(this)
-      )
-    }
+    this.removeEventListeners();
   }
 
   componentDidUpdate (prevProps) {
-    if ((prevProps.channelBrowserVisible !== this.props.channelBrowserVisible) ||
-      (prevProps.cabalSettingsVisible !== this.props.cabalSettingsVisible)) {
-      this.scrollToBottom()
+    const changedScreen = (
+      (prevProps.channelBrowserVisible !== this.props.channelBrowserVisible) ||
+      (prevProps.cabalSettingsVisible !== this.props.cabalSettingsVisible) ||
+      (prevProps.settings?.currentChannel !== this.props.settings?.currentChannel)
+    )
+    if (changedScreen) {
+      this.removeEventListeners();
+      this.addEventListeners();
+      this.scrollToBottom(true)
     }
     if (prevProps.cabal !== this.props.cabal) {
       if (document.hasFocus()) {
@@ -176,16 +181,31 @@ class MainPanel extends Component {
 
   onScrollMessages (event) {
     var element = event.target
+    var shouldAutoScroll = this.state.shouldAutoScroll
     if (element.scrollHeight - element.scrollTop === element.clientHeight) {
-      this.shouldAutoScroll = true
+      shouldAutoScroll = true
     } else {
-      this.shouldAutoScroll = false
+      shouldAutoScroll = false
     }
+    this.setState({
+      shouldAutoScroll: shouldAutoScroll
+    })
   }
 
   hideModals () {
     if (this.props.emojiPickerVisible) {
       this.props.hideEmojiPicker()
+    }
+  }
+
+  scrollToBottom (force) {
+    if (!force && !this.state.shouldAutoScroll) return
+    this.setState({
+      shouldAutoScroll: true
+    })
+    var refScrollContainer = document.querySelector('.window__main')
+    if (refScrollContainer) {
+      refScrollContainer.scrollTop = refScrollContainer.scrollHeight
     }
   }
 
@@ -267,7 +287,8 @@ class MainPanel extends Component {
           <div
             className='window__main'
             ref={el => {
-              this.scrollEl = el
+              this.removeEventListeners();
+              this.refScrollContainer = el
             }}
           >
             <MessagesContainer cabal={cabal} />

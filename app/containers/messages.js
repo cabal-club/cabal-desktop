@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import moment from 'moment'
 
@@ -21,7 +21,6 @@ const mapDispatchToProps = dispatch => ({
 })
 
 function MessagesContainer(props) {
-  const msgContainerRef = useRef()
   const onClickProfile = (user) => {
     props.showProfilePanel({
       addr: props.addr,
@@ -38,11 +37,6 @@ function MessagesContainer(props) {
     )
   }
 
-  useLayoutEffect(() => {
-    const a = msgContainerRef.current
-    if (a?.scrollIntoView) a.scrollIntoView()
-  }, [props.messages])
-
   const messages = props.messages || []
   let lastDividerDate = moment() // hold the time of the message for which divider was last added
 
@@ -57,7 +51,7 @@ function MessagesContainer(props) {
     let prevMessage = {}
     return (
       <>
-        <div className='messages' ref={msgContainerRef}>
+        <div className='messages'>
           {messages.map((message) => {
             // Hide messages from hidden users
             const user = message.user
@@ -174,11 +168,6 @@ function MessagesContainer(props) {
             )
           })}
         </div>
-        {/* placeholder div for scrolling down to the bottom */}
-        <div
-          style={{ float: 'left', clear: 'both' }}
-          ref={msgContainerRef}
-        />
       </>
     )
   }
