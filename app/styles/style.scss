@@ -1168,6 +1168,17 @@ form {
 }
 
 .profilePanel {
+  .panel__header {
+    position: absolute;
+    background: #fff;
+    width: 23rem;
+    z-index: 1;
+  }
+
+  .panel__content {
+    margin-top: 4.4rem
+  }
+
   .profile__header {
     align-items: center;
     display: flex;
