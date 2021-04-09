@@ -20,6 +20,10 @@ $ yarn install             # install dependencies
 $ yarn start               # start the application
 ```
 
+### Build under NixOS
+
+[This gist](https://gist.github.com/cryptix/9dc8806fe44f266d47f550b23b703ff8) contains a `nix-shell` file for development purposes. It sidestepps the issue of packaging the full package tree as a release into nixpkgs.
+
 ### Download from AUR
 https://aur.archlinux.org/packages/cabal-desktop-git/
 
