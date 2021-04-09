@@ -272,8 +272,8 @@ class SidebarScreen extends React.Component {
                       <span className='messagesUnreadCount'>{unreadNonFavoriteMessageCount}</span>}
                   </div>
                 </div>
-                <div 
-                  className='collection__heading__handle' 
+                <div
+                  className='collection__heading__handle'
                   onClick={this.onClickChannelBrowser.bind(this, cabal.addr)}
                   title='Browse and join or create channels'
                 >
@@ -312,6 +312,7 @@ class SidebarScreen extends React.Component {
                 const isAdmin = peer.users.some((u) => u.isAdmin())
                 const isModerator = peer.users.some((u) => u.isModerator())
                 const isHidden = peer.users.some((u) => u.isHidden())
+                const isSelf = peer.users.some((u) => u.key === userkey)
                 const name = isHidden ? peer.name.substring(0, 3) + peer.key.substring(0, 6) : peer.name
                 return (
                   <div
@@ -334,7 +335,9 @@ class SidebarScreen extends React.Component {
                       </span>
                       {!isAdmin && !isModerator && isHidden && <span className='sigil hidden'>HIDDEN</span>}
                       {!isAdmin && isModerator && <span className='sigil moderator' title='Moderator'>MOD</span>}
-                      {isAdmin && <span className='sigil admin' title='Admin'>ADMIN</span>}
+                      {isSelf
+                        ? <span className='sigil' title='You'>YOU</span>
+                        : isAdmin && <span className='sigil admin' title='Admin'>ADMIN</span>}
                     </div>
                     <div className='collection__item__handle' />
                   </div>
