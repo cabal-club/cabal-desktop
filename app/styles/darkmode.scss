@@ -327,6 +327,10 @@ $textColor2: #aaa;
   }
 
   .profilePanel {
+    .panel__header {
+      background: $backgroundColor;
+    }
+
     .avatar__online__indicator {
       border-color: $backgroundColor;
     }
