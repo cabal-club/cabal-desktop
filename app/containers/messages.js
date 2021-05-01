@@ -37,7 +37,16 @@ function MessagesContainer(props) {
     )
   }
 
-  const messages = props.messages || []
+  const seen = {}
+  const messages = (props.messages ?? []).filter((message) => {
+    const messageId = message.key + message.message.seq
+    if (typeof seen[messageId] === 'undefined') {
+      seen[messageId] = true
+      return true
+    }
+    return false
+  })
+
   let lastDividerDate = moment() // hold the time of the message for which divider was last added
 
   if (messages.length === 0 && props.channel !== '!status') {
