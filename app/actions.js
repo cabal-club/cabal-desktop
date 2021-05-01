@@ -497,7 +497,7 @@ export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
 
 export const processLine = ({ message, addr }) => dispatch => {
   const text = message.content.text
-  if (text.startsWith('/')) {
+  if (text?.startsWith('/')) {
     const cabal = client.getCurrentCabal()
     cabal.processLine(text)
   } else {
@@ -662,11 +662,11 @@ const initializeCabal = ({ addr, isNewlyAdded, username, settings }) => async di
       }
     }, {
       name: 'info',
-      action: (text) => {
-        console.log('info', text)
-        if (text.startsWith('whispering on')) {
+      action: (info) => {
+        console.log('info', info)
+        if (info?.text?.startsWith('whispering on')) {
           const currentChannel = client.getCurrentChannel()
-          client.addStatusMessage({ text }, currentChannel, cabalDetails._cabal)
+          client.addStatusMessage({ text: info.text }, currentChannel, cabalDetails._cabal)
         }
       }
     }, {
@@ -690,10 +690,7 @@ const initializeCabal = ({ addr, isNewlyAdded, username, settings }) => async di
     }, {
       name: 'publish-message',
       action: () => {
-        const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
-        const currentChannel = cabalDetails.getCurrentChannel()
-        dispatch(getMessages({ addr, amount: 1000, channel: currentChannel }))
-        dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
+        // don't do anything on publish message (new-message takes care of it)
       }
     }, {
       name: 'publish-nick',

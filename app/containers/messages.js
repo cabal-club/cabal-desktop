@@ -37,9 +37,14 @@ function MessagesContainer(props) {
     )
   }
 
+  const seen = {}
   const messages = (props.messages ?? []).filter((message) => {
-    // Filter out "mention" messages to prevent showing duplicate messages
-    return message?.message?.directMention === undefined
+    const messageId = message.time + message.message.seq
+    if (typeof seen[messageId] === 'undefined') {
+      seen[messageId] = true
+      return true
+    }
+    return false
   })
 
   let lastDividerDate = moment() // hold the time of the message for which divider was last added
