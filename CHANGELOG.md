@@ -1,6 +1,12 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+
+## [6.0.8] - 2021-05-01
+### Fixed
+- Fixed issues with duplicate messages! Thanks @cblgh and @nikolaiwarner!
+- Fixed a crash when using slash commands. Thanks @nikolaiwarner!
+
 ## [6.0.7] - 2021-03-30
 ### Added
 - Added channel archiving feature. Thanks @nikolaiwarner!
