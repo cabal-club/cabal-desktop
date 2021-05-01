@@ -39,7 +39,7 @@ function MessagesContainer(props) {
 
   const seen = {}
   const messages = (props.messages ?? []).filter((message) => {
-    const messageId = message.time + message.message.seq
+    const messageId = message.key + message.message.seq
     if (typeof seen[messageId] === 'undefined') {
       seen[messageId] = true
       return true
