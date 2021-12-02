@@ -136,7 +136,7 @@ class ChannelBrowserContainer extends React.Component {
                           <div>
                             <div className='title'>{channel.name}</div>
                             <div className='topic'>{channel.topic}</div>
-                            <div className='members'>{channel.memberCount} {channel.memberCount === 1 ? 'person' : 'people'}</div>                          
+                            <div className='members'>{channel.memberCount} {channel.memberCount === 1 ? 'person' : 'people'}</div>
                           </div>
                           <button
                             className='button'

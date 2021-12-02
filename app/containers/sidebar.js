@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import prompt from 'electron-prompt'
-import { contextMenu, Item, Menu, MenuProvider, Separator, Submenu, theme } from 'react-contexify'
+import { Item, Menu, Separator, Submenu, theme } from 'react-contexify'
 
 import {
   changeScreen,
@@ -138,6 +138,14 @@ class SidebarScreen extends React.Component {
     // })
   }
 
+  onClickStartPM (key) {
+    this.props.hideProfilePanel({ addr: this.props.addr })
+    this.props.joinChannel({
+      addr: this.props.addr,
+      channel: key
+    })
+  }
+
   joinChannel (channel) {
     var addr = this.props.addr
     this.props.joinChannel({ addr, channel })
@@ -208,6 +216,12 @@ class SidebarScreen extends React.Component {
     const unreadNonFavoriteMessageCount = Object.entries((this.props.channelMessagesUnread || {})).reduce((total, value) => {
       return (value[1] && channels.includes(value[0])) ? (total + value[1]) : total
     }, 0)
+
+    function getPmChannelName (userKey) {
+      const key = Object.keys(cabal.users).find((key) => key === userKey)
+      return cabal.users[key]?.name ?? cabal.channel
+    }
+
     return (
       <div className='client__sidebar'>
         <div className='sidebar'>
@@ -249,6 +263,33 @@ class SidebarScreen extends React.Component {
                   <div key={channel} onClick={this.selectChannel.bind(this, channel)} className={cabal.channel === channel ? 'collection__item active' : 'collection__item'}>
                     <div className='collection__item__icon'><img src='static/images/icon-channel.svg' /></div>
                     <div className='collection__item__content'>{channel}</div>
+                    {this.props.channelMessagesUnread && this.props.channelMessagesUnread[channel] > 0 &&
+                      <div className='collection__item__messagesUnreadCount'>{this.props.channelMessagesUnread[channel]}</div>}
+                    <div className='collection__item__handle' />
+                  </div>
+                )}
+              </div>}
+            {!!cabal.pmChannels?.length &&
+              <div className='collection'>
+                <div className='collection__heading'>
+                  <div className='collection__heading__title__container'>
+                    <span
+                      className={`collection__toggle ${this.props.settings['sidebar-hide-pmChannels'] ? 'collection__toggle__off' : 'collection__toggle__on'}`}
+                      onClick={this.onToggleCollection.bind(this, 'pmChannels')}
+                    >▼
+                    </span>
+                    <div
+                      className='collection__heading__title'
+                      onClick={this.onToggleCollection.bind(this, 'pmChannels')}
+                    >
+                      Messages
+                    </div>
+                  </div>
+                </div>
+                {!this.props.settings['sidebar-hide-pmChannels'] && this.sortByProperty(cabal.pmChannels).map((channel) =>
+                  <div key={channel} onClick={this.onClickStartPM.bind(this, channel)} className={cabal.channel === channel ? 'collection__item active' : 'collection__item'}>
+                    <div className='collection__item__icon'><img src='static/images/icon-channel.svg' /></div>
+                    <div className='collection__item__content'>{getPmChannelName(channel)}</div>
                     {this.props.channelMessagesUnread && this.props.channelMessagesUnread[channel] > 0 &&
                       <div className='collection__item__messagesUnreadCount'>{this.props.channelMessagesUnread[channel]}</div>}
                     <div className='collection__item__handle' />
@@ -333,6 +374,7 @@ class SidebarScreen extends React.Component {
                         {peer.name ? name : peer.key.substring(0, 6)}
                         {peer.users.length > 1 && <span className='collection__item__count'>({peer.users.length})</span>}
                       </span>
+                      <span className='pmChannels' onClick={this.onClickStartPM.bind(this, peer.key)} title='Private Message'>💬</span>
                       {!isAdmin && !isModerator && isHidden && <span className='sigil hidden'>HIDDEN</span>}
                       {!isAdmin && isModerator && <span className='sigil moderator' title='Moderator'>MOD</span>}
                       {isSelf

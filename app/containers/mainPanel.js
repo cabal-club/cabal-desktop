@@ -30,7 +30,7 @@ const mapStateToProps = state => {
     channelBrowserVisible: state.channelBrowserVisible,
     channelMemberCount: currentChannelMemberCountSelector(state),
     emojiPickerVisible: state.emojiPickerVisible,
-    settings: state.cabalSettings[addr] || {},
+    settings: state.cabalSettings[addr] || {}
   }
 }
 
@@ -43,7 +43,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(setChannelTopic({ addr, channel, topic })),
   showCabalSettings: ({ addr }) => dispatch(showCabalSettings({ addr })),
   showChannelPanel: ({ addr }) => dispatch(showChannelPanel({ addr })),
-  viewCabal: ({ addr }) => dispatch(viewCabal({ addr })),
+  viewCabal: ({ addr }) => dispatch(viewCabal({ addr }))
 })
 
 class MainPanel extends Component {
@@ -51,7 +51,7 @@ class MainPanel extends Component {
     super(props)
     this.state = {
       showScrollToBottom: false,
-      shouldAutoScroll: true,
+      shouldAutoScroll: true
     }
     this.refScrollContainer = null
     this.handleOpenCabalUrl = this.handleOpenCabalUrl.bind(this)
@@ -88,7 +88,7 @@ class MainPanel extends Component {
   }
 
   componentDidMount () {
-    this.addEventListeners();
+    this.addEventListeners()
     ipcRenderer.on('open-cabal-url', (event, arg) => {
       this.handleOpenCabalUrl(arg)
     })
@@ -112,7 +112,7 @@ class MainPanel extends Component {
   }
 
   componentWillUnmount () {
-    this.removeEventListeners();
+    this.removeEventListeners()
   }
 
   componentDidUpdate (prevProps) {
@@ -122,8 +122,8 @@ class MainPanel extends Component {
       (prevProps.settings?.currentChannel !== this.props.settings?.currentChannel)
     )
     if (changedScreen) {
-      this.removeEventListeners();
-      this.addEventListeners();
+      this.removeEventListeners()
+      this.addEventListeners()
       this.scrollToBottom(true)
     }
     if (prevProps.cabal !== this.props.cabal) {
@@ -218,7 +218,7 @@ class MainPanel extends Component {
   }
 
   render () {
-    const { cabal, toggleMemberList, channelMemberCount, settings } = this.props
+    const { cabal, channelMemberCount, settings } = this.props
     var self = this
 
     if (!cabal) {
@@ -235,15 +235,22 @@ class MainPanel extends Component {
 
     const isFavoriteChannel = settings['favorite-channels'] && settings['favorite-channels'].includes(cabal.channel)
 
+    function getChannelName () {
+      const userKey = Object.keys(cabal.users).find((key) => key === cabal.channel)
+      const pmChannelName = cabal.users[userKey]?.name ?? cabal.channel
+      return cabal.isChannelPrivate ? pmChannelName : cabal.channel
+    }
+
+    const channelName = getChannelName()
     return (
       <div className='client__main' onClick={this.hideModals.bind(this)}>
         <div className='window'>
-          <div className='window__header'>
+          <div className={`window__header ${cabal.isChannelPrivate ? 'private' : ''}`}>
             <div className='channel-meta'>
               <div className='channel-meta__data'>
                 <div className='channel-meta__data__details'>
                   <h1>
-                    {cabal.channel}
+                    {channelName}
                     <span
                       className='channel-meta__favoriteChannel__toggle'
                       onClick={self.onToggleFavoriteChannel.bind(self, cabal.channel)}
@@ -254,40 +261,51 @@ class MainPanel extends Component {
                     </span>
                   </h1>
                   <h2>
-                    <div className='channel-meta__members' onClick={this.showChannelPanel.bind(this, this.props.addr)}>
-                      <img src='static/images/user-icon.svg' />
-                      <div 
-                        className='channel-meta__members__count'
-                        title={`Members in this channel: ${channelMemberCount}`}
-                      >
-                        {channelMemberCount}
-                      </div>
-                    </div>
-                    <span
-                      className='channel-meta__data__topic'
-                      onClick={this.onClickTopic.bind(this)}
-                      title='Click to set the channel topic'
-                    >
-                      {cabal.topic || 'Add a topic'}
-                    </span>
+                    {cabal.isChannelPrivate && (
+                      <span className='channel-meta__data__topic'>
+                        🔒 Private message with {channelName}
+                      </span>
+                    )}
+                    {!cabal.isChannelPrivate && (
+                      <>
+                        <div className='channel-meta__members' onClick={this.showChannelPanel.bind(this, this.props.addr)}>
+                          <img src='static/images/user-icon.svg' />
+                          <div
+                            className='channel-meta__members__count'
+                            title={`Members in this channel: ${channelMemberCount}`}
+                          >
+                            {channelMemberCount}
+                          </div>
+                        </div>
+                        <span
+                          className='channel-meta__data__topic'
+                          onClick={this.onClickTopic.bind(this)}
+                          title='Click to set the channel topic'
+                        >
+                          {cabal.topic || 'Add a topic'}
+                        </span>
+                      </>
+                    )}
                   </h2>
                 </div>
               </div>
-              <div className='channel-meta__other'>
-                <div
-                  onClick={this.showChannelPanel.bind(this, this.props.addr)}
-                  className='channel-meta__other__more'
-                  title='Channel Details'
-                >
-                  <img src='static/images/icon-channelother.svg' />
+              {!cabal.isChannelPrivate && (
+                <div className='channel-meta__other'>
+                  <div
+                    onClick={this.showChannelPanel.bind(this, this.props.addr)}
+                    className='channel-meta__other__more'
+                    title='Channel Details'
+                  >
+                    <img src='static/images/icon-channelother.svg' />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
           <div
             className='window__main'
             ref={el => {
-              this.removeEventListeners();
+              this.removeEventListeners()
               this.refScrollContainer = el
             }}
           >

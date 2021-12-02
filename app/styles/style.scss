@@ -464,7 +464,12 @@ form {
     transition: all 0.05s ease-in-out;
     position: relative;
 
-    .name {}
+    .pmChannels {
+      cursor: pointer;
+      padding: 0.1rem 0.5rem;
+      opacity: 0;
+      transition: 0.5s all;
+    }
 
     .sigil {
       background-color: #333;
@@ -488,7 +493,7 @@ form {
       background-color: #333;
       cursor: pointer;
 
-      .sigil {
+      .sigil, .pmChannels {
         opacity: 1;
       }
     }
@@ -681,6 +686,10 @@ form {
     -webkit-app-region: drag;
     background-color: #fff;
     z-index: 10;
+
+    &.private {
+      background-color: #693afa15;
+    }
   }
 
   .messages {
@@ -1168,15 +1177,14 @@ form {
 }
 
 .profilePanel {
+  padding-top: 4.4rem;
+
   .panel__header {
-    position: absolute;
     background: #fff;
+    position: absolute;
+    top: 0;
     width: 23rem;
     z-index: 1;
-  }
-
-  .panel__content {
-    margin-top: 4.4rem
   }
 
   .profile__header {

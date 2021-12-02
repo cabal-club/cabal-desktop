@@ -11,7 +11,8 @@ import {
   moderationRemoveAdmin,
   moderationRemoveMod,
   moderationUnblock,
-  moderationUnhide
+  moderationUnhide,
+  joinChannel
 } from '../actions'
 import Avatar from './avatar'
 
@@ -30,11 +31,16 @@ const mapDispatchToProps = dispatch => ({
   moderationRemoveAdmin: ({ addr, channel, reason, userKey }) => dispatch(moderationRemoveAdmin({ addr, channel, reason, userKey })),
   moderationRemoveMod: ({ addr, channel, reason, userKey }) => dispatch(moderationRemoveMod({ addr, channel, reason, userKey })),
   moderationUnblock: ({ addr, channel, reason, userKey }) => dispatch(moderationUnblock({ addr, channel, reason, userKey })),
-  moderationUnhide: ({ addr, channel, reason, userKey }) => dispatch(moderationUnhide({ addr, channel, reason, userKey }))
+  moderationUnhide: ({ addr, channel, reason, userKey }) => dispatch(moderationUnhide({ addr, channel, reason, userKey })),
+  joinChannel: ({ addr, channel }) => dispatch(joinChannel({ addr, channel }))
 })
 
 function ProfilePanel (props) {
   const user = props.getUser({ key: props.userKey })
+
+  function onClickStartPM (e) {
+    props.joinChannel({ addr: props.addr, channel: props.userKey })
+  }
 
   function onClickHideUserAll () {
     props.moderationHide({
@@ -50,19 +56,19 @@ function ProfilePanel (props) {
     })
   }
 
-  function onClickBlockUserAll () {
-    props.moderationBlock({
-      addr: props.addr,
-      userKey: user.key
-    })
-  }
+  // function onClickBlockUserAll () {
+  //   props.moderationBlock({
+  //     addr: props.addr,
+  //     userKey: user.key
+  //   })
+  // }
 
-  function onClickUnblockUserAll () {
-    props.moderationUnblock({
-      addr: props.addr,
-      userKey: user.key
-    })
-  }
+  // function onClickUnblockUserAll () {
+  //   props.moderationUnblock({
+  //     addr: props.addr,
+  //     userKey: user.key
+  //   })
+  // }
 
   function onClickAddModAll () {
     props.moderationAddMod({
@@ -118,6 +124,15 @@ function ProfilePanel (props) {
             {user.isModerator() && <div className='sigil moderator'>Moderator</div>}
             {user.isHidden() && <div className='sigil hidden'>Hidden</div>}
           </div>
+        </div>
+      </div>
+      <div className='section__header'>
+        Messages
+      </div>
+      <div className='panel__content'>
+        <div className='content__container'>
+          <button className='button' onClick={onClickStartPM}>Send private message</button>
+          <div className='help__text'>Start an encrypted 1-on-1 chat that only you and this peer can read.</div>
         </div>
       </div>
       {!isSelf &&

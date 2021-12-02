@@ -52,7 +52,7 @@ const client = new Client({
   }
 })
 // Disable a few slash commands for now
-// TODO: figure out why cabal-client's removeCommand doesn't work? 
+// TODO: figure out why cabal-client's removeCommand doesn't work?
 // tracked by: https://github.com/cabal-club/cabal-desktop/issues/306
 // const removedCommands = ['add', 'channels', 'clear', 'ids', 'names', 'new', 'qr', 'whoami', 'whois']
 // removedCommands.forEach((command) => {
@@ -61,7 +61,7 @@ const client = new Client({
 
 // On exit, close the cabals to cleanly leave the hyperswarms
 window.onbeforeunload = (e) => {
-  for (let cabal of client.cabals.values()) {
+  for (const cabal of client.cabals.values()) {
     cabal._destroy(() => {})
   }
 }
@@ -101,7 +101,10 @@ export const setScreenViewHistoryPostion = ({ index }) => (dispatch) => {
 
 export const showChannelBrowser = ({ addr }) => dispatch => {
   const cabalDetails = client.getDetails(addr)
-  const channelsData = Object.values(cabalDetails.channels).map((channel) => {
+  const channelsData = Object.values(cabalDetails.channels).filter((channel) => {
+    // Omit private message channels
+    return !channel.isPrivate
+  }).map((channel) => {
     return {
       ...channel,
       memberCount: channel.members.size
@@ -207,10 +210,11 @@ export const archiveChannel = ({ addr, channel }) => dispatch => {
   const cabalDetails = client.getDetails(addr)
   cabalDetails.leaveChannel(channel)
   cabalDetails.archiveChannel(channel)
-  const channels = cabalDetails.getChannels()
+  const channels = cabalDetails.getChannels({ includePM: false })
+  const pmChannels = cabalDetails.getPrivateMessageList()
   const channelsJoined = cabalDetails.getJoinedChannels() || []
   const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
-  dispatch({ type: 'UPDATE_CABAL', initialized: true, addr, channelMessagesUnread, channels, channelsJoined })
+  dispatch({ type: 'UPDATE_CABAL', initialized: true, addr, channelMessagesUnread, channels, channelsJoined, pmChannels })
 }
 
 export const unarchiveChannel = ({ addr, channel }) => dispatch => {
@@ -382,8 +386,8 @@ export const viewChannel = ({ addr, channel, skipScreenHistory }) => (dispatch, 
     client.focusChannel(channel)
     client.markChannelRead(channel)
   } else {
-    // TODO: After the lastest cabal-client update, this line which throws the app into a loading loop. 
-    // But, it seems that joinChannel may not be needed here as things seem to work as expected without it. 
+    // TODO: After the lastest cabal-client update, this line which throws the app into a loading loop.
+    // But, it seems that joinChannel may not be needed here as things seem to work as expected without it.
     // Next step: investigate why this loops and if there's regression from removing this line:
     // dispatch(joinChannel({ addr, channel }))
   }
@@ -395,17 +399,19 @@ export const viewChannel = ({ addr, channel, skipScreenHistory }) => (dispatch, 
   dispatch({
     addr,
     channel: cabalDetails.getCurrentChannel(),
-    channels: cabalDetails.getChannels(),
-    channelsJoined: cabalDetails.getJoinedChannels(),
     channelMessagesUnread,
+    channels: cabalDetails.getChannels({ includePM: false }),
+    channelsJoined: cabalDetails.getJoinedChannels(),
+    isChannelPrivate: cabalDetails.isChannelPrivate(cabalDetails.getCurrentChannel()),
+    pmChannels: cabalDetails.getPrivateMessageList(),
     type: 'ADD_CABAL',
     username: cabalDetails.getLocalName(),
     users: cabalDetails.getUsers()
   })
   dispatch({
-    type: 'VIEW_CABAL',
     addr,
-    channel: cabalDetails.getCurrentChannel()
+    channel: cabalDetails.getCurrentChannel(),
+    type: 'VIEW_CABAL'
   })
   dispatch(getMessages({ addr, channel, amount: 100 }))
 
@@ -594,12 +600,13 @@ const initializeCabal = ({ addr, isNewlyAdded, username, settings }) => async di
     const users = cabalDetails.getUsers()
     const userkey = cabalDetails.getLocalUser().key
     const username = cabalDetails.getLocalName()
-    const channels = cabalDetails.getChannels()
+    const channels = cabalDetails.getChannels({ includePM: false })
+    const pmChannels = cabalDetails.getPrivateMessageList()
     const channelsJoined = cabalDetails.getJoinedChannels() || []
     const channelMessagesUnread = getCabalUnreadMessagesCount(cabalDetails)
     const currentChannel = cabalDetails.getCurrentChannel()
     const channelMembers = cabalDetails.getChannelMembers()
-    dispatch({ type: 'UPDATE_CABAL', initialized: false, addr, channelMessagesUnread, users, userkey, username, channels, channelsJoined, currentChannel, channelMembers })
+    dispatch({ type: 'UPDATE_CABAL', initialized: false, addr, channelMessagesUnread, users, userkey, username, channels, channelsJoined, currentChannel, channelMembers, pmChannels })
     dispatch(getMessages({ addr, amount: 1000, channel: currentChannel }))
     dispatch(updateAllsChannelsUnreadCount({ addr, channelMessagesUnread }))
     client.focusCabal(addr)
@@ -675,9 +682,10 @@ const initializeCabal = ({ addr, isNewlyAdded, username, settings }) => async di
     }, {
       name: 'new-channel',
       action: () => {
-        const channels = cabalDetails.getChannels()
+        const channels = cabalDetails.getChannels({ includePM: false })
+        const pmChannels = cabalDetails.getPrivateMessageList()
         const channelMembers = cabalDetails.getChannelMembers()
-        dispatch({ type: 'UPDATE_CABAL', addr, channels, channelMembers })
+        dispatch({ type: 'UPDATE_CABAL', addr, channels, channelMembers, pmChannels })
       }
     }, {
       name: 'new-message',
