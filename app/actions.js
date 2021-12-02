@@ -181,9 +181,20 @@ export const listCommands = () => dispatch => {
 export const joinChannel = ({ addr, channel }) => dispatch => {
   if (channel.length > 0) {
     const cabalDetails = client.getDetails(addr)
-    cabalDetails.joinChannel(channel)
-    dispatch(addChannel({ addr, channel }))
-    dispatch(viewChannel({ addr, channel }))
+    // Catch new private message channels
+    const users = cabalDetails.getUsers()
+    const user = users[channel]
+    const pmChannels = cabalDetails.getPrivateMessageList()
+    const isNewPmChannel = user && !pmChannels.includes(channel)
+    if (isNewPmChannel) {
+      dispatch(hideAllModals())
+      dispatch({ type: 'VIEW_CABAL', addr, channel })
+      dispatch({ type: 'UPDATE_CABAL', addr, channel, messages: [], isChannelPrivate: true })
+    } else {
+      cabalDetails.joinChannel(channel)
+      dispatch(addChannel({ addr, channel }))
+      dispatch(viewChannel({ addr, channel }))
+    }
   }
 }
 
@@ -502,18 +513,24 @@ export const addChannel = ({ addr, channel }) => (dispatch, getState) => {
 }
 
 export const processLine = ({ message, addr }) => dispatch => {
+  const channel = message.content.channel
+  const cabalDetails = client.getDetails(addr)
+  const users = cabalDetails.getUsers()
+  const pmChannels = cabalDetails.getPrivateMessageList()
+  const isNewPmChannel = users[channel] && !pmChannels.includes(channel)
+
   const text = message.content.text
   if (text?.startsWith('/')) {
     const cabal = client.getCurrentCabal()
     cabal.processLine(text)
   } else {
-    dispatch(addMessage({ message, addr }))
+    if (isNewPmChannel) {
+      cabalDetails.publishPrivateMessage(message, channel)
+      dispatch(joinChannel({ addr, channel }))
+    } else {
+      cabalDetails.publishMessage(message)
+    }
   }
-}
-
-export const addMessage = ({ message, addr }) => dispatch => {
-  const cabalDetails = client.getDetails(addr)
-  cabalDetails.publishMessage(message)
 }
 
 export const addStatusMessage = ({ addr, channel, text }) => {
