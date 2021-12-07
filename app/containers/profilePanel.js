@@ -10,7 +10,6 @@ import {
   moderationHide,
   moderationRemoveAdmin,
   moderationRemoveMod,
-  moderationUnblock,
   moderationUnhide,
   joinChannel
 } from '../actions'
@@ -30,7 +29,6 @@ const mapDispatchToProps = dispatch => ({
   moderationHide: ({ addr, channel, reason, userKey }) => dispatch(moderationHide({ addr, channel, reason, userKey })),
   moderationRemoveAdmin: ({ addr, channel, reason, userKey }) => dispatch(moderationRemoveAdmin({ addr, channel, reason, userKey })),
   moderationRemoveMod: ({ addr, channel, reason, userKey }) => dispatch(moderationRemoveMod({ addr, channel, reason, userKey })),
-  moderationUnblock: ({ addr, channel, reason, userKey }) => dispatch(moderationUnblock({ addr, channel, reason, userKey })),
   moderationUnhide: ({ addr, channel, reason, userKey }) => dispatch(moderationUnhide({ addr, channel, reason, userKey })),
   joinChannel: ({ addr, channel }) => dispatch(joinChannel({ addr, channel }))
 })
@@ -55,20 +53,6 @@ function ProfilePanel (props) {
       userKey: user.key
     })
   }
-
-  // function onClickBlockUserAll () {
-  //   props.moderationBlock({
-  //     addr: props.addr,
-  //     userKey: user.key
-  //   })
-  // }
-
-  // function onClickUnblockUserAll () {
-  //   props.moderationUnblock({
-  //     addr: props.addr,
-  //     userKey: user.key
-  //   })
-  // }
 
   function onClickAddModAll () {
     props.moderationAddMod({
@@ -152,10 +136,6 @@ function ProfilePanel (props) {
                   <button className='button' onClick={onClickUnhideUserAll}>Unhide this peer</button>
                   <div className='help__text'>Hiding a peer hides all of their past and future messages in all channels.</div>
                 </>}
-              {/* <br />
-              <br />
-              <button className='button' onClick={onClickHideUserAll}>Block this peer</button>
-              <div className='help__text'>Blocking a peer removes all of their messages from your computer. All past and future messages will not be visible, or even known about.</div> */}
               {!user.isModerator() &&
                 <>
                   <button className='button' onClick={onClickAddModAll}>Add moderator</button>

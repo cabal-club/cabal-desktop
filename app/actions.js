@@ -327,9 +327,14 @@ export const getMessages = ({ addr, channel, amount }, callback) => dispatch => 
 
 export const onIncomingMessage = ({ addr, channel, message }, callback) => (dispatch, getState) => {
   const cabalDetails = client.getDetails(addr)
+  const cabalKey = client.getCurrentCabal().key
+  const currentChannel = cabalDetails.getCurrentChannel()
+  const pmChannels = cabalDetails.getPrivateMessageList()
 
   // Ignore incoming message from channels you're not in
-  if (!cabalDetails.getJoinedChannels().includes(channel)) return
+  if (!message.value.private && !cabalDetails.getJoinedChannels().includes(channel)) {
+    return
+  }
 
   const user = dispatch(getUser({ key: message.key }))
 
@@ -337,8 +342,7 @@ export const onIncomingMessage = ({ addr, channel, message }, callback) => (disp
   if (user && user.isHidden()) return
 
   // Add incoming message to message list if you're viewing that channel
-  const currentChannel = cabalDetails.getCurrentChannel()
-  if ((channel === currentChannel) && (addr === client.getCurrentCabal().key)) {
+  if ((channel === currentChannel) && (addr === cabalKey)) {
     const { type, timestamp, content } = message.value
     const enrichedMessage = enrichMessage({
       content: content && content.text,
@@ -352,8 +356,11 @@ export const onIncomingMessage = ({ addr, channel, message }, callback) => (disp
       ...getState()?.cabals[addr].messages,
       enrichedMessage
     ]
-    dispatch({ type: 'UPDATE_CABAL', addr, messages })
+    dispatch({ type: 'UPDATE_CABAL', addr, messages, pmChannels })
   } else {
+    if (message.value.private === (addr === cabalKey)) {
+      dispatch({ type: 'UPDATE_CABAL', addr, pmChannels })
+    }
     // Skip adding to message list if not viewing that channel, instead update unread count
     dispatch(updateUnreadCounts({ addr }))
   }
@@ -525,6 +532,7 @@ export const processLine = ({ message, addr }) => dispatch => {
     cabal.processLine(text)
   } else {
     if (isNewPmChannel) {
+      // this creates the channel by sending a private message (PMs are not initiated until posting a message)
       cabalDetails.publishPrivateMessage(message, channel)
       dispatch(joinChannel({ addr, channel }))
     } else {
@@ -600,7 +608,8 @@ const getCabalUnreadMessagesCount = (cabalDetails) => {
   const cabalCore = client._keyToCabal[cabalDetails.key]
   const channelMessagesUnread = {}
   // fetch unread message count only for joined channels.
-  cabalDetails.getJoinedChannels().map((channel) => {
+  const channels = [...cabalDetails.getJoinedChannels(), ...cabalDetails.getPrivateMessageList()]
+  channels.map((channel) => {
     channelMessagesUnread[channel] = client.getNumberUnreadMessages(channel, cabalCore)
   })
   return channelMessagesUnread
@@ -713,6 +722,13 @@ const initializeCabal = ({ addr, isNewlyAdded, username, settings }) => async di
         dispatch(onIncomingMessage({ addr, channel, message }))
       }
     }, {
+      name: 'private-message',
+      throttleDelay: 500,
+      action: (data) => {
+        console.log('private-message', data)
+      }
+    },
+    {
       name: 'publish-message',
       action: () => {
         // don't do anything on publish message (new-message takes care of it)

@@ -237,7 +237,7 @@ class MainPanel extends Component {
 
     function getChannelName () {
       const userKey = Object.keys(cabal.users).find((key) => key === cabal.channel)
-      const pmChannelName = cabal.users[userKey]?.name ?? cabal.channel
+      const pmChannelName = cabal.users[userKey]?.name ?? cabal.channel.slice(0, 8)
       return cabal.isChannelPrivate ? pmChannelName : cabal.channel
     }
 

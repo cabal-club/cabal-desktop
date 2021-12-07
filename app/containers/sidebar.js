@@ -282,7 +282,7 @@ class SidebarScreen extends React.Component {
                       className='collection__heading__title'
                       onClick={this.onToggleCollection.bind(this, 'pmChannels')}
                     >
-                      Messages
+                      Private Messages
                     </div>
                   </div>
                 </div>
