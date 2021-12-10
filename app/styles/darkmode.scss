@@ -121,6 +121,10 @@ $textColor2: #aaa;
 
     .window__header {
       background-color: $backgroundColor;
+
+      &.private {
+        background-color: #693afa50;
+      }
     }
 
     .channel-meta {

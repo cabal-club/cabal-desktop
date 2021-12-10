@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import Mousetrap from 'mousetrap'
 
 import {
-  addMessage,
   hideEmojiPicker,
   listCommands,
   processLine,
@@ -34,7 +33,6 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  addMessage: ({ addr, message }) => dispatch(addMessage({ addr, message })),
   hideEmojiPicker: () => dispatch(hideEmojiPicker()),
   listCommands: () => dispatch(listCommands()),
   processLine: ({ addr, message }) => dispatch(processLine({ addr, message })),
@@ -201,11 +199,12 @@ class writeScreen extends Component {
         },
         type: 'chat/text'
       }
+      console.log('---> sending message', message)
       processLine({ addr, message })
       e.preventDefault()
       e.stopPropagation()
-      const { scrollToBottom } = this.props;
-      scrollToBottom(true);
+      const { scrollToBottom } = this.props
+      scrollToBottom(true)
     } else if (((e.keyCode === 78 || e.keyCode === 38) && (e.ctrlKey || e.metaKey)) && e.shiftKey) {
       if (line.length === 0) {
         this.goToNextCabal()

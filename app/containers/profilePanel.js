@@ -10,8 +10,8 @@ import {
   moderationHide,
   moderationRemoveAdmin,
   moderationRemoveMod,
-  moderationUnblock,
-  moderationUnhide
+  moderationUnhide,
+  joinChannel
 } from '../actions'
 import Avatar from './avatar'
 
@@ -29,12 +29,16 @@ const mapDispatchToProps = dispatch => ({
   moderationHide: ({ addr, channel, reason, userKey }) => dispatch(moderationHide({ addr, channel, reason, userKey })),
   moderationRemoveAdmin: ({ addr, channel, reason, userKey }) => dispatch(moderationRemoveAdmin({ addr, channel, reason, userKey })),
   moderationRemoveMod: ({ addr, channel, reason, userKey }) => dispatch(moderationRemoveMod({ addr, channel, reason, userKey })),
-  moderationUnblock: ({ addr, channel, reason, userKey }) => dispatch(moderationUnblock({ addr, channel, reason, userKey })),
-  moderationUnhide: ({ addr, channel, reason, userKey }) => dispatch(moderationUnhide({ addr, channel, reason, userKey }))
+  moderationUnhide: ({ addr, channel, reason, userKey }) => dispatch(moderationUnhide({ addr, channel, reason, userKey })),
+  joinChannel: ({ addr, channel }) => dispatch(joinChannel({ addr, channel }))
 })
 
 function ProfilePanel (props) {
   const user = props.getUser({ key: props.userKey })
+
+  function onClickStartPM (e) {
+    props.joinChannel({ addr: props.addr, channel: props.userKey })
+  }
 
   function onClickHideUserAll () {
     props.moderationHide({
@@ -45,20 +49,6 @@ function ProfilePanel (props) {
 
   function onClickUnhideUserAll () {
     props.moderationUnhide({
-      addr: props.addr,
-      userKey: user.key
-    })
-  }
-
-  function onClickBlockUserAll () {
-    props.moderationBlock({
-      addr: props.addr,
-      userKey: user.key
-    })
-  }
-
-  function onClickUnblockUserAll () {
-    props.moderationUnblock({
       addr: props.addr,
       userKey: user.key
     })
@@ -120,6 +110,15 @@ function ProfilePanel (props) {
           </div>
         </div>
       </div>
+      <div className='section__header'>
+        Messages
+      </div>
+      <div className='panel__content'>
+        <div className='content__container'>
+          <button className='button' onClick={onClickStartPM}>Send private message</button>
+          <div className='help__text'>Start an encrypted 1-on-1 chat that only you and this peer can read.</div>
+        </div>
+      </div>
       {!isSelf &&
         <>
           <div className='section__header'>
@@ -137,10 +136,6 @@ function ProfilePanel (props) {
                   <button className='button' onClick={onClickUnhideUserAll}>Unhide this peer</button>
                   <div className='help__text'>Hiding a peer hides all of their past and future messages in all channels.</div>
                 </>}
-              {/* <br />
-              <br />
-              <button className='button' onClick={onClickHideUserAll}>Block this peer</button>
-              <div className='help__text'>Blocking a peer removes all of their messages from your computer. All past and future messages will not be visible, or even known about.</div> */}
               {!user.isModerator() &&
                 <>
                   <button className='button' onClick={onClickAddModAll}>Add moderator</button>
