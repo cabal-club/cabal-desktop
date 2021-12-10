@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [7.0.0] - 2021-12-10
+### Added
+- Private messaging! Thanks @cblgh and @nikolaiwarner!
+
 ## [6.0.8] - 2021-05-01
 ### Fixed
 - Fixed issues with duplicate messages! Thanks @cblgh and @nikolaiwarner!
