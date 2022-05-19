@@ -217,6 +217,13 @@ class MainPanel extends Component {
     this.props.showChannelPanel({ addr })
   }
 
+  onClickLeaveChannel (addr) {
+    leaveChannel({
+      addr,
+      channel: currentChannel
+    })
+  }
+
   render () {
     const { cabal, channelMemberCount, settings } = this.props
     var self = this
@@ -289,8 +296,13 @@ class MainPanel extends Component {
                   </h2>
                 </div>
               </div>
-              {!cabal.isChannelPrivate && (
-                <div className='channel-meta__other'>
+              <div className='channel-meta__other'>
+                {cabal.isChannelPrivate && (
+                  <button className='button' onClick={this.onClickLeaveChannel.bind(this, this.props.addr)}>
+                    Leave Channel
+                  </button>
+                )}
+                {!cabal.isChannelPrivate && (
                   <div
                     onClick={this.showChannelPanel.bind(this, this.props.addr)}
                     className='channel-meta__other__more'
@@ -298,8 +310,8 @@ class MainPanel extends Component {
                   >
                     <img src='static/images/icon-channelother.svg' />
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
           <div
