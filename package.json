@@ -32,7 +32,7 @@
     "cross-env": "^7.0.2",
     "css-loader": "^3.5.3",
     "dotenv-webpack": "^6.0.0",
-    "electron": "15.0.0",
+    "electron": "14.0.0",
     "electron-builder": "^22.9.1",
     "electron-notarize": "^1.0.0",
     "jest": "^25.4.0",
