@@ -13,7 +13,7 @@ import remarkReact from 'remark-react'
 import { throttle } from 'lodash'
 import User from 'cabal-client/src/user'
 
-const { dialog } = require('electron').remote
+const { dialog } = require('@electron/remote')
 
 const cabalComponents = {
   remarkReactComponents: {
