@@ -151,7 +151,8 @@ app.on('ready', () => {
     titleBarStyle: 'default',
     title: 'Cabal Desktop ' + app.getVersion(),
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false
     }
   }
 
