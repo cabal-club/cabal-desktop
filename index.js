@@ -152,6 +152,7 @@ app.on('ready', () => {
     title: 'Cabal Desktop ' + app.getVersion(),
     webPreferences: {
       nodeIntegration: true,
+      enableRemoteModule: true,
       contextIsolation: false
     }
   }
