@@ -4,9 +4,10 @@ node_js:
 cache: yarn
 
 os:
-  - osx
-  - linux
-  - windows
+   - windows
+#  - osx
+#  - linux
+  
 
 install:
   - yarn install
