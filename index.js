@@ -9,6 +9,8 @@ const settings = require('./app/settings')
 const AutoUpdater = require('./app/updater')
 const platform = require('./app/platform')
 
+require('@electron/remote/main').initialize()
+
 const updater = new AutoUpdater()
 
 // the window object
