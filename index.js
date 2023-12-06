@@ -1,6 +1,6 @@
 'use strict'
 
-const { app, BrowserWindow, shell, Menu, ipcMain } = require('electron')
+const { app, BrowserWindow, dialog, shell, Menu, ipcMain } = require('electron')
 const isDev = require('electron-is-dev')
 const windowStateKeeper = require('electron-window-state')
 const os = require('os')
@@ -181,12 +181,13 @@ app.on('ready', () => {
     win.webContents.send('open-cabal-url', { url })
   })
 
-  ipcMain.handle("showDialogQuestion", (question) => {
-    return dialog.showMessageBox({
+  ipcMain.handle("showDialogQuestion", async (evt, question) => {
+    const prom = dialog.showMessageBox({
       type: 'question',
       buttons: ['Cancel', 'OK'],
       message: question
     })
+    return prom
   })
 
   ipcMain.on('update-badge', (event, { badgeCount, showCount }) => {

@@ -209,19 +209,6 @@ export const joinChannel = ({ addr, channel }) => dispatch => {
   }
 }
 
-/*
-
-  dialog.showMessageBox({
-    type: 'question',
-    buttons: ['Cancel', 'Archive'],
-    message: `Are you sure you want to archive this channel, ${channel}?`
-  }).then((response) => {
-    if (response.response === 1) {
-      dispatch(archiveChannel({ addr }))
-    }
-  })
-*/
-
 export const confirmArchiveChannel = ({ addr, channel }) => dispatch => {
   const question = `Are you sure you want to archive this channel, ${channel}?`
   const cb = (response) => {
