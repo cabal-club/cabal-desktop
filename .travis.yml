@@ -5,8 +5,8 @@ cache: yarn
 
 os:
    - windows
-#  - osx
-#  - linux
+   - osx
+   - linux
   
 
 install:
