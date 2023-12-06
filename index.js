@@ -9,6 +9,9 @@ const settings = require('./app/settings')
 const AutoUpdater = require('./app/updater')
 const platform = require('./app/platform')
 
+const remoteMain = require("@electron/remote/main")
+remoteMain.initialize()
+
 const updater = new AutoUpdater()
 
 // the window object
@@ -161,6 +164,7 @@ app.on('ready', () => {
   }
 
   win = new BrowserWindow(windowOptions)
+  remoteMain.enable(win.webContents)
   mainWindowState.manage(win)
 
   win.loadURL('file://' + path.join(__dirname, 'index.html'))
