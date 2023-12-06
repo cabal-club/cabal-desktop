@@ -56,7 +56,7 @@
     "debug": "^4.1.1",
     "deepmerge": "^4.2.2",
     "del": "^5.1.0",
-    "@electron/remote": "1.2.2",
+    "@electron/remote": "2.0.0",
     "electron-default-menu": "^1.0.1",
     "electron-is-dev": "^1.2.0",
     "electron-prompt": "^1.5.1",

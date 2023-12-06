@@ -9,7 +9,8 @@ const settings = require('./app/settings')
 const AutoUpdater = require('./app/updater')
 const platform = require('./app/platform')
 
-require('@electron/remote/main').initialize()
+const remoteMain = require("@electron/remote/main")
+remoteMain.initialize()
 
 const updater = new AutoUpdater()
 
@@ -154,7 +155,6 @@ app.on('ready', () => {
     title: 'Cabal Desktop ' + app.getVersion(),
     webPreferences: {
       nodeIntegration: true,
-      enableRemoteModule: true,
       contextIsolation: false
     }
   }
@@ -164,6 +164,7 @@ app.on('ready', () => {
   }
 
   win = new BrowserWindow(windowOptions)
+  remoteMain.enable(win.webContents)
   mainWindowState.manage(win)
 
   win.loadURL('file://' + path.join(__dirname, 'index.html'))
