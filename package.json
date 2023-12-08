@@ -90,7 +90,6 @@
   },
   "build": {
     "appId": "club.cabal.desktop",
-    "afterSign": "scripts/notarize.js",
     "productName": "Cabal",
     "publish": [
       "github"
