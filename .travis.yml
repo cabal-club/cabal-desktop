@@ -22,3 +22,7 @@ deploy:
   on:
     tags: true
     all_branches: true
+
+mac:
+  notarize: false
+
