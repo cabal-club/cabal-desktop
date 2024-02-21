@@ -1,6 +1,6 @@
 'use strict'
 
-const { app, BrowserWindow, shell, Menu, ipcMain } = require('electron')
+const { app, BrowserWindow, dialog, shell, Menu, ipcMain } = require('electron')
 const isDev = require('electron-is-dev')
 const windowStateKeeper = require('electron-window-state')
 const os = require('os')
@@ -8,6 +8,9 @@ const path = require('path')
 const settings = require('./app/settings')
 const AutoUpdater = require('./app/updater')
 const platform = require('./app/platform')
+
+const remoteMain = require("@electron/remote/main")
+remoteMain.initialize()
 
 const updater = new AutoUpdater()
 
@@ -151,7 +154,8 @@ app.on('ready', () => {
     titleBarStyle: 'default',
     title: 'Cabal Desktop ' + app.getVersion(),
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false
     }
   }
 
@@ -160,6 +164,7 @@ app.on('ready', () => {
   }
 
   win = new BrowserWindow(windowOptions)
+  remoteMain.enable(win.webContents)
   mainWindowState.manage(win)
 
   win.loadURL('file://' + path.join(__dirname, 'index.html'))
@@ -174,6 +179,15 @@ app.on('ready', () => {
   app.on('open-url', (event, url) => {
     event.preventDefault()
     win.webContents.send('open-cabal-url', { url })
+  })
+
+  ipcMain.handle("showDialogQuestion", async (evt, question) => {
+    const prom = dialog.showMessageBox({
+      type: 'question',
+      buttons: ['Cancel', 'OK'],
+      message: question
+    })
+    return prom
   })
 
   ipcMain.on('update-badge', (event, { badgeCount, showCount }) => {

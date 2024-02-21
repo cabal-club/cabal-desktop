@@ -1,14 +1,14 @@
 language: node_js
 node_js:
-  - '10'
-cache: yarn
+  - '16'
 
 os:
-  - osx
-  - linux
-  - windows
+   #- linux
+   #- windows
+    - osx
 
 install:
+  - npm i -g yarn
   - yarn install
   - yarn run build
   - yarn run dist
@@ -22,3 +22,7 @@ deploy:
   on:
     tags: true
     all_branches: true
+
+mac:
+  notarize: false
+

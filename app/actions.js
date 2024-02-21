@@ -13,8 +13,6 @@ import remarkReact from 'remark-react'
 import { throttle } from 'lodash'
 import User from 'cabal-client/src/user'
 
-const { dialog } = require('electron').remote
-
 const cabalComponents = {
   remarkReactComponents: {
     a: CustomLink
@@ -137,7 +135,11 @@ export const saveCabalSettings = ({ addr, settings }) => dispatch => {
   dispatch(storeOnDisk())
 }
 
-export const removeCabal = ({ addr }) => dispatch => {
+function showDialogQuestion (message, cb) {
+  ipcRenderer.invoke("showDialogQuestion", message).then(cb)
+}
+
+/*
   dialog.showMessageBox({
     type: 'question',
     buttons: ['Cancel', 'Remove'],
@@ -147,6 +149,15 @@ export const removeCabal = ({ addr }) => dispatch => {
       dispatch(confirmRemoveCabal({ addr }))
     }
   })
+*/
+export const removeCabal = ({ addr }) => dispatch => {
+  const question = `Are you sure you want to remove this cabal (${addr.substr(0, 8)}...) from Cabal Desktop?`
+  const cb = (response) => {
+    if (response.response === 1) {
+      dispatch(confirmRemoveCabal({ addr }))
+    }
+  }
+  showDialogQuestion(question, cb)
 }
 
 // remove cabal
@@ -199,15 +210,13 @@ export const joinChannel = ({ addr, channel }) => dispatch => {
 }
 
 export const confirmArchiveChannel = ({ addr, channel }) => dispatch => {
-  dialog.showMessageBox({
-    type: 'question',
-    buttons: ['Cancel', 'Archive'],
-    message: `Are you sure you want to archive this channel, ${channel}?`
-  }).then((response) => {
+  const question = `Are you sure you want to archive this channel, ${channel}?`
+  const cb = (response) => {
     if (response.response === 1) {
       dispatch(archiveChannel({ addr }))
     }
-  })
+  }
+  showDialogQuestion(question, cb)
 }
 
 export const archiveChannel = ({ addr, channel }) => dispatch => {
